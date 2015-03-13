@@ -1,0 +1,455 @@
+\documentclass[a4paper,12pt]{report}
+
+%
+% Bunch of useful packages
+%
+\usepackage[utf8]{inputenc}
+\usepackage{algorithmic}
+\usepackage{algorithm}
+\usepackage{pst-plot}
+\usepackage{graphicx}
+\usepackage{graphics}
+\usepackage{floatflt}
+\usepackage{wrapfig}
+\usepackage{endnotes}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{verbatim}
+\usepackage{hyperref}
+\usepackage{multirow}
+\usepackage{endnotes}
+\usepackage{pdflscape}
+\usepackage{multicol}
+\usepackage{tikz}
+\usetikzlibrary{arrows}
+\usepackage{wrapfig}
+\usepackage{hyperref}
+\usepackage{array}
+\usepackage{rotating}
+\usepackage{enumitem}
+\usepackage{setspace}
+\usepackage{enumitem}
+
+\usepackage[font={small, sl}]{caption}
+
+%
+% Listings
+%
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage{listings}
+\lstset{
+	basicstyle=\scriptsize\ttfamily,
+	numbers=left,
+	numberstyle=\tiny,
+	numbersep=5pt,
+	tabsize=2,
+	extendedchars=true,
+	breaklines=true,
+	keywordstyle=\color{red},
+	frame=b,         
+	stringstyle=\color{white}\ttfamily,
+	showspaces=false,
+	showtabs=false,
+	xleftmargin=17pt,
+	framexleftmargin=17pt,
+	framexrightmargin=5pt,
+	framexbottommargin=4pt,
+	showstringspaces=false
+}
+\usepackage{caption}
+\DeclareCaptionFont{white}{\color{white}}
+\DeclareCaptionFormat{listing}{\colorbox{gray}{\parbox{\textwidth}{#1#2#3}}}
+\captionsetup[lstlisting]{format=listing,labelfont=white,textfont=white}
+
+%
+% Chapter titles
+%
+\usepackage{titlesec}
+\titleformat{\chapter}[hang] 
+{\normalfont\huge\bfseries}{\thechapter}{1em}{} 
+
+%
+% Theorems and Definitions
+%
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[chapter]
+
+%
+% Margins of all kinds
+%
+\hypersetup{pdfborder={0 0 0 0}}
+\setlength\parindent{0mm}
+\setlength\parskip{3mm}
+
+\newenvironment{pitemize}{
+\vspace{-5mm}
+\begin{itemize}
+ 	\setlength{\itemsep}{1pt}
+	\setlength{\parskip}{0pt}
+ 	\setlength{\parsep}{0pt}
+}{
+	\end{itemize}
+	\vspace{-8mm}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Width of A4 is 8.27in (210mm) We have an inside margin of 1.5 in and outside margin of 1in
+%% This leaves 5.77in for text width
+\oddsidemargin=0.5in
+\evensidemargin=0.0in
+\textwidth=5.77in
+\headheight=0.0in
+\topmargin=0.0in
+\textheight=9.0in
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\newenvironment{sitemize}
+{\vspace{-2mm}\begin{list}{\textbullet}{%
+    \setlength{\itemsep}{0pt}%
+    \setlength{\parsep}{0pt}%
+    \setlength{\topsep}{0pt}%
+    \setlength{\parskip}{0pt} %
+    \setlength{\labelwidth}{0pt}%
+    \setlength{\labelsep}{0.05in} %
+    \setlength{\leftmargin}{5pt} %
+    \renewcommand{\labelitemi}{\textbullet}}}
+  {\vspace{-2mm}\end{list}}
+
+\newenvironment{mitemize}
+{\begin{list}{\textbullet}{%
+    \setlength{\itemsep}{0pt}%
+    \setlength{\parsep}{0pt}%
+    \setlength{\topsep}{2mm}%
+    \setlength{\parskip}{0pt} %
+    \setlength{\labelwidth}{0pt}%
+    \setlength{\labelsep}{0.05in} %
+    \setlength{\leftmargin}{8.5mm} %
+    \renewcommand{\labelitemi}{\textbullet}}}
+  {\end{list}}
+
+
+\newcommand\epigraph[3]{
+\vspace{1em}\hfill{}\begin{minipage}{#1}{\begin{spacing}{0.9}
+\small\noindent\textit{#2}\end{spacing}
+\vspace{1em}
+\hfill{}{#3}}\vspace{2em}
+\end{minipage}}
+
+
+%
+% Title
+%
+\begin{document}
+\begin{center}
+	{\Large
+	University of Tartu\\
+	Faculty of Mathematics and Computer Science\\
+	Institute of Computer Science\\
+	Computer Science\\}
+	
+	\vspace{2.5cm}
+	
+	{\LARGE Taivo Pungas}\\
+	\vspace{0.5cm}
+	\begin{spacing}{2}{\Huge\bf \ \ \ Unsupervised learning algorithms implemented by a biologically realistic neuron model}\end{spacing}
+	\vspace{0.5cm}
+	{\LARGE Bachelor's thesis (9 ECTS)}
+\end{center}
+\vspace{3cm}
+\hspace{7.2cm}{\Large Supervisors: Dr. Raul Vicente\\}
+\vspace{-0.5cm}
+
+\hspace{10.4cm}{\Large Dr. Jaan Aru \\}
+
+\ \\
+\ \\
+Author: .................................................. "......." May 2015\\
+Supervisor: ............................................. "......." May 2015\\
+\ \\
+Approved for defense\\
+Professor: ............................................... "......." May 2015\\
+\ \\
+\begin{center}
+	{\Large Tartu 2015}
+\end{center}
+\thispagestyle{empty}
+\pagebreak
+
+
+%%%
+% Abstract
+%%%
+
+
+{\textbf
+{\Large Title of thesis in English}}
+
+\textbf{Abstract:}
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam a ultricies sem, vel gravida dolor. Vestibulum lacinia nulla nec massa mollis eleifend. Etiam scelerisque erat in ligula dapibus, et eleifend enim vulputate. Integer quis lobortis neque, eget efficitur felis. Vestibulum vel consequat quam. Praesent volutpat eget massa rutrum fringilla. Maecenas fringilla turpis ut dignissim luctus. Nunc lectus metus, dapibus eu enim ut, rhoncus blandit ligula. Praesent gravida ullamcorper est id pharetra. Mauris tempus ornare sollicitudin. Sed feugiat nec turpis mattis sollicitudin. Aliquam non orci sit amet lorem rutrum euismod et non orci. Aliquam egestas aliquam blandit. Cras quis convallis neque. Integer fringilla pharetra condimentum. Fusce erat eros, pulvinar sit amet orci in, consectetur accumsan eros.
+
+\textbf{Keywords:} taivo, raul, jaan, model, neuro, stuff
+
+\vspace{1.5cm}
+
+
+
+{\textbf
+{\Large Töö eestikeelne pealkiri}}
+
+\textbf{Lühikokkuvõte:}
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam a ultricies sem, vel gravida dolor. Vestibulum lacinia nulla nec massa mollis eleifend. Etiam scelerisque erat in ligula dapibus, et eleifend enim vulputate. Integer quis lobortis neque, eget efficitur felis. Vestibulum vel consequat quam. Praesent volutpat eget massa rutrum fringilla. Maecenas fringilla turpis ut dignissim luctus. Nunc lectus metus, dapibus eu enim ut, rhoncus blandit ligula. Praesent gravida ullamcorper est id pharetra. Mauris tempus ornare sollicitudin. Sed feugiat nec turpis mattis sollicitudin. Aliquam non orci sit amet lorem rutrum euismod et non orci. Aliquam egestas aliquam blandit. Cras quis convallis neque. Integer fringilla pharetra condimentum. Fusce erat eros, pulvinar sit amet orci in, consectetur accumsan eros.
+
+\textbf{Võtmesõnad:} taivo, raul, jaan, mudel, neuro, värk
+
+
+\
+\thispagestyle{empty}
+\pagebreak
+
+\tableofcontents
+\newpage
+
+
+% % % %
+% Chapter: Introduction
+% % % %
+
+\chapter*{Introduction}
+\addcontentsline{toc}{chapter}{Introduction}
+
+Your brain is a complex organ capable of very sophisticated thought. Even though the chess-playing supercomputer Deep Blue won the reigning world champion Garry Kasparov, he was also able to do [tasks humans do every day: make a sandwich, pick a good concert to attend on the same night, find his way through an unfamiliar city, etc]. The human brain is remarkable not for its ability to do one particular thing very well, be it playing chess, reading an article in Nature, preparing a six-course meal, or slam dunking in a basketball game. It is remarkable for being able to do all of those things, and much more.
+
+However, gaining understanding of the brain's information processing mechanisms remains one of the major scientific challenges today. A key aspect of the brain's learning process is \emph{neural plasticity}, its ability to change itself over time as new knowledge and experience are accumulated and processed. To understand the dynamics of these changes, computational models are proposed and tested to explore how well they explain and predict the brain's behaviour as observed in experiments in neuroscience. To this end, it is useful to create models that are biophysically realistic, i.e. are guided by known biophysical principles of the brain's and neurons' structure.
+
+Modelling the brain on a large scale has been a high priority in several regions of the world. The Blue Brain Project, funded by the European Union, is an attempt to build biologically accurate models of the brain to build a virtual brain in a supercomputer (cite?). The BRAIN Initiative, funded by the National Institutes of Health (NIH), focuses on "understanding how individual cells and complex neural circuits interact in both time and space"\footnote{http://braininitiative.nih.gov/index.htm}.
+
+Major successes in creating systems with significant capacity for learning (intelligence?) have recently been achieved using deep convolutional neural networks. The neuron models used in these systems are very simple, often composing of a scalar product of the inputs and weights, and a rectifying function. However, evidence from brains has shown that each neuron is a much more complex and powerful information processing unit (cite?).
+
+This thesis explores the behaviour of one particular previously published (with a Nobel-winning physicist among the authors) biophysically realistic model in important information processing tasks. The model has been shown to produce a range of neural plasticity phenomena. This work explores the computational capabilities that arise from this unifying model of plasticity. In particular, the thesis investigates...
+
+
+% % % %
+% Chapter: Preliminaries
+% % % %
+
+\chapter{Background and related work}
+
+
+\section{Overview of relevant neurobiology}
+
+% Biology of the human brain
+\subsection{Neurobiology of the brain}
+The brain, a part of the nervous system, is the central information processing organ in animals. The computational properties of the brain arise from the heavily interconnected networks and sub-networks of neurons inside it. It has been approximated that the human brain consists (cite) of $10^{11}$ neurons with $10^{15}$ inter-neuronal connections called \emph{synapses}. This work focuses on modelling one of many different types of neurons - pyramidal neurons.
+
+
+\subsection{Neurons as computational units}
+Every model of a brain that aspires for biophysical reality must include a way to model the behaviour of neurons and synapses. Each neuron can be seen as a small unit performing computation on some inputs and producing corresponding output. There are many computational models of neurons, with the level of detail ranging from complex compartmental models (is there anything even more detailed?) to very simple models such as those used in many Artificial Neural Networks. 
+
+Information flow through a neuron follows a path from the inputs to the output, with computation in between. (refer to and explain the figure below)
+
+FIGURE: schematic of a pyramidal neuron with inputs, soma, and axon. Also include labels to explain what is synapse, what is presynaptic neuron and what is postsynaptic.
+
+\subsubsection{Input}
+%Where does the input come from? How is it encoded (spikes)?
+%The number of inputs to a pyramidal neuron can range from $x$ to $x$ (cite) depending on (what?). 
+
+The region of connection between two neurons is called a \emph{synapse}, with information flowing from the axon of the \emph{presynaptic} neuron to a dendrite of the \emph{postsynaptic} neuron. Each time the presynaptic neuron fires, neurotransmitters are released from the presynaptic neuron into the \emph{synaptic cleft}, a small gap between the presynaptic and postsynaptic neurons.
+Neurotransmitters then bind to receptors on the membrane of the postsynaptic neuron, causing ion channels to open. This causes ion flow across the postsynaptic membrane, which causes a voltage change at the dendrite of the postsynaptic neuron.
+
+There are two kinds of synapses: spikes arriving at \emph{excitatory} synapses tend to make the postsynaptic neuron fire more, input to \emph{inhibitory} synapses tends to make the postsynaptic neuron fire less.
+
+%How does information about a spike reach the postsynaptic neuron, aka how do synapses work? Neurotransmitters and detectors. What happens when post-neuron detects neurotransmitters (explain in terms of ions and voltage)? 
+
+\subsubsection{Computation TODO}
+A single neuron can be seen as an integrator of information over time, over different inputs, or both. At each synapse, a neuron has some intrinsic biological components that determine how much this synapse should affect the output of the postsynaptic neuron. The concept of \emph{synaptic weights} encompasses all such biological components, and the modification of synaptic weights is the basis of learning in neurons.
+
+How does integration work? How (summing, threshold) does a post-neuron produce a spike in response to synaptic input? Different models of computation (IF, MP, HH).
+
+\subsubsection{Output}
+After integrating, how does the neuron move information to other neurons for processing, i.e., how does the information move away (via axon)? And the cycle starts again: we have reached the synapse. Also mention that axon takes information to several neurons (but all of them get the same information) -- it branches out at the very end.
+
+
+
+\section{Prior work in single neuron models}
+There are many computational models of neurons, with the level of detail ranging from compartmental (is there anything even more detailed?) to very simple models of a neuron such as those used in Artificial Neural Networks. Using these models, it is possible to simulate neurons in a computer and investigate the models' behaviour in a very controlled and detailed way. As opposed to real experiments that are hindered by many difficulties, using a simulation approach allows detailed investigation and calibration of input and all parameters (put examples here).
+
+\subsection{Theory TODO}
+What are the main components of neuron models? 1. Algorithm (with parameters) that produces output based on the input and previous states of the neuron. 2. Learning rule that specifies how the parameters of the neuron should be changed.
+
+Different kinds of possible learning rules. Simple ones such as Hebb's rule, Oja's rule, BCM theory. What properties these rules have been shown to have (what behaviours they produce -- PCA etc). Finding learning rules by minimising Fisher information, other information-theoretic measures, or some other objective function \cite{echeveste2014generating}.
+
+
+\subsection{Single neuron models}
+
+
+The model I am using was originally published in \cite{shouval2002unified}. The model is good because all parts of the model have corresponding biological interpretations, so the model can be said to be biophysically realistic.
+
+
+
+% % % %
+% Chapter: Methods
+% % % %
+\chapter{Methods}
+\section{Neuron model used}
+\subsection{Overview}
+The neuron model used in this work follows the Ca\textsuperscript{2+}-based model of a single neuron published in \cite{shouval2002unified} and \cite{yeung2004synaptic}.
+
+\subsubsection{Input generation}
+Inputs to the model are simulated as $N$ Poissonian spike trains, one for each synapse, with a given mean rate $r$. Additionally, correlation between inputs is simulated by specifying the correlation parameter $0 \leq c \leq 1$, and using code and STUFF from \cite{macke2009} to generate input with the desired rate and correlation. I verified the independence of rate-per-synapse and correlation between synapses.
+
+\subsubsection{Integrate-and-fire model}
+
+The model is an integrate-and-fire model.
+
+There are two possible sources of increase in the voltage of the postsynaptic neuron: excitatory postsynaptic potentials (EPSPs) caused by presynaptic spikes at excitatory synapses and back-propagating action potentials (BPAPs) caused by the postsynaptic neuron firing. Postsynaptic voltage can decrease due to inhibitory postsynaptic potentials (IPSPs) caused by presynaptic spikes at inhibitory synapses, or passive decay that tends to return voltage to the resting potential.
+
+When postsynaptic voltage $V_{post}$ reaches the threshold $V_{thres}$, a postsynaptic spike is generated by rapidly increasing $V_{post}$ to the spiking voltage $V_{spike}$. Then, $V_{post}$ is returned to the reset potential $V_{reset}$.
+
+It is assumed that different forms of depolarisation (EPSP and BPAP) add linearly. 
+Each EPSP is a sum of two decaying exponentials, normalised to have a desired amplitude. The EPSP-s of all synapses are summed linearly and no dendritic distance is simulated in this model. Upon a postsynaptic spike, $BPAP(t)$ is set to its peak voltage $V_{amplitude_{BPAP}}$, and then starts to decay as a sum of a slow component (time constant $\tau_f$) and a fast component (time constant $\tau_s$).
+
+$$ EPSP(t) = ? $$
+$$ BPAP(t) = ? $$
+
+
+FIGURE: EPSP shape, BPAP shape.
+
+FIGURE: spatial and temporal summation of EPSP-s, causing a spike (action potential) vs not causing a spike.
+
+
+
+\subsubsection{Learning}
+
+% Figures 3A, 3B, 3C from Shouval 2002. Maybe should move to Results > Validation?
+FIGURE: mean final weight vs clamped postsynaptic voltage (for 100 presynaptic pulses at low frequency)
+
+FIGURE: mean final weight vs input rate
+
+FIGURE: STDP curve (normalised mean final weight vs post-pre timing)
+
+
+\subsection{Mathematical description}
+
+Differential equation for updating weights: $$ \frac{dW_j}{dt} = \eta ([Ca]_j) (\Omega([Ca]_j) - W_j)$$
+
+FIGURES of important functions (eta, omega)
+
+
+\section{Simulation protocol}
+
+
+
+
+\section{Implementation details}
+
+The model is implemented in MATLAB. Source code is freely available under the [CC BY-SA?] license at [link].
+
+
+% % % %
+% Chapter: Results
+% % % %
+\chapter{Results}
+\section{Validation of the implementation}
+
+\section{Show that our model does PCA/ICA}
+Simulation results showing that the model implements algorithms
+
+\section{Probability of release?}
+
+\section{Inhibitory plasticity?}
+
+
+% % % %
+% Chapter: Discussion
+% % % %
+\chapter{Discussion}
+
+
+
+% % % %
+% Appendices
+% % % %
+\chapter*{Appendix A: Description of model parameters}
+\addcontentsline{toc}{chapter}{Appendix A: Description of model parameters}
+
+possibly add a table of parameters with their values and descriptions here
+
+\chapter*{Appendix B: MATLAB code}
+\addcontentsline{toc}{chapter}{Appendix B: MATLAB code}
+
+link to github, also say that will be attached as supplementary material (see Julius's thesis)
+
+
+% % % %
+% Bibliography
+% % % %
+
+\bibliographystyle{alpha}
+\addcontentsline{toc}{chapter}{Bibliography}
+\bibliography{Thesis}
+Internet URLs were valid on May 20, 2013.
+\newpage
+
+
+% % % %
+% License
+% % % %
+
+\chapter*{License}
+\addcontentsline{toc}{chapter}{License}
+
+
+%
+% Non-exclusive license to reproduce thesis and make thesis public
+%
+\section*{Non-exclusive license to reproduce thesis and make thesis public}
+I, Ilya Kuzovkin (09.07.1988), 
+\begin{enumerate}
+	\item herewith grant the University of Tartu a free permit (non-exclusive licence) to:
+	\begin{enumerate}[label*=\arabic*.]
+		\renewcommand{\theenumi}{\arabic{enumi}}
+		\item reproduce, for the purpose of preservation and making available to the public, including for addition to the DSpace digital archives until expiry of the term of validity of the copyright, and
+		\item make available to the public via the web environment of the University of Tartu, including via the DSpace digital archives until expiry of the term of validity of the copyright,
+	\end{enumerate}
+	``A New Approach to Training Brain-Computer Interface Systems", supervised by Konstantin Tretyakov,
+	
+	\item I am aware of the fact that the author retains these rights.
+
+	\item I certify that granting the non-exclusive licence does not infringe the intellectual property rights or rights arising from the Personal Data Protection Act. 
+\end{enumerate}
+
+Tartu, 20.05.2013
+
+\thispagestyle{empty}
+\newpage
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
