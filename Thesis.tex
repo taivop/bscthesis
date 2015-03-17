@@ -246,7 +246,7 @@ This thesis explores the behaviour of one particular previously published (with 
 
 % Biology of the human brain
 \subsection{Neurobiology of the brain}
-The brain, a part of the nervous system, is the central information processing organ in animals. The computational properties of the brain arise from the heavily interconnected networks and sub-networks of neurons inside it. It has been approximated that the human brain consists (cite) of $10^{11}$ neurons with $10^{15}$ inter-neuronal connections called \emph{synapses}. This work focuses on modelling one of many different types of neurons - pyramidal neurons.
+The brain, a part of the nervous system, is the central information processing organ in animals. The computational properties of the brain arise from the heavily interconnected networks and sub-networks of neurons inside it. It has been approximated that the human brain consists of $10^{11}$ neurons with $10^{15}$ inter-neuronal connections called \emph{synapses} \cite{herculano2009human}. This work focuses on modelling one of many different types of neurons - pyramidal neurons.
 
 
 \subsection{Neurons as computational units}
@@ -278,7 +278,10 @@ After integrating, how does the neuron move information to other neurons for pro
 
 
 \section{Prior work in single neuron models}
-There are many computational models of neurons, with the level of detail ranging from compartmental (is there anything even more detailed?) to very simple models of a neuron such as those used in Artificial Neural Networks. Using these models, it is possible to simulate neurons in a computer and investigate the models' behaviour in a very controlled and detailed way. As opposed to real experiments that are hindered by many difficulties, using a simulation approach allows detailed investigation and calibration of input and all parameters (put examples here).
+TODO Suggestions from Elena: more detail (obv), examples of published models, what I do differently, why I chose this particular model. Add references.
+
+
+There are many computational models of neurons, with the level of detail ranging from compartmental to very simple models of a neuron such as those used in Artificial Neural Networks. Using these models, it is possible to simulate neurons in a computer and investigate the models' behaviour in a very controlled and detailed way. As opposed to real experiments that are hindered by many difficulties, using a simulation approach allows detailed investigation and control of input and all parameters.
 
 \subsection{Theory TODO}
 What are the main components of neuron models? 1. Algorithm (with parameters) that produces output based on the input and previous states of the neuron. 2. Learning rule that specifies how the parameters of the neuron should be changed.
@@ -288,8 +291,16 @@ Different kinds of possible learning rules. Simple ones such as Hebb's rule, Oja
 
 \subsection{Single neuron models}
 
+%The model I am using was originally published in \cite{shouval2002unified}. The model is good because all parts of the model have biological interpretations, so the model can be said to be biophysically realistic.
 
-The model I am using was originally published in \cite{shouval2002unified}. The model is good because all parts of the model have corresponding biological interpretations, so the model can be said to be biophysically realistic.
+The perceptron \cite{rosenblatt1958perceptron} that works as a simple linear classifier was one of the earliest proposed computational models of the neuron. Since then, numerous models have been proposed. An important characteristic of a neuron model is its mechanism of learning, However, few models explicitly model the biochemistry and physiology leading to synaptic plasticity.
+
+The tempotron \cite{gutig2006tempotron} models neuron, but includes components whose biophysical accuracy is not well grounded (finding locations with maximum voltage).
+
+The neuron modelled in this work utilises a slightly modified version (TODO modified in what way?) of a calcium-based model of bidirectional synaptic plasticity proposed in \cite{shouval2002unified} and \cite{yeung2004synaptic}.
+
+\subsection{Single neuron models in unsupervised/supervised learning tasks}
+
 
 
 
@@ -300,6 +311,8 @@ The model I am using was originally published in \cite{shouval2002unified}. The 
 \section{Neuron model used}
 \subsection{Overview}
 The neuron model used in this work follows the Ca\textsuperscript{2+}-based model of a single neuron published in \cite{shouval2002unified} and \cite{yeung2004synaptic}.
+
+TODO use Shouval Scholarpedia article for explaining basis of model (http://www.scholarpedia.org/article/Models_of_synaptic_plasticity#Calcium_dependent_models_of_bidirectional_synaptic_plasticity)
 
 \subsubsection{Input generation}
 Inputs to the model are simulated as $N$ Poissonian spike trains, one for each synapse, with a given mean rate $r$. Additionally, correlation between inputs is simulated by specifying the correlation parameter $0 \leq c \leq 1$, and using code and STUFF from \cite{macke2009} to generate input with the desired rate and correlation. I verified the independence of rate-per-synapse and correlation between synapses.
