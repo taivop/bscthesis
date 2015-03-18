@@ -224,13 +224,13 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam a ultricies sem, 
 \chapter*{Introduction}
 \addcontentsline{toc}{chapter}{Introduction}
 
-Your brain is a complex organ capable of very sophisticated thought. Even though the chess-playing supercomputer Deep Blue won the reigning world champion Garry Kasparov, he was also able to do [tasks humans do every day: make a sandwich, pick a good concert to attend on the same night, find his way through an unfamiliar city, etc]. The human brain is remarkable not for its ability to do one particular thing very well, be it playing chess, reading an article in Nature, preparing a six-course meal, or slam dunking in a basketball game. It is remarkable for being able to do all of those things, and much more.
+Your brain is a complex organ capable of very sophisticated thought. Even though the chess-playing supercomputer Deep Blue won the reigning world champion Garry Kasparov, he was also able to do anything human beings do every day. The human brain is remarkable not for its ability to do one particular thing very well, be it playing chess, reading an article in Nature, preparing a six-course meal, or slam dunking in a basketball game. It is remarkable for being able to do all of those things, and much more.
 
 However, gaining understanding of the brain's information processing mechanisms remains one of the major scientific challenges today. A key aspect of the brain's learning process is \emph{neural plasticity}, its ability to change itself over time as new knowledge and experience are accumulated and processed. To understand the dynamics of these changes, computational models are proposed and tested to explore how well they explain and predict the brain's behaviour as observed in experiments in neuroscience. To this end, it is useful to create models that are biophysically realistic, i.e. are guided by known biophysical principles of the brain's and neurons' structure.
 
-Modelling the brain on a large scale has been a high priority in several regions of the world. The Blue Brain Project, funded by the European Union, is an attempt to build biologically accurate models of the brain to build a virtual brain in a supercomputer (cite?). The BRAIN Initiative, funded by the National Institutes of Health (NIH), focuses on "understanding how individual cells and complex neural circuits interact in both time and space"\footnote{http://braininitiative.nih.gov/index.htm}.
+Modelling the brain on a large scale has been a high priority in several regions of the world. The Human Brain Project, funded by the European Union, is an attempt "to understand the human brain and its diseases, and ultimately to emulate its computational capabilities"\footnote{https://www.humanbrainproject.eu/vision}. The BRAIN Initiative, funded by the National Institutes of Health in the United States, focuses on "understanding how individual cells and complex neural circuits interact in both time and space"\footnote{http://braininitiative.nih.gov/index.htm}. TODO@Elena[is this kind of footnote OK?]
 
-Major successes in creating systems with significant capacity for learning (intelligence?) have recently been achieved using deep convolutional neural networks. The neuron models used in these systems are very simple, often composing of a scalar product of the inputs and weights, and a rectifying function. However, evidence from brains has shown that each neuron is a much more complex and powerful information processing unit (cite?).
+Major successes in creating systems with significant capacity for learning have recently been achieved using deep convolutional neural networks in tasks ranging from playing video games \cite{mnih2015human} to describing scenes in natural language \cite{karpathy2014deep}. The neuron models used in these systems are very simple, often composing of a scalar product of the inputs and weights, and a rectifying function. However, evidence from brains has shown that each neuron is a much more complex and powerful information processing unit.
 
 This thesis explores the behaviour of one particular previously published (with a Nobel-winning physicist among the authors) biophysically realistic model in important information processing tasks. The model has been shown to produce a range of neural plasticity phenomena. This work explores the computational capabilities that arise from this unifying model of plasticity. In particular, the thesis investigates...
 
@@ -246,42 +246,46 @@ This thesis explores the behaviour of one particular previously published (with 
 
 % Biology of the human brain
 \subsection{Neurobiology of the brain}
-The brain, a part of the nervous system, is the central information processing organ in animals. The computational properties of the brain arise from the heavily interconnected networks and sub-networks of neurons inside it. It has been approximated that the human brain consists of $10^{11}$ neurons with $10^{15}$ inter-neuronal connections called \emph{synapses} \cite{herculano2009human}. This work focuses on modelling one of many different types of neurons - pyramidal neurons.
+The brain, a part of the nervous system, is the central information processing organ in animals. The computational properties of the brain arise from the heavily interconnected networks and sub-networks of neurons inside it. It has been approximated that the human brain consists of $10^{11}$ neurons with $10^{15}$ inter-neuronal connections \cite{herculano2009human} called \emph{synapses}. This work focuses on modelling one of many different types of neurons - pyramidal neurons.
 
 
 \subsection{Neurons as computational units}
-Every model of a brain that aspires for biophysical reality must include a way to model the behaviour of neurons and synapses. Each neuron can be seen as a small unit performing computation on some inputs and producing corresponding output. There are many computational models of neurons, with the level of detail ranging from complex compartmental models (is there anything even more detailed?) to very simple models such as those used in many Artificial Neural Networks. 
+Every model of a brain that aspires for biophysical reality must include a way to model the behaviour of neurons and synapses. Each neuron can be seen as a small unit performing computation on some inputs and producing corresponding output. There are many computational models of neurons, with the level of detail ranging from complex compartmental models to very simple models such as those used in many Artificial Neural Networks. 
 
-Information flow through a neuron follows a path from the inputs to the output, with computation in between. (refer to and explain the figure below)
+\begin{figure}[h]
+    \includegraphics[width=\textwidth]{fig1}
+    \caption{Schematic of a pyramidal neuron.}
+    \label{fig:pyramidal}
+\end{figure}
 
-FIGURE: schematic of a pyramidal neuron with inputs, soma, and axon. Also include labels to explain what is synapse, what is presynaptic neuron and what is postsynaptic.
+Information flow through a neuron follows a path from the inputs to the output, with integration of information in between, as shown in Figure~\ref{fig:pyramidal}.
+
 
 \subsubsection{Input}
 %Where does the input come from? How is it encoded (spikes)?
 %The number of inputs to a pyramidal neuron can range from $x$ to $x$ (cite) depending on (what?). 
 
 The region of connection between two neurons is called a \emph{synapse}, with information flowing from the axon of the \emph{presynaptic} neuron to a dendrite of the \emph{postsynaptic} neuron. Each time the presynaptic neuron fires, neurotransmitters are released from the presynaptic neuron into the \emph{synaptic cleft}, a small gap between the presynaptic and postsynaptic neurons.
-Neurotransmitters then bind to receptors on the membrane of the postsynaptic neuron, causing ion channels to open. This causes ion flow across the postsynaptic membrane, which causes a voltage change at the dendrite of the postsynaptic neuron.
+Neurotransmitters then bind to receptors on the membrane of dendrites of the postsynaptic neuron, causing ion channels to open. This causes ion flow across the membrane, which causes a voltage change at the dendrite of the postsynaptic neuron.
 
 There are two kinds of synapses: spikes arriving at \emph{excitatory} synapses tend to make the postsynaptic neuron fire more, input to \emph{inhibitory} synapses tends to make the postsynaptic neuron fire less.
 
 %How does information about a spike reach the postsynaptic neuron, aka how do synapses work? Neurotransmitters and detectors. What happens when post-neuron detects neurotransmitters (explain in terms of ions and voltage)? 
 
-\subsubsection{Computation TODO}
-A single neuron can be seen as an integrator of information over time, over different inputs, or both. At each synapse, a neuron has some intrinsic biological components that determine how much this synapse should affect the output of the postsynaptic neuron. The concept of \emph{synaptic weights} encompasses all such biological components, and the modification of synaptic weights is the basis of learning in neurons.
+\subsubsection{Computation}
+A single neuron can be seen as an integrator of information over time, over different inputs, or both. At each synapse, a neuron has some intrinsic biological components that determine how much this synapse should affect the output of the postsynaptic neuron. \emph{Synaptic weights} model the key parameters of such biological components, and the modification of synaptic weights is the basis of learning in neurons.
 
-How does integration work? How (summing, threshold) does a post-neuron produce a spike in response to synaptic input? Different models of computation (IF, MP, HH).
+After the contribution of input from each synapse is computed, this information must be integrated to produce the output of the neuron. Different models of information integration exist. Some of the best known models, from least to most detailed, are the McCulloch-Pitts (MP), Integrate-and-Fire (IF), and Hodgkin-Huxley (HH) models. In the MP model which is widely utilised in Artificial Neural Networks (ANNs), a weighted sum of inputs is calculated, to which a sigmoid function is applied to produce the output of the neuron. In the IF and HH models the neuron is modelled as an electric circuit, and then corresponding differential equations are used to calculate the output of the neuron.
 
 \subsubsection{Output}
-After integrating, how does the neuron move information to other neurons for processing, i.e., how does the information move away (via axon)? And the cycle starts again: we have reached the synapse. Also mention that axon takes information to several neurons (but all of them get the same information) -- it branches out at the very end.
 
-
+Information is conducted from a neuron to the dendrites of other neurons using the axon. Axons are usually not part of single neuron models as the output of the modelled neuron is studied in and of itself, so needs not be relayed to other neurons.
 
 \section{Prior work in single neuron models}
 TODO Suggestions from Elena: more detail (obv), examples of published models, what I do differently, why I chose this particular model. Add references.
 
 
-There are many computational models of neurons, with the level of detail ranging from compartmental to very simple models of a neuron such as those used in Artificial Neural Networks. Using these models, it is possible to simulate neurons in a computer and investigate the models' behaviour in a very controlled and detailed way. As opposed to real experiments that are hindered by many difficulties, using a simulation approach allows detailed investigation and control of input and all parameters.
+There are many computational models of neurons, with the level of detail ranging from compartmental to very simple models of a neuron such as those used in ANNs. Using these models, it is possible to simulate neurons in a computer and investigate the models' behaviour in a very controlled and detailed way. As opposed to real experiments that are hindered by many difficulties, using a simulation approach allows detailed investigation and control of input and all parameters.
 
 \subsection{Theory TODO}
 What are the main components of neuron models? 1. Algorithm (with parameters) that produces output based on the input and previous states of the neuron. 2. Learning rule that specifies how the parameters of the neuron should be changed.
@@ -398,6 +402,14 @@ possibly add a table of parameters with their values and descriptions here
 \addcontentsline{toc}{chapter}{Appendix B: MATLAB code}
 
 link to github, also say that will be attached as supplementary material (see Julius's thesis)
+
+
+% % % %
+% Glossary
+% % % %
+\chapter*{Glossary}
+\addcontentsline{toc}{chapter}{Glossary}
+ANN - Artificial Neural Network
 
 
 % % % %
