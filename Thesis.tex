@@ -224,13 +224,14 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam a ultricies sem, 
 \chapter*{Introduction}
 \addcontentsline{toc}{chapter}{Introduction}
 
-Your brain is a complex organ capable of very sophisticated thought. Even though the chess-playing supercomputer Deep Blue won the reigning world champion Garry Kasparov, he was also able to do anything human beings do every day. The human brain is remarkable not for its ability to do one particular thing very well, be it playing chess, reading an article in Nature, preparing a six-course meal, or slam dunking in a basketball game. It is remarkable for being able to do all of those things, and much more.
+Your brain is a complex organ capable of very sophisticated thought. Even though the chess-playing supercomputer Deep Blue won the reigning world champion Kasparov, he was also able to do anything human beings do every day, whereas the computer could only play chess. The human brain is remarkable not for its ability to do one particular thing very well, be it playing chess, reading an article in Nature, preparing a six-course meal, or slam dunking in a basketball game. It is remarkable for being able to do all of those things, and much more.
 
-However, gaining understanding of the brain's information processing mechanisms remains one of the major scientific challenges today. A key aspect of the brain's learning process is \emph{neural plasticity}, its ability to change itself over time as new knowledge and experience are accumulated and processed. To understand the dynamics of these changes, computational models are proposed and tested to explore how well they explain and predict the brain's behaviour as observed in experiments in neuroscience. To this end, it is useful to create models that are biophysically realistic, i.e. are guided by known biophysical principles of the brain's and neurons' structure.
+However, gaining understanding of the brain's information processing mechanisms remains one of the major scientific challenges today. A key aspect of the brain is \emph{neural plasticity}, its ability to change itself over time as new knowledge and experience are accumulated and processed. To understand the dynamics of these changes, computational models are explored to understand how well they explain the brain's behaviour as observed in experiments in neuroscience. To this end, it is useful to create models that are biophysically realistic, i.e. are guided by known biophysical principles of the brain's and neurons' structure.
 
-Modelling the brain on a large scale has been a high priority in several regions of the world. The Human Brain Project, funded by the European Union, is an attempt "to understand the human brain and its diseases, and ultimately to emulate its computational capabilities"\footnote{https://www.humanbrainproject.eu/vision}. The BRAIN Initiative, funded by the National Institutes of Health in the United States, focuses on "understanding how individual cells and complex neural circuits interact in both time and space"\footnote{http://braininitiative.nih.gov/index.htm}. TODO@Elena[is this kind of footnote OK?]
+Researching the brain has been a high priority in several large-scale projects. The Human Brain Project, funded by the European Union, is an attempt "to understand the human brain and its diseases, and ultimately to emulate its computational capabilities"\footnote{https://www.humanbrainproject.eu/vision}. The BRAIN Initiative, funded by the National Institutes of Health in the United States, focuses on "understanding how individual cells and complex neural circuits interact in both time and space"\footnote{http://braininitiative.nih.gov/index.htm}. TODO@Elena[is this kind of footnote OK?]. TODO this paragraph needs introductory and summarising sentences. From @Jaan[is this paragraph out of place?]
 
 Major successes in creating systems with significant capacity for learning have recently been achieved using deep convolutional neural networks in tasks ranging from playing video games \cite{mnih2015human} to describing scenes in natural language \cite{karpathy2014deep}. The neuron models used in these systems are very simple, often composing of a scalar product of the inputs and weights, and a rectifying function. However, evidence from brains has shown that each neuron is a much more complex and powerful information processing unit.
+From @Jaan[not happy with the current logical flow of the paragraphs]
 
 This thesis explores the behaviour of one particular previously published (with a Nobel-winning physicist among the authors) biophysically realistic model in important information processing tasks. The model has been shown to produce a range of neural plasticity phenomena. This work explores the computational capabilities that arise from this unifying model of plasticity. In particular, the thesis investigates...
 
@@ -265,10 +266,10 @@ Information flow through a neuron follows a path from the inputs to the output, 
 %Where does the input come from? How is it encoded (spikes)?
 %The number of inputs to a pyramidal neuron can range from $x$ to $x$ (cite) depending on (what?). 
 
-The region of connection between two neurons is called a \emph{synapse}, with information flowing from the axon of the \emph{presynaptic} neuron to a dendrite of the \emph{postsynaptic} neuron. Each time the presynaptic neuron fires, neurotransmitters are released from the presynaptic neuron into the \emph{synaptic cleft}, a small gap between the presynaptic and postsynaptic neurons.
+The region of connection between two neurons is called a \emph{synapse}, with information flowing from the axon of the \emph{presynaptic} neuron to a dendrite of the \emph{postsynaptic} neuron. Each time the presynaptic neuron produces significant output, neurotransmitters are released from the presynaptic neuron into the \emph{synaptic cleft}, a small gap between the presynaptic and postsynaptic neurons.
 Neurotransmitters then bind to receptors on the membrane of dendrites of the postsynaptic neuron, causing ion channels to open. This causes ion flow across the membrane, which causes a voltage change at the dendrite of the postsynaptic neuron.
 
-There are two kinds of synapses: spikes arriving at \emph{excitatory} synapses tend to make the postsynaptic neuron fire more, input to \emph{inhibitory} synapses tends to make the postsynaptic neuron fire less.
+There are two kinds of synapses: input arriving at \emph{excitatory} synapses tend to increase the output of the postsynaptic neuron, input to \emph{inhibitory} synapses tends to make it fire less.
 
 %How does information about a spike reach the postsynaptic neuron, aka how do synapses work? Neurotransmitters and detectors. What happens when post-neuron detects neurotransmitters (explain in terms of ions and voltage)? 
 
@@ -279,7 +280,9 @@ After the contribution of input from each synapse is computed, this information 
 
 \subsubsection{Output}
 
-Information is conducted from a neuron to the dendrites of other neurons using the axon. Axons are usually not part of single neuron models as the output of the modelled neuron is studied in and of itself, so needs not be relayed to other neurons.
+Output of a neuron takes the form of \emph{action potentials} or \emph{spikes}, rapid increases in membrane voltage followed by a return to the baseline voltage.
+
+Information about action potentials is conducted from a neuron to the dendrites of other neurons using the axon. Axons are usually not part of single neuron models as the output of the modelled neuron is studied in and of itself, so needs not be relayed to other neurons.
 
 \section{Prior work in single neuron models}
 TODO Suggestions from Elena: more detail (obv), examples of published models, what I do differently, why I chose this particular model. Add references.
@@ -304,7 +307,7 @@ The tempotron \cite{gutig2006tempotron} models neuron, but includes components w
 The neuron modelled in this work utilises a slightly modified version (TODO modified in what way?) of a calcium-based model of bidirectional synaptic plasticity proposed in \cite{shouval2002unified} and \cite{yeung2004synaptic}.
 
 \subsection{Single neuron models in unsupervised/supervised learning tasks}
-
+Oja rule, BCM rule, etc have been shown to do PCA/ICA etc. Tempotron has been shown. Yeung 2004 showed selectivity. But seems that most work about unsupervised learning focuses on networks, not biophysical single neurons.
 
 
 
@@ -319,15 +322,13 @@ The neuron model used in this work follows the Ca\textsuperscript{2+}-based mode
 TODO use Shouval Scholarpedia article for explaining basis of model (http://www.scholarpedia.org/article/Models_of_synaptic_plasticity#Calcium_dependent_models_of_bidirectional_synaptic_plasticity)
 
 \subsubsection{Input generation}
-Inputs to the model are simulated as $N$ Poissonian spike trains, one for each synapse, with a given mean rate $r$. Additionally, correlation between inputs is simulated by specifying the correlation parameter $0 \leq c \leq 1$, and using code and STUFF from \cite{macke2009} to generate input with the desired rate and correlation. I verified the independence of rate-per-synapse and correlation between synapses.
+Inputs to the model are simulated as $N$ spike trains, one for each synapse, with a given mean firing rate $r$ specified independently for each synapse. The spike trains are Poissonian, i.e. the occurrence of a spike is independent of the time since the last spike. Additionally, correlation between inputs is simulated by specifying the correlation parameter $0 \leq c \leq 1$, and using code from \cite{macke2009} to generate input with the desired rate and correlation.
 
 \subsubsection{Integrate-and-fire model}
 
-The model is an integrate-and-fire model.
+The voltage of the postsynaptic neuron can be increased by excitatory postsynaptic potentials (EPSPs) caused by presynaptic spikes at excitatory synapses, and decreased due to inhibitory postsynaptic potentials (IPSPs) caused by presynaptic spikes at inhibitory synapses. In addition, a leak current is simulated, which tends to return voltage to the resting potential.
 
-There are two possible sources of increase in the voltage of the postsynaptic neuron: excitatory postsynaptic potentials (EPSPs) caused by presynaptic spikes at excitatory synapses and back-propagating action potentials (BPAPs) caused by the postsynaptic neuron firing. Postsynaptic voltage can decrease due to inhibitory postsynaptic potentials (IPSPs) caused by presynaptic spikes at inhibitory synapses, or passive decay that tends to return voltage to the resting potential.
-
-When postsynaptic voltage $V_{post}$ reaches the threshold $V_{thres}$, a postsynaptic spike is generated by rapidly increasing $V_{post}$ to the spiking voltage $V_{spike}$. Then, $V_{post}$ is returned to the reset potential $V_{reset}$.
+When postsynaptic voltage $V_{post}$ reaches the threshold $V_{thres}$, a postsynaptic spike is generated by rapidly increasing $V_{post}$ to the spiking voltage $V_{spike}$. Then, $V_{post}$ is returned to the reset potential $V_{reset}$, from where it returns to the baseline voltage.
 
 It is assumed that different forms of depolarisation (EPSP and BPAP) add linearly. 
 Each EPSP is a sum of two decaying exponentials, normalised to have a desired amplitude. The EPSP-s of all synapses are summed linearly and no dendritic distance is simulated in this model. Upon a postsynaptic spike, $BPAP(t)$ is set to its peak voltage $V_{amplitude_{BPAP}}$, and then starts to decay as a sum of a slow component (time constant $\tau_f$) and a fast component (time constant $\tau_s$).
@@ -335,14 +336,17 @@ Each EPSP is a sum of two decaying exponentials, normalised to have a desired am
 $$ EPSP(t) = ? $$
 $$ BPAP(t) = ? $$
 
-
-FIGURE: EPSP shape, BPAP shape.
-
 FIGURE: spatial and temporal summation of EPSP-s, causing a spike (action potential) vs not causing a spike.
 
 
 
 \subsubsection{Learning}
+
+Coincidence detector
+
+%There are two possible sources of increase in the dendritic voltage of the postsynaptic neuron: excitatory postsynaptic potentials (EPSPs) caused by presynaptic spikes at excitatory synapses and back-propagating action potentials (BPAPs) caused by the postsynaptic neuron firing. Postsynaptic voltage can decrease due to inhibitory postsynaptic potentials (IPSPs) caused by presynaptic spikes at inhibitory synapses, or passive decay that tends to return voltage to the resting potential.
+
+Inhibitory synapses are not plastic.
 
 % Figures 3A, 3B, 3C from Shouval 2002. Maybe should move to Results > Validation?
 FIGURE: mean final weight vs clamped postsynaptic voltage (for 100 presynaptic pulses at low frequency)
@@ -375,8 +379,13 @@ The model is implemented in MATLAB. Source code is freely available under the [C
 \chapter{Results}
 \section{Validation of the implementation}
 
-\section{Show that our model does PCA/ICA}
+\section{Task 1. Show that our model does PCA/ICA}
 Simulation results showing that the model implements algorithms
+
+\subsection{Simulation details}
+
+
+
 
 \section{Probability of release?}
 
