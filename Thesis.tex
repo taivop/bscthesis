@@ -144,6 +144,8 @@
 %
 % Title
 %
+% TODO title would better be a bit shorter
+
 \begin{document}
 \begin{center}
 	{\Large
@@ -224,7 +226,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam a ultricies sem, 
 \chapter*{Introduction}
 \addcontentsline{toc}{chapter}{Introduction}
 
-Your brain is a complex organ capable of very sophisticated thought. Even though the chess-playing supercomputer Deep Blue won the reigning world champion Kasparov, he was also able to do anything human beings do every day, whereas the computer could only play chess. The human brain is remarkable not for its ability to do one particular thing very well, be it playing chess, reading an article in Nature, preparing a six-course meal, or slam dunking in a basketball game. It is remarkable for being able to do all of those things, and much more.
+Your brain is a complex organ capable of very sophisticated thought. Even though the chess-playing supercomputer Deep Blue won the reigning world champion Garry Kasparov, Kasparov was also able to do anything human beings do every day, whereas the computer could only play chess. The human brain is remarkable not for its ability to do one particular thing very well, be it playing chess, reading an article in Nature, preparing a six-course meal, or slam dunking in a basketball game. It is remarkable for being able to do all of those things, and much more.
 
 However, gaining understanding of the brain's information processing mechanisms remains one of the major scientific challenges today. A key aspect of the brain is \emph{neural plasticity}, its ability to change itself over time as new knowledge and experience are accumulated and processed. To understand the dynamics of these changes, computational models are explored to understand how well they explain the brain's behaviour as observed in experiments in neuroscience. To this end, it is useful to create models that are biophysically realistic, i.e. are guided by known biophysical principles of the brain's and neurons' structure.
 
@@ -243,15 +245,16 @@ This thesis explores the behaviour of one particular previously published (with 
 \chapter{Background and related work}
 
 
-\section{Overview of relevant neurobiology}
+\section{Overview of relevant neuroscience}
+TODO 'relevant' is not the best word
 
 % Biology of the human brain
 \subsection{Neurobiology of the brain}
-The brain, a part of the nervous system, is the central information processing organ in animals. The computational properties of the brain arise from the heavily interconnected networks and sub-networks of neurons inside it. It has been approximated that the human brain consists of $10^{11}$ neurons with $10^{15}$ inter-neuronal connections \cite{herculano2009human} called \emph{synapses}. This work focuses on modelling one of many different types of neurons - pyramidal neurons.
+The brain, a part of the nervous system, is the central information processing organ in animals. The computational properties of the brain arise from the heavily interconnected networks and sub-networks of specialised cells called \emph{neurons}. It has been approximated \cite{herculano2009human} that the human brain consists of $10^{11}$ neurons with $10^{15}$ inter-neuronal connections called \emph{synapses}. This work focuses on modelling one of many different types of neurons - pyramidal neurons.
 
 
 \subsection{Neurons as computational units}
-Every model of a brain that aspires for biophysical reality must include a way to model the behaviour of neurons and synapses. Each neuron can be seen as a small unit performing computation on some inputs and producing corresponding output. There are many computational models of neurons, with the level of detail ranging from complex compartmental models to very simple models such as those used in many Artificial Neural Networks. 
+Every model of a brain that aspires for biophysical reality must include a way to model the behaviour of neurons and synapses. Each neuron can be seen as a small unit performing computation on some inputs and producing corresponding output. There are many computational models of neurons, with the level of detail ranging from complex multi-compartment models to very simple models such as those used in many artificial neural networks (ANNs). 
 
 \begin{figure}[h]
     \includegraphics[width=\textwidth]{fig1}
@@ -266,49 +269,51 @@ Information flow through a neuron follows a path from the inputs to the output, 
 %Where does the input come from? How is it encoded (spikes)?
 %The number of inputs to a pyramidal neuron can range from $x$ to $x$ (cite) depending on (what?). 
 
-The region of connection between two neurons is called a \emph{synapse}, with information flowing from the axon of the \emph{presynaptic} neuron to a dendrite of the \emph{postsynaptic} neuron. Each time the presynaptic neuron produces significant output, neurotransmitters are released from the presynaptic neuron into the \emph{synaptic cleft}, a small gap between the presynaptic and postsynaptic neurons.
-Neurotransmitters then bind to receptors on the membrane of dendrites of the postsynaptic neuron, causing ion channels to open. This causes ion flow across the membrane, which causes a voltage change at the dendrite of the postsynaptic neuron.
+The region of connection between two neurons is called a \emph{synapse}, with information flowing from the axon of the \emph{presynaptic} neuron to a dendrite of the \emph{postsynaptic} neuron. Each time the presynaptic neuron produces significant output, neurotransmitters are released from the presynaptic neuron into the \emph{synaptic cleft}, a small gap between the presynaptic and postsynaptic neurons at the synapse.
+Neurotransmitters then bind to receptors on the dendrite of the postsynaptic neuron, causing ion channels to open. This causes ion flow across the membrane, which causes a voltage change at the dendrite of the postsynaptic neuron.
 
-There are two kinds of synapses: input arriving at \emph{excitatory} synapses tend to increase the output of the postsynaptic neuron, input to \emph{inhibitory} synapses tends to make it fire less.
+Synapses can be divided into two classes: input arriving at \emph{excitatory} synapses tends to increase the output of the postsynaptic neuron, input to \emph{inhibitory} synapses tends to make it fire less.
 
 %How does information about a spike reach the postsynaptic neuron, aka how do synapses work? Neurotransmitters and detectors. What happens when post-neuron detects neurotransmitters (explain in terms of ions and voltage)? 
 
 \subsubsection{Computation}
-A single neuron can be seen as an integrator of information over time, over different inputs, or both. At each synapse, a neuron has some intrinsic biological components that determine how much this synapse should affect the output of the postsynaptic neuron. \emph{Synaptic weights} model the key parameters of such biological components, and the modification of synaptic weights is the basis of learning in neurons.
+A single neuron can be viewed as an integrator of information over time, over different inputs, or both. At each synapse, a neuron has some intrinsic biological components that determine how much this synapse should affect the output of the postsynaptic neuron. \emph{Synaptic weights} are key parameters used in modelling such biological components, and the modification of synaptic weights is the basis of learning in neurons.
 
-After the contribution of input from each synapse is computed, this information must be integrated to produce the output of the neuron. Different models of information integration exist. Some of the best known models, from least to most detailed, are the McCulloch-Pitts (MP), Integrate-and-Fire (IF), and Hodgkin-Huxley (HH) models. In the MP model which is widely utilised in Artificial Neural Networks (ANNs), a weighted sum of inputs is calculated, to which a sigmoid function is applied to produce the output of the neuron. In the IF and HH models the neuron is modelled as an electric circuit, and then corresponding differential equations are used to calculate the output of the neuron.
+After the contribution of input from each synapse is computed, this information must be integrated to produce the output of the neuron. Different models of information integration exist. Different neural models of information integration exist. Some of the best known, from least to most detailed, are the McCulloch-Pitts (MP), Integrate-and-Fire (IF), and Hodgkin-Huxley (HH) models. In the MP model which is widely utilised in ANNs, a weighted sum of inputs is calculated, to which a sigmoid function is applied to produce the output of the neuron. In the IF and HH models the neuron is modelled as an electric circuit, and then corresponding differential equations are used to calculate the output of the neuron.
 
 \subsubsection{Output}
 
-Output of a neuron takes the form of \emph{action potentials} or \emph{spikes}, rapid increases in membrane voltage followed by a return to the baseline voltage.
+Output of a neuron takes the form of \emph{action potentials} or (TODO 'or' is not good here) \emph{spikes}, rapid increases in membrane voltage followed by a return to the equilibrium voltage.
 
 Information about action potentials is conducted from a neuron to the dendrites of other neurons using the axon. Axons are usually not part of single neuron models as the output of the modelled neuron is studied in and of itself, so needs not be relayed to other neurons.
 
-\section{Prior work in single neuron models}
+\section{Prior work}
 TODO Suggestions from Elena: more detail (obv), examples of published models, what I do differently, why I chose this particular model. Add references.
 
 
 There are many computational models of neurons, with the level of detail ranging from compartmental to very simple models of a neuron such as those used in ANNs. Using these models, it is possible to simulate neurons in a computer and investigate the models' behaviour in a very controlled and detailed way. As opposed to real experiments that are hindered by many difficulties, using a simulation approach allows detailed investigation and control of input and all parameters.
 
-\subsection{Theory TODO}
-What are the main components of neuron models? 1. Algorithm (with parameters) that produces output based on the input and previous states of the neuron. 2. Learning rule that specifies how the parameters of the neuron should be changed.
 
-Different kinds of possible learning rules. Simple ones such as Hebb's rule, Oja's rule, BCM theory. What properties these rules have been shown to have (what behaviours they produce -- PCA etc). Finding learning rules by minimising Fisher information, other information-theoretic measures, or some other objective function \cite{echeveste2014generating}.
+\subsection{Models of neural information integration}
 
-
-\subsection{Single neuron models}
-
+%\subsection{Single neuron models}
 %The model I am using was originally published in \cite{shouval2002unified}. The model is good because all parts of the model have biological interpretations, so the model can be said to be biophysically realistic.
 
 The perceptron \cite{rosenblatt1958perceptron} that works as a simple linear classifier was one of the earliest proposed computational models of the neuron. Since then, numerous models have been proposed. An important characteristic of a neuron model is its mechanism of learning, However, few models explicitly model the biochemistry and physiology leading to synaptic plasticity.
 
-The tempotron \cite{gutig2006tempotron} models neuron, but includes components whose biophysical accuracy is not well grounded (finding locations with maximum voltage).
 
+
+
+\subsection{Models of neural plasticity}
+
+Different kinds of possible learning rules. Simple ones such as Hebb's rule, Oja's rule, BCM theory. What properties these rules have been shown to have (what behaviours they produce -- PCA etc). Finding learning rules by minimising Fisher information, other information-theoretic measures, or some other objective function \cite{echeveste2014generating}.
 The neuron modelled in this work utilises a slightly modified version (TODO modified in what way?) of a calcium-based model of bidirectional synaptic plasticity proposed in \cite{shouval2002unified} and \cite{yeung2004synaptic}.
 
-\subsection{Single neuron models in unsupervised/supervised learning tasks}
+
+\subsection{Single neuron models in unsupervised learning tasks}
 Oja rule, BCM rule, etc have been shown to do PCA/ICA etc. Tempotron has been shown. Yeung 2004 showed selectivity. But seems that most work about unsupervised learning focuses on networks, not biophysical single neurons.
 
+The tempotron \cite{gutig2006tempotron} models neuron, but includes components whose biophysical accuracy is not well grounded (finding locations with maximum voltage). UNSUP learning was done on this.
 
 
 % % % %
@@ -316,11 +321,17 @@ Oja rule, BCM rule, etc have been shown to do PCA/ICA etc. Tempotron has been sh
 % % % %
 \chapter{Methods}
 \section{Neuron model used}
-\subsection{Overview}
-The neuron model used in this work follows the Ca\textsuperscript{2+}-based model of a single neuron published in \cite{shouval2002unified} and \cite{yeung2004synaptic}.
+
+The neuron model used in this work follows the Ca\textsuperscript{2+}-based model of a single neuron published in \cite{shouval2002unified} and \cite{yeung2004synaptic}. An integrate-and-fire model of information integration is used, and no dendritic distance is simulated, i.e. the possibility that some synapses are further from the soma than others is not taken into account. Details are shown in ref [shouval 2002 and the one before]. Here, an overview of the most important aspects of the model will be given.
 
 \subsubsection{Input generation}
-Inputs to the model are simulated as $N$ spike trains, one for each synapse, with a given mean firing rate $r$ specified independently for each synapse. The spike trains are Poissonian, i.e. the occurrence of a spike is independent of the time since the last spike. Additionally, correlation between inputs is simulated by specifying the correlation parameter $0 \leq c \leq 1$, and using code from \cite{macke2009} to generate input with the desired rate and correlation. The release of neurotransmitters caused by each presynaptic spike is assumed to last 1 ms.
+Inputs to the model are simulated as $N$ spike trains, one for each synapse, with a given mean firing rate $r$ specified independently for each synapse. The spike trains are produced in a homogeneous Poissonian process, i.e. the occurrence of a spike is independent of the time since the last spike, and the average rate of spikes remains constant. Uncorrelated inputs are generated using TODO CITE (HomoPoisSpikeGen function)?
+Correlation between inputs is simulated by specifying the correlation parameter $0 \leq c \leq 1$, and using code from \cite{macke2009} to generate correlated homogeneous Poissonian spike trains.
+
+\subsubsection{Synapse}
+describe how input spike trains are translated into EPSPs/IPSPs
+
+The release of neurotransmitters caused by each presynaptic spike is assumed to last 1 ms.
 
 \subsubsection{Integrate-and-fire model}
 
@@ -350,29 +361,16 @@ It is assumed that different forms of depolarisation (EPSP and BPAP) add linearl
 
 Inhibitory synapses are not plastic.
 
-% Figures 3A, 3B, 3C from Shouval 2002. Maybe should move to Results > Validation?
-FIGURE: mean final weight vs clamped postsynaptic voltage (for 100 presynaptic pulses at low frequency)
-
-FIGURE: mean final weight vs input rate
-
-FIGURE: STDP curve (normalised mean final weight vs post-pre timing)
-
-
-\subsection{Mathematical description}
-
 Differential equation for updating weights: $$ \frac{dW_j}{dt} = \eta ([Ca]_j) (\Omega([Ca]_j) - W_j)$$
 
 FIGURES of important functions (eta, omega)
-
-
-\section{Simulation protocol}
 
 
 
 
 \section{Implementation details}
 
-Timestep, other important parameters?
+Timestep, other important parameters? Mention here maybe complexity of the program, the bugs I've found, the time window in which input is generated, what values parameters are initialised to (voltage, m,n,h etc).
 
 The model is implemented in MATLAB. Source code is freely available under the [CC BY-SA?] license at [link].
 
@@ -383,10 +381,20 @@ The model is implemented in MATLAB. Source code is freely available under the [C
 \chapter{Results}
 \section{Validation of the implementation}
 
-\section{Task 1. Show that our model does PCA/ICA}
+% Figures 3A, 3B, 3C from Shouval 2002. Maybe should move to Results > Validation?
+FIGURE: mean final weight vs clamped postsynaptic voltage (for 100 presynaptic pulses at low frequency)
+
+FIGURE: mean final weight vs input rate
+
+FIGURE: STDP curve (normalised mean final weight vs post-pre timing)
+
+
+\section{Unsupervised learning task}
+Show that our model does PCA/ICA
+
 Simulation results showing that the model implements algorithms
 
-\subsection{Simulation details}
+\subsection{Simulation protocol}
 
 
 
@@ -422,7 +430,13 @@ link to github, also say that will be attached as supplementary material (see Ju
 % % % %
 \chapter*{Glossary}
 \addcontentsline{toc}{chapter}{Glossary}
-ANN - Artificial Neural Network
+ANN - artificial neural network
+EPSP
+IPSP
+BPAP
+STDP
+PCA
+ICA
 
 
 % % % %
@@ -432,7 +446,7 @@ ANN - Artificial Neural Network
 \bibliographystyle{alpha}
 \addcontentsline{toc}{chapter}{Bibliography}
 \bibliography{Thesis}
-Internet URLs were valid on May 20, 2013.
+Internet URLs were valid on May 14, 2015.
 \newpage
 
 
