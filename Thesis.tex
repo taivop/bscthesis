@@ -144,7 +144,8 @@
 %
 % Title
 %
-% TODO title would better be a bit shorter
+% TODO title would better be a bit shorter. Other possibilities:
+% Biologically realistic single neuron model performs unsupervised learning
 
 \begin{document}
 \begin{center}
@@ -228,25 +229,22 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam a ultricies sem, 
 
 Your brain is a complex organ capable of very sophisticated thought. Even though the chess-playing supercomputer Deep Blue won the reigning world champion Garry Kasparov, Kasparov was also able to do anything human beings do every day, whereas the computer could only play chess. The human brain is remarkable not for its ability to do one particular thing very well, be it playing chess, reading an article in Nature, preparing a six-course meal, or slam dunking in a basketball game. It is remarkable for being able to do all of those things, and much more.
 
-However, gaining understanding of the brain's information processing mechanisms remains one of the major scientific challenges today. A key aspect of the brain is \emph{neural plasticity}, its ability to change itself over time as new knowledge and experience are accumulated and processed. To understand the dynamics of these changes, computational models are explored to understand how well they explain the brain's behaviour as observed in experiments in neuroscience. To this end, it is useful to create models that are biophysically realistic, i.e. are guided by known biophysical principles of the brain's and neurons' structure.
+However, gaining understanding of the brain's information processing mechanisms remains one of the major scientific challenges today. A key aspect of the brain is \emph{neural plasticity}, its ability to change itself over time as new knowledge and experience are accumulated and processed. To understand the dynamics of these changes, computational models are explored to understand how well they explain the brain's behaviour as observed in experiments in neuroscience, and on a more abstract level, how well the models learn to perform well in a variety of tasks.
 
-Researching the brain has been a high priority in several large-scale projects. The Human Brain Project, funded by the European Union, is an attempt "to understand the human brain and its diseases, and ultimately to emulate its computational capabilities"\footnote{https://www.humanbrainproject.eu/vision}. The BRAIN Initiative, funded by the National Institutes of Health in the United States, focuses on "understanding how individual cells and complex neural circuits interact in both time and space"\footnote{http://braininitiative.nih.gov/index.htm}. TODO@Elena[is this kind of footnote OK?]. TODO this paragraph needs introductory and summarising sentences. From @Jaan[is this paragraph out of place?]
+Artificial systems with significant capacity for learning have recently been created using deep convolutional neural networks in tasks ranging from playing video games \cite{mnih2015human} to describing scenes in natural language \cite{karpathy2014deep}. The neuron models used in these systems are very simple, often composing of a scalar product of the inputs and weights, and a thresholding function. However, evidence from brains has shown that each neuron is a much more complex and powerful information processing unit. There is a clear gap between the computational properties of networks of neurons and the biophysical mechanisms of synaptic plasticity at the cellular level. The primary goal of this thesis is to help narrow this gap.
 
-Major successes in creating systems with significant capacity for learning have recently been achieved using deep convolutional neural networks in tasks ranging from playing video games \cite{mnih2015human} to describing scenes in natural language \cite{karpathy2014deep}. The neuron models used in these systems are very simple, often composing of a scalar product of the inputs and weights, and a rectifying function. However, evidence from brains has shown that each neuron is a much more complex and powerful information processing unit.
-From @Jaan[not happy with the current logical flow of the paragraphs]
+One way to bridge the gap is to show that from basic principles of neuronal biophysics, more complex learning capabilities follow. Unsupervised learning is a mode of learning in which a system needs to learn the structure of input only based on the input itself, without being told explicitly what the input is. As an example of unsupervised learning in human subjects, one could show several pictures of zebras and tigers to a person previously unfamiliar with these animals, and the person would be able to distinguish that the animals shown fall into two major classes. While it has been shown that networks of neurons can perform this kind of tasks, it has been largely unstudied whether much smaller units of computation are capable of unsupervised learning.
 
-This thesis explores the behaviour of one particular previously published (with a Nobel-winning physicist among the authors) biophysically realistic model in important information processing tasks. The model has been shown to produce a range of neural plasticity phenomena. This work explores the computational capabilities that arise from this unifying model of plasticity. In particular, the thesis investigates...
-
+This work explores the behaviour of one particular previously published (with a Nobel-winning physicist among the authors) biophysically realistic neuron model, which has been shown to produce a range of neural plasticity phenomena. The thesis attempts to demonstrate that starting from very basic biophysical principles, the neuron model exhibits behaviour equivalent to principal component analysis (PCA), a well known unsupervised learning procedure.
 
 % % % %
-% Chapter: Preliminaries
+% Chapter: Background
 % % % %
 
 \chapter{Background and related work}
 
 
-\section{Overview of relevant neuroscience}
-TODO 'relevant' is not the best word
+\section{Overview of related neuroscience}
 
 % Biology of the human brain
 \subsection{Neurobiology of the brain}
@@ -279,13 +277,11 @@ Synapses can be divided into two classes: input arriving at \emph{excitatory} sy
 \subsubsection{Computation}
 A single neuron can be viewed as an integrator of information over time, over different inputs, or both. At each synapse, a neuron has some intrinsic biological components that determine how much this synapse should affect the output of the postsynaptic neuron. \emph{Synaptic weights} are key parameters used in modelling such biological components, and the modification of synaptic weights is the basis of learning in neurons.
 
-After the contribution of input from each synapse is computed, this information must be integrated to produce the output of the neuron. Different models of information integration exist. Different neural models of information integration exist. Some of the best known, from least to most detailed, are the McCulloch-Pitts (MP), Integrate-and-Fire (IF), and Hodgkin-Huxley (HH) models. In the MP model which is widely utilised in ANNs, a weighted sum of inputs is calculated, to which a sigmoid function is applied to produce the output of the neuron. In the IF and HH models the neuron is modelled as an electric circuit, and then corresponding differential equations are used to calculate the output of the neuron.
+After the contribution of input from each synapse is computed, this information must be integrated to produce the output of the neuron. Different neural models of information integration exist. Some of the best known, from least to most detailed, are the McCulloch-Pitts (MP), Integrate-and-Fire (IF), and Hodgkin-Huxley (HH) models. In the MP model which is widely utilised in ANNs, a weighted sum of inputs is calculated, to which a sigmoid function is applied to produce the output of the neuron. In the IF and HH models the neuron is modelled as an electric circuit, and then corresponding differential equations are used to calculate the output of the neuron.
 
 \subsubsection{Output}
 
-Output of a neuron takes the form of \emph{action potentials} or (TODO 'or' is not good here) \emph{spikes}, rapid increases in membrane voltage followed by a return to the equilibrium voltage.
-
-Information about action potentials is conducted from a neuron to the dendrites of other neurons using the axon. Axons are usually not part of single neuron models as the output of the modelled neuron is studied in and of itself, so needs not be relayed to other neurons.
+Output of a neuron takes the form of \emph{action potentials} or \emph{spikes}, rapid increases in membrane voltage followed by a return to the equilibrium voltage. Information about action potentials is conducted from a neuron to the dendrites of other neurons using the axon. Axons are usually not part of single neuron models as the output of the modelled neuron is studied in and of itself, so needs not be relayed to other neurons.
 
 \section{Prior work}
 TODO Suggestions from Elena: more detail (obv), examples of published models, what I do differently, why I chose this particular model. Add references.
