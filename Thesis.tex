@@ -260,24 +260,20 @@ Every model of a brain that aspires for biophysical reality must include a way t
     \label{fig:pyramidal}
 \end{figure}
 
-Information flow through a neuron follows a path from the inputs to the output, with integration of information in between, as shown in Figure~\ref{fig:pyramidal}.
+Information flow through a neuron follows a path from the inputs to the output, with integration of information in between, as shown in Figure~\ref{fig:pyramidal}. A rough mapping of the corresponding neuron anatomy is also shown.
 
 
 \subsubsection{Input}
-%Where does the input come from? How is it encoded (spikes)?
-%The number of inputs to a pyramidal neuron can range from $x$ to $x$ (cite) depending on (what?). 
 
 The region of connection between two neurons is called a \emph{synapse}, with information flowing from the axon of the \emph{presynaptic} neuron to a dendrite of the \emph{postsynaptic} neuron. Each time the presynaptic neuron produces significant output, neurotransmitters are released from the presynaptic neuron into the \emph{synaptic cleft}, a small gap between the presynaptic and postsynaptic neurons at the synapse.
 Neurotransmitters then bind to receptors on the dendrite of the postsynaptic neuron, causing ion channels to open. This causes ion flow across the membrane, which causes a voltage change at the dendrite of the postsynaptic neuron.
 
 Synapses can be divided into two classes: input arriving at \emph{excitatory} synapses tends to increase the output of the postsynaptic neuron, input to \emph{inhibitory} synapses tends to make it fire less.
 
-%How does information about a spike reach the postsynaptic neuron, aka how do synapses work? Neurotransmitters and detectors. What happens when post-neuron detects neurotransmitters (explain in terms of ions and voltage)? 
-
 \subsubsection{Computation}
 A single neuron can be viewed as an integrator of information over time, over different inputs, or both. At each synapse, a neuron has some intrinsic biological components that determine how much this synapse should affect the output of the postsynaptic neuron. \emph{Synaptic weights} are key parameters used in modelling such biological components, and the modification of synaptic weights is the basis of learning in neurons.
 
-After the contribution of input from each synapse is computed, this information must be integrated to produce the output of the neuron. Different neural models of information integration exist. Some of the best known, from least to most detailed, are the McCulloch-Pitts (MP), Integrate-and-Fire (IF), and Hodgkin-Huxley (HH) models. In the MP model which is widely utilised in ANNs, a weighted sum of inputs is calculated, to which a sigmoid function is applied to produce the output of the neuron. In the IF and HH models the neuron is modelled as an electric circuit, and then corresponding differential equations are used to calculate the output of the neuron.
+After the contribution of input from each synapse is computed, this information must be integrated to produce the output of the neuron. An overview of some of the most common neural models of information integration will be given in Section~\ref{modelsofintegration}.
 
 \subsubsection{Output}
 
@@ -289,21 +285,20 @@ TODO Suggestions from Elena: more detail (obv), examples of published models, wh
 
 There are many computational models of neurons, with the level of detail ranging from compartmental to very simple models of a neuron such as those used in ANNs. Using these models, it is possible to simulate neurons in a computer and investigate the models' behaviour in a very controlled and detailed way. As opposed to real experiments that are hindered by many difficulties, using a simulation approach allows detailed investigation and control of input and all parameters.
 
+Two aspects of neurons can be modelled and used in different combinations: the mechanism for translating input signals into output (information integration) and the mechanism for updating synaptic weights (synaptic plasticity).
+
 
 \subsection{Models of neural information integration}
+\label{modelsofintegration}
 
-%\subsection{Single neuron models}
-%The model I am using was originally published in \cite{shouval2002unified}. The model is good because all parts of the model have biological interpretations, so the model can be said to be biophysically realistic.
+Some of the best known models, from least to most detailed, are the McCulloch-Pitts \cite{mcculloch1943logical}, integrate-and-fire (IF), and Hodgkin-Huxley \cite{hodgkin1952quantitative} models. In the MP model which is widely utilised in ANNs, a weighted sum of inputs is calculated, to which a sigmoid function is applied to produce the output of the neuron. In the IF and HH models the neuron is modelled as an electric circuit, and then corresponding differential equations are used to calculate the output of the neuron.
 
-The perceptron \cite{rosenblatt1958perceptron} that works as a simple linear classifier was one of the earliest proposed computational models of the neuron. Since then, numerous models have been proposed. An important characteristic of a neuron model is its mechanism of learning, However, few models explicitly model the biochemistry and physiology leading to synaptic plasticity.
-
-
-
-
-\subsection{Models of neural plasticity}
+\subsection{Models of synaptic plasticity}
 
 Different kinds of possible learning rules. Simple ones such as Hebb's rule, Oja's rule, BCM theory. What properties these rules have been shown to have (what behaviours they produce -- PCA etc). Finding learning rules by minimising Fisher information, other information-theoretic measures, or some other objective function \cite{echeveste2014generating}.
 The neuron modelled in this work utilises a slightly modified version (TODO modified in what way?) of a calcium-based model of bidirectional synaptic plasticity proposed in \cite{shouval2002unified} and \cite{yeung2004synaptic}.
+
+The perceptron \cite{rosenblatt1958perceptron} that works as a simple linear classifier was one of the earliest proposed computational models of the neuron. Since then, numerous models have been proposed. An important characteristic of a neuron model is its mechanism of learning, However, few models explicitly model the biochemistry and physiology leading to synaptic plasticity.
 
 
 \subsection{Single neuron models in unsupervised learning tasks}
@@ -316,40 +311,58 @@ The tempotron \cite{gutig2006tempotron} models neuron, but includes components w
 % Chapter: Methods
 % % % %
 \chapter{Methods}
-\section{Neuron model used}
 
-The neuron model used in this work follows the Ca\textsuperscript{2+}-based model of a single neuron published in \cite{shouval2002unified} and \cite{yeung2004synaptic}. An integrate-and-fire model of information integration is used, and no dendritic distance is simulated, i.e. the possibility that some synapses are further from the soma than others is not taken into account. Details are shown in ref [shouval 2002 and the one before]. Here, an overview of the most important aspects of the model will be given.
-
-\subsubsection{Input generation}
+\section{Input generation}
 Inputs to the model are simulated as $N$ spike trains, one for each synapse, with a given mean firing rate $r$ specified independently for each synapse. The spike trains are produced in a homogeneous Poissonian process, i.e. the occurrence of a spike is independent of the time since the last spike, and the average rate of spikes remains constant. Uncorrelated inputs are generated using TODO CITE (HomoPoisSpikeGen function)?
-Correlation between inputs is simulated by specifying the correlation parameter $0 \leq c \leq 1$, and using code from \cite{macke2009} to generate correlated homogeneous Poissonian spike trains.
+Correlation between inputs is achieved by specifying the correlation parameter $0 \leq c \leq 1$, and using code from \cite{macke2009} to generate correlated homogeneous Poissonian spike trains.
 
-\subsubsection{Synapse}
-describe how input spike trains are translated into EPSPs/IPSPs
+\section{Neuron model used in simulations}
 
-The release of neurotransmitters caused by each presynaptic spike is assumed to last 1 ms.
+The neuron model used in this work follows the model of a single neuron published in \cite{yeung2004synaptic}. An integrate-and-fire model of information integration is used with a calcium-dependent model of synaptic plasticity \cite{shouval2002unified}. Due to the way information is represented in computers, time is discretised into time-steps of length $dt$ regardless of the continuous nature of the biophysical processes. No dendritic distance is simulated, i.e. the possibility that some synapses are situated further from the soma is not taken into account. In this section, an overview of the most important aspects of the model will be given. Exact values of the parameters used are given in Appendix A.
+% TODO Appendix letter may change.
+% TODO do we use metaplasticity? prolly not because don't want to simulate that long.
+
 
 \subsubsection{Integrate-and-fire model}
 
-The voltage of the postsynaptic neuron can be increased by excitatory postsynaptic potentials (EPSPs) caused by presynaptic spikes at excitatory synapses, and decreased due to inhibitory postsynaptic potentials (IPSPs) caused by presynaptic spikes at inhibitory synapses. In addition, a leak current is simulated, which tends to return voltage to the resting potential.
+The voltage of the postsynaptic neuron can be increased by excitatory postsynaptic potentials (EPSPs) caused by presynaptic spikes at excitatory synapses, or decreased due to inhibitory postsynaptic potentials (IPSPs) caused by presynaptic spikes at inhibitory synapses. In addition, a leak current is simulated, which tends to return voltage to the resting potential $V_{rest}$. When postsynaptic voltage $V_{post}$ reaches the threshold $V_{thres}$, a postsynaptic spike is recorded, and $V_{post}$ is instantaneously set to the spiking voltage $V_{spike}$. In the next time-step, $V_{post}$ is returned to the reset potential $V_{reset}$, from where it returns to the baseline voltage.
 
-When postsynaptic voltage $V_{post}$ reaches the threshold $V_{thres}$, a postsynaptic spike is generated by rapidly increasing $V_{post}$ to the spiking voltage $V_{spike}$. Then, $V_{post}$ is returned to the reset potential $V_{reset}$, from where it returns to the baseline voltage.
+Excitatory and inhibitory synapses are modelled by ion gates controlled by the respective neurotransmitters, glutamate and gamma-aminobutyric acid (GABA). Upon each spike at an excitatory synapse, the opening of glutamate-controlled ion channels is simulated, with the degree of open-ness (TODO) simulated as a sum of two decaying exponentials peaking at the time of spike. The resulting ion flow tends to drive $V_{post}$ towards the excitatory reversal potential $V_{EPSP}$. Similarly, upon each spike at an inhibitory synapse, the opening of GABA-controlled ion channels is simulated, and the resulting ion flow tends to drive $V_{post}$ towards the inhibitory reversal potential $V_{IPSP}$. Spikes at excitatory synapses have a larger relative influence on $V_{post}$) due to the higher simulated conductivity (maximum throughput of ions) of glutamate-controlled ion channels. The three currents - one from excitatory synapses, another from inhibitory synapses, and the leak current - together determine the sign and extent of change in postsynaptic voltage.
+
+%FIGURE: spatial and temporal summation of EPSP-s, causing a spike (action potential) vs not causing a spike. Also on same timeline, an IPSP. Below, show excitatory and inhibitory spikes as raster plots. I think Julius had a good figure for this.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% was: "Learning"
+\subsubsection{Plasticity}
+
+In addition to the non-changing components mentioned in the previous section, the extent to which presynaptic spikes influence postsynaptic voltage is modelled by the synaptic weights $\boldsymbol{g}=(g_i)$, with $i$ denoting the number of the synapse. The modification of these weights is the basis of learning in this model: increasing $g_i$ will increase the effect spikes at the $i$-th synapse have on postsynaptic voltage, and vice versa.
+
+%TODO use Shouval Scholarpedia article for explaining basis of learning (http://www.scholarpedia.org/article/Models_of_synaptic_plasticity#Calcium_dependent_models_of_bidirectional_synaptic_plasticity)
+The mechanism for modifying synaptic weights follows the Ca\textsuperscript{2+}-dependent model from \cite{shouval2002unified}, where the aim was "to construct a model based on a minimal number of assumptions". In essence, it detects coincidences of presynaptic and postsynaptic spikes: the weight of synapse $i$ will be increased if the presynaptic spike occurs right before the postsynaptic spike (i.e. there is reason to believe the postsynaptic spike was \emph{caused} by the input), and decreased otherwise. explain what STDP is. give more detail about STDP curve. causal is if dt is right, non-causal if dt is in wrong region.
+
+
+Coincidence detector. mention STDP too
 
 Each EPSP is a sum of two decaying exponentials, normalised to have a desired amplitude. The EPSP-s of all synapses are summed linearly and no dendritic distance is simulated in this model. Upon a postsynaptic spike, $BPAP(t)$ is set to its peak voltage $V_{amplitude_{BPAP}}$, and then starts to decay as a sum of a slow component (time constant $\tau_f$) and a fast component (time constant $\tau_s$).
-
 $$ EPSP(t) = ? $$
 $$ BPAP(t) = ? $$
-
-FIGURE: spatial and temporal summation of EPSP-s, causing a spike (action potential) vs not causing a spike.
-
-
-
-\subsubsection{Learning}
-
-
-TODO use Shouval Scholarpedia article for explaining basis of learning (http://www.scholarpedia.org/article/Models_of_synaptic_plasticity#Calcium_dependent_models_of_bidirectional_synaptic_plasticity)
-
-Coincidence detector
 
 %There are two possible sources of increase in the dendritic voltage of the postsynaptic neuron: excitatory postsynaptic potentials (EPSPs) caused by presynaptic spikes at excitatory synapses and back-propagating action potentials (BPAPs) caused by the postsynaptic neuron firing. Postsynaptic voltage can decrease due to inhibitory postsynaptic potentials (IPSPs) caused by presynaptic spikes at inhibitory synapses, or passive decay that tends to return voltage to the resting potential.
 
@@ -364,11 +377,32 @@ FIGURES of important functions (eta, omega)
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 \section{Implementation details}
 
-Timestep, other important parameters? Mention here maybe complexity of the program, the bugs I've found, the time window in which input is generated, what values parameters are initialised to (voltage, m,n,h etc).
+The model is implemented in MATLAB with source code freely available on Github\footnote{https://github.com/taivop/neuron}.
 
-The model is implemented in MATLAB. Source code is freely available under the [CC BY-SA?] license at [link].
+For updating values according to the differential equations, the Euler method was used with a $0.1ms$ time-step length (chosen as the highest value allowing numerical stability). Voltage of the postsynaptic neuron and other (TODO which?) parameters were initialised to previously found equilibrium values at the start of each simulation to avoid unstable behaviour at the start of each simulation. The release of neurotransmitters caused by each presynaptic spike is assumed to last 1 ms. Input was generated in 1-second blocks for ease of implementation. The complexity of simulation is linear with respect to the total simulation time. The computation time required for $x$ seconds of simulated neuron time varied between $2x$ and $10x$ seconds depending on the amount of input to the neuron (on the machine used for simulation).
+
+TODO also mention mistake made in 2002 paper.
+
+
 
 
 % % % %
@@ -412,6 +446,7 @@ Simulation results showing that the model implements algorithms
 % % % %
 \chapter*{Appendix A: Description of model parameters}
 \addcontentsline{toc}{chapter}{Appendix A: Description of model parameters}
+\label{appendixparameters}
 
 possibly add a table of parameters with their values and descriptions here
 
