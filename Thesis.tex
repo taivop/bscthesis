@@ -9,6 +9,8 @@
 \usepackage{pst-plot}
 \usepackage{graphicx}
 \usepackage{graphics}
+\usepackage{caption}
+\usepackage{subcaption}
 \usepackage{floatflt}
 \usepackage{wrapfig}
 \usepackage{endnotes}
@@ -227,13 +229,15 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam a ultricies sem, 
 \chapter*{Introduction}
 \addcontentsline{toc}{chapter}{Introduction}
 
+% somehow maybe tie in x-risk and AGI?
+
 Your brain is a complex organ capable of very sophisticated thought. Even though the chess-playing supercomputer Deep Blue won the reigning world champion Garry Kasparov, Kasparov was also able to do anything human beings do every day, whereas the computer could only play chess. The human brain is remarkable not for its ability to do one particular thing very well, be it playing chess, reading an article in Nature, preparing a six-course meal, or slam dunking in a basketball game. It is remarkable for being able to do all of those things, and much more.
 
 However, gaining understanding of the brain's information processing mechanisms remains one of the major scientific challenges today. A key aspect of the brain is \emph{neural plasticity}, its ability to change itself over time as new knowledge and experience are accumulated and processed. To understand the dynamics of these changes, computational models are explored to understand how well they explain the brain's behaviour as observed in experiments in neuroscience, and on a more abstract level, how well the models learn to perform well in a variety of tasks.
 
 Artificial systems with significant capacity for learning have recently been created using deep convolutional neural networks in tasks ranging from playing video games \cite{mnih2015human} to describing scenes in natural language \cite{karpathy2014deep}. The neuron models used in these systems are very simple, often composing of a scalar product of the inputs and weights, and a thresholding function. However, evidence from brains has shown that each neuron is a much more complex and powerful information processing unit. There is a clear gap between the computational properties of networks of neurons and the biophysical mechanisms of synaptic plasticity at the cellular level. The primary goal of this thesis is to help narrow this gap.
 
-One way to bridge the gap is to show that from basic principles of neuronal biophysics, more complex learning capabilities follow. Unsupervised learning is a mode of learning in which a system needs to learn the structure of input only based on the input itself, without being told explicitly what the input is. As an example of unsupervised learning in human subjects, one could show several pictures of zebras and tigers to a person previously unfamiliar with these animals, and the person would be able to distinguish that the animals shown fall into two major classes. While it has been shown that networks of neurons can perform this kind of tasks, it has been largely unstudied whether much smaller units of computation are capable of unsupervised learning.
+One way to bridge the gap is to show by numerical simulations that from basic principles of neuronal biophysics, more complex learning capabilities follow. Unsupervised learning is a mode of learning in which a system needs to learn the structure of input only based on the input itself, without being told explicitly what the input is. As an example of unsupervised learning in human subjects, one could show several pictures of zebras and tigers to a person previously unfamiliar with these animals, and the person would be able to distinguish that the animals shown fall into two major classes. While it has been shown that networks of neurons can perform this kind of tasks, it has been largely unstudied whether much smaller units of computation are capable of unsupervised learning.
 
 This work explores the behaviour of one particular previously published (with a Nobel-winning physicist among the authors) biophysically realistic neuron model, which has been shown to produce a range of neural plasticity phenomena. The thesis attempts to demonstrate that starting from very basic biophysical principles, the neuron model exhibits behaviour equivalent to principal component analysis (PCA), a well known unsupervised learning procedure.
 
@@ -248,14 +252,14 @@ This work explores the behaviour of one particular previously published (with a 
 
 % Biology of the human brain
 \subsection{Neurobiology of the brain}
-The brain, a part of the nervous system, is the central information processing organ in animals. The computational properties of the brain arise from the heavily interconnected networks and sub-networks of specialised cells called \emph{neurons}. It has been approximated \cite{herculano2009human} that the human brain consists of $10^{11}$ neurons with $10^{15}$ inter-neuronal connections called \emph{synapses}. This work focuses on modelling one of many different types of neurons - pyramidal neurons.
+The brain, a part of the nervous system, is the central information processing organ in animals. The computational properties of the brain arise from the heavily interconnected networks and sub-networks of specialised cells called \emph{neurons}. It has been approximated \cite{herculano2009human} that the human brain consists of $10^{11}$ neurons with $10^{15}$ inter-neuronal connections called \emph{syn4apses}. This work focuses on modelling one of many different types of neurons - pyramidal neurons.
 
 
 \subsection{Neurons as computational units}
 Every model of a brain that aspires for biophysical reality must include a way to model the behaviour of neurons and synapses. Each neuron can be seen as a small unit performing computation on some inputs and producing corresponding output. There are many computational models of neurons, with the level of detail ranging from complex multi-compartment models to very simple models such as those used in many artificial neural networks (ANNs). 
 
 \begin{figure}[h]
-    \includegraphics[width=\textwidth]{fig1}
+    \includegraphics[width=\textwidth]{figures/fig1.pdf}
     \caption{Schematic of a pyramidal neuron.}
     \label{fig:pyramidal}
 \end{figure}
@@ -280,7 +284,7 @@ After the contribution of input from each synapse is computed, this information 
 Output of a neuron takes the form of \emph{action potentials} or \emph{spikes}, rapid increases in membrane voltage followed by a return to the equilibrium voltage. Information about action potentials is conducted from a neuron to the dendrites of other neurons using the axon. Axons are usually not part of single neuron models as the output of the modelled neuron is studied in and of itself, so needs not be relayed to other neurons.
 
 \section{Prior work}
-TODO Suggestions from Elena: more detail (obv), examples of published models, what I do differently, why I chose this particular model. Add references.
+%TODO Suggestions from Elena: more detail (obv), examples of published models, what I do differently, why I chose this particular model. Add references.
 
 
 There are many computational models of neurons, with the level of detail ranging from compartmental to very simple models of a neuron such as those used in ANNs. Using these models, it is possible to simulate neurons in a computer and investigate the models' behaviour in a very controlled and detailed way. As opposed to real experiments that are hindered by many difficulties, using a simulation approach allows detailed investigation and control of input and all parameters.
@@ -293,18 +297,20 @@ Two aspects of neurons can be modelled and used in different combinations: the m
 
 Some of the best known models, from least to most detailed, are the McCulloch-Pitts \cite{mcculloch1943logical}, integrate-and-fire (IF), and Hodgkin-Huxley \cite{hodgkin1952quantitative} models. In the MP model which is widely utilised in ANNs, a weighted sum of inputs is calculated, to which a sigmoid function is applied to produce the output of the neuron. In the IF and HH models the neuron is modelled as an electric circuit, and then corresponding differential equations are used to calculate the output of the neuron.
 
-\subsection{Models of synaptic plasticity}
+%\subsection{Models of synaptic plasticity TODO}
 
-Different kinds of possible learning rules. Simple ones such as Hebb's rule, Oja's rule, BCM theory. What properties these rules have been shown to have (what behaviours they produce -- PCA etc). Finding learning rules by minimising Fisher information, other information-theoretic measures, or some other objective function \cite{echeveste2014generating}.
-The neuron modelled in this work utilises a slightly modified version (TODO modified in what way?) of a calcium-based model of bidirectional synaptic plasticity proposed in \cite{shouval2002unified} and \cite{yeung2004synaptic}.
+%Different kinds of possible learning rules. Simple ones such as Hebb's rule, Oja's rule, BCM theory. What properties these rules have been shown to have (what behaviours they produce -- PCA etc). Finding learning rules by minimising Fisher information, other information-theoretic measures, or some other objective function \cite{echeveste2014generating}.
 
-The perceptron \cite{rosenblatt1958perceptron} that works as a simple linear classifier was one of the earliest proposed computational models of the neuron. Since then, numerous models have been proposed. An important characteristic of a neuron model is its mechanism of learning, However, few models explicitly model the biochemistry and physiology leading to synaptic plasticity.
+%The perceptron \cite{rosenblatt1958perceptron} that works as a simple linear classifier was one of the earliest proposed computational models of the neuron. Since then, numerous models have been proposed. An important characteristic of a neuron model is its mechanism of learning, However, few models explicitly model the biochemistry and physiology leading to synaptic plasticity.
 
 
 \subsection{Single neuron models in unsupervised learning tasks}
-Oja rule, BCM rule, etc have been shown to do PCA/ICA etc. Tempotron has been shown. Yeung 2004 showed selectivity. But seems that most work about unsupervised learning focuses on networks, not biophysical single neurons.
 
-The tempotron \cite{gutig2006tempotron} models neuron, but includes components whose biophysical accuracy is not well grounded (finding locations with maximum voltage). UNSUP learning was done on this.
+Several single neuron models have been shown to be capable of unsupervised learning: simple artificial neurons can do PCA when trained according to the Oja rule, the tempotron model \cite{gutig2006tempotron} is able to learn spike timing-based patterns, the SKAN model \cite{afshar2014racing} is capable of unsupervised classification of patterns. However, none of the aforementioned models are based on biophysical principles, and no other biophysical models have been shown to do unsupervised learning on the single neuron level.
+
+%Yeung 2004 showed selectivity. But seems that most work about unsupervised learning focuses on networks, not biophysical single neurons.
+
+
 
 
 % % % %
@@ -315,6 +321,12 @@ The tempotron \cite{gutig2006tempotron} models neuron, but includes components w
 \section{Input generation}
 Inputs to the model are simulated as $N$ spike trains, one for each synapse, with a given mean firing rate $r$ specified independently for each synapse. The spike trains are produced in a homogeneous Poissonian process, i.e. the occurrence of a spike is independent of the time since the last spike, and the average rate of spikes remains constant. Uncorrelated inputs are generated using TODO CITE (HomoPoisSpikeGen function)?
 Correlation between inputs is achieved by specifying the correlation parameter $0 \leq c \leq 1$, and using code from \cite{macke2009} to generate correlated homogeneous Poissonian spike trains.
+
+FIGURE: seletan, misasi on spike (et räägin presünaptilistest spike'idest, aga reaalselt ei simuleeri presyn neuroneid)
+    näitan 50 sünapsi ja ütlen, et ok, tahan et esimesed oleks kõvasti korreleeritud, järgmised oleks korreleerimata, aga suurema rate'ga, viimased oleks korreleerimata ja madala rate'iga
+    genereerin vastavad input spiked ja näitan samas rasterploti (kus vasakul on märgitud ka, mis rate'i igaüks pidi saama)
+    seletan, mida rasterplot tähendab ja et iga presünaptiline spike mõjutab postsünaptilist mingil viisil
+FIGURE: desired input rates for 100 synapses; actual input rates.
 
 \section{Neuron model used in simulations}
 
@@ -352,27 +364,26 @@ Excitatory and inhibitory synapses are modelled by ion gates controlled by the r
 % was: "Learning"
 \subsubsection{Plasticity}
 
-In addition to the non-changing components mentioned in the previous section, the extent to which presynaptic spikes influence postsynaptic voltage is modelled by the synaptic weights $\boldsymbol{g}=(g_i)$, with $i$ denoting the number of the synapse. The modification of these weights is the basis of learning in this model: increasing $g_i$ will increase the effect spikes at the $i$-th synapse have on postsynaptic voltage, and vice versa.
+In addition to the non-changing components mentioned in the previous section, the extent to which presynaptic spikes influence postsynaptic voltage is modelled by the synaptic weights $\boldsymbol{W}=(W_i)$, with $i$ denoting the number of the synapse. The modification of these weights is the basis of learning in this model: increasing $W_i$ will increase the effect spikes at the $i$-th synapse have on postsynaptic voltage, and vice versa. In this model, only excitatory synapses are plastic, i.e. inhibitory synapses remain unchanged.
 
 %TODO use Shouval Scholarpedia article for explaining basis of learning (http://www.scholarpedia.org/article/Models_of_synaptic_plasticity#Calcium_dependent_models_of_bidirectional_synaptic_plasticity)
-The mechanism for modifying synaptic weights follows the Ca\textsuperscript{2+}-dependent model from \cite{shouval2002unified}, where the aim was "to construct a model based on a minimal number of assumptions". In essence, it detects coincidences of presynaptic and postsynaptic spikes: the weight of synapse $i$ will be increased if the presynaptic spike occurs right before the postsynaptic spike (i.e. there is reason to believe the postsynaptic spike was \emph{caused} by the input), and decreased otherwise. explain what STDP is. give more detail about STDP curve. causal is if dt is right, non-causal if dt is in wrong region.
+The mechanism for modifying synaptic weights follows the Ca\textsuperscript{2+}-dependent model from \cite{shouval2002unified}, where the aim was "to construct a model based on a minimal number of assumptions". The model can be said to detect coincidences of presynaptic and postsynaptic spikes: the weight of synapse $i$ will be increased if the presynaptic spike occurs right before the postsynaptic spike (i.e. there is reason to believe the postsynaptic spike was \emph{caused} by the input), and decreased otherwise. The process of spike-timing-dependent plasticity (STDP) captures this idea that learning should depend on the exact timing on postsynaptic and presynaptic spikes, on the length of time between the two spikes in particular. It was shown in \cite{shouval2002unified} that the plasticity model used in this work implements STDP in a way similar to what has been observed in experiments in neuroscience.
 
+% FIGURE: stdp curve for the model
 
-Coincidence detector. mention STDP too
+The mechanism for detecting coincidences relies on N-methyl-D-aspartic acid (NMDA) receptors. NMDA receptors control gates that can allow calcium ions to flow into the neuron, which in turn causes an increase of the synaptic weight. The extent to which the calcium channels open depend on two factors: concentration of glutamate and dendritic voltage caused by a back-propagating action potential (BPAPs). The former relays information about presynaptic spikes: if a spike has occurred recently, the level of glutamate at the synapse is at a high level. The latter signifies a postsynaptic spike: when the postsynaptic neuron fires, an increase in voltage is propagated to the dendrites. The influx of calcium is dependent on the exact timing of spikes because both glutamate concentration and BPAP decay in time. The synaptic weights' update depends on the level of intracellular calcium as shown in Equation~\ref{eq:weightupdate}.
 
-Each EPSP is a sum of two decaying exponentials, normalised to have a desired amplitude. The EPSP-s of all synapses are summed linearly and no dendritic distance is simulated in this model. Upon a postsynaptic spike, $BPAP(t)$ is set to its peak voltage $V_{amplitude_{BPAP}}$, and then starts to decay as a sum of a slow component (time constant $\tau_f$) and a fast component (time constant $\tau_s$).
-$$ EPSP(t) = ? $$
-$$ BPAP(t) = ? $$
+\begin{equation}
+\frac{dW_i}{dt} = \eta ([Ca]_i) (\Omega([Ca]_i) - W_i)
+\label{eq:weightupdate}
+\end{equation}
+
+This mechanism allows the synaptic weights to increase when there was a suitably timed pair of presynaptic and postsynaptic spikes. However, \cite{shouval2002unified} show that the same mechanism also accounts for decreasing and stable synaptic weights: at medium levels of Ca\textsuperscript{2+}, weights are decreased, and at low levels of Ca\textsuperscript{2+}, synaptic weights remain unchanged; this is coded in the function $\Omega$. The learning rate $\eta$ also depends on calcium: higher levels of Ca\textsuperscript{2+} elicit larger changes in synaptic weights.
+
+The phenomenon of synaptic weights increasing due to learning is named long-term potentiation (LTP), and similar decreasing is named long-term depression (LTD). LTD and LTP are the methods the neuron uses to assign different synaptic weights based on the input to that synapse. The exact shape of $\Omega$ and $\Eta$ are given in \cite{shouval2002unified}.
+
 
 %There are two possible sources of increase in the dendritic voltage of the postsynaptic neuron: excitatory postsynaptic potentials (EPSPs) caused by presynaptic spikes at excitatory synapses and back-propagating action potentials (BPAPs) caused by the postsynaptic neuron firing. Postsynaptic voltage can decrease due to inhibitory postsynaptic potentials (IPSPs) caused by presynaptic spikes at inhibitory synapses, or passive decay that tends to return voltage to the resting potential.
-
-It is assumed that different forms of depolarisation (EPSP and BPAP) add linearly. 
-
-Inhibitory synapses are not plastic.
-
-Differential equation for updating weights: $$ \frac{dW_j}{dt} = \eta ([Ca]_j) (\Omega([Ca]_j) - W_j)$$
-
-FIGURES of important functions (eta, omega)
 
 
 
@@ -396,7 +407,9 @@ FIGURES of important functions (eta, omega)
 
 \section{Implementation details}
 
-The model is implemented in MATLAB with source code freely available on Github\footnote{https://github.com/taivop/neuron}.
+The model was implemented in MATLAB; source code is available on Github\footnote{https://github.com/taivop/neuron}.
+
+viita, et osa simulatsioonidest tegin HPC klastris
 
 For updating values according to the differential equations, the Euler method was used with a $0.1ms$ time-step length (chosen as the highest value allowing numerical stability). Voltage of the postsynaptic neuron and other (TODO which?) parameters were initialised to previously found equilibrium values at the start of each simulation to avoid unstable behaviour at the start of each simulation. The release of neurotransmitters caused by each presynaptic spike is assumed to last 1 ms. Input was generated in 1-second blocks for ease of implementation. The complexity of simulation is linear with respect to the total simulation time. The computation time required for $x$ seconds of simulated neuron time varied between $2x$ and $10x$ seconds depending on the amount of input to the neuron (on the machine used for simulation).
 
@@ -411,34 +424,85 @@ TODO also mention mistake made in 2002 paper.
 \chapter{Results}
 \section{Validation of the implementation}
 
-% Figures 3A, 3B, 3C from Shouval 2002. Maybe should move to Results > Validation?
-FIGURE: mean final weight vs clamped postsynaptic voltage (for 100 presynaptic pulses at low frequency)
+\subsection{Input-output relationship}
 
-FIGURE: mean final weight vs input rate
-
+\subsection{Spike timing-dependent plasticity}
 FIGURE: STDP curve (normalised mean final weight vs post-pre timing)
 
+\subsection{Selectivity to temporal correlation} % aka temporal code
 
-\section{Unsupervised learning task}
-Show that our model does PCA/ICA
-
-Simulation results showing that the model implements algorithms
-
-\subsection{Simulation protocol}
+\subsection{Selectivity to patterns of input rate} % aka rate code
 
 
+\subsection{Metaplasticity}
+
+% 9 amplitude values for choosing best mean final weight vs input rate curve.
+\begin{figure}[h]
+    \includegraphics[width=\textwidth]{figures/fig_3x3weightcurves}
+    \caption{Mean final weight curves for different values of maximum EPSP amplitude.}
+    \label{fig:3x3weightcurves}
+\end{figure}
 
 
-\section{Probability of release?}
+\begin{figure}
+    \centering
+    \begin{subfigure}[t]{0.5\textwidth}
+            \includegraphics[width=\textwidth]{figures/fig_iocurve_epsp3.eps}
+            \caption{Input-output curve.}
+            \label{fig:iocurve}
+    \end{subfigure}%
+    \begin{subfigure}[t]{0.5\textwidth}
+            \includegraphics[width=\textwidth]{figures/fig_weights_raster_30Hz}
+            \caption{Weight evolution in a 100-second experiment at 30Hz input.}
+            \label{fig:weightsraster}
+    \end{subfigure}%
+\end{figure}
 
-\section{Inhibitory plasticity?}
+\begin{figure}[h]
+    \includegraphics[width=\textwidth]{figures/fig_weighthistogram_30Hz.eps}
+    \caption{Weights before and after a 100-second simulation at 30Hz input.}
+    \label{fig:weighthistogram}
+\end{figure}
+
+
+%TODO comment iocurve: shape and scale
+%TODO comment histogram: shape of final weights
+%TODO comment weight rasterplot: scaling down due to metaplasticity, sampled once a second
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Learning patterns of input rate}
+
+Creating a coherent story of experiments
+I think the order of presentation of these results would best be:
+A. Experiment 2 and Experiment 6: the neuron learns to fire more for a learned input than for a non-learned input.
+B. Experiment 1 and Experiment 5: the neuron responds linearly to varying input intensity (Exp 1) and proportion of pattern present (Exp 5).
+C. Experiment 4: the neuron becomes more selective to patterns coded in a particular number of synapses (or a small range).
+
+
+\subsection{Partial patterns}
+
+
+
+
+\section{Probability of release}
 
 
 % % % %
 % Chapter: Discussion
 % % % %
 \chapter{Discussion}
-
+Mention this: http://www.cell.com/neuron/abstract/S0896-6273%2815%2900210-X
 
 
 % % % %
