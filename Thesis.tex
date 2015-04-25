@@ -418,57 +418,61 @@ TODO also mention mistake made in 2002 paper.
 
 
 
+
+
+
+
+
+
+
 % % % %
 % Chapter: Results
 % % % %
 \chapter{Results}
 \section{Validation of the implementation}
 
+
+
+
 \subsection{Input-output relationship}
+\begin{figure}[h]
+    \includegraphics[width=\textwidth]{figures/valid_iocurve_vs_epsp_grid.eps}
+    \caption{Caption lalala.}
+    \label{fig:valid_iocurve_vs_epsp_grid}
+\end{figure}
+
+
+
 
 \subsection{Spike timing-dependent plasticity}
-FIGURE: STDP curve (normalised mean final weight vs post-pre timing)
+
+\begin{figure}[h]
+    \includegraphics[width=0.4\textwidth]{figures/valid_stdp_bpap42.eps}
+    \caption{Caption lalala.}
+    \label{fig:valid_stdp_bpap42}
+\end{figure}
+
+\begin{figure}[h]
+    \includegraphics[width=0.4\textwidth]{figures/valid_stdp_bpap100.eps}
+    \caption{Caption lalala.}
+    \label{fig:valid_stdp_bpap100}
+\end{figure}
+
+
 
 
 \subsection{Metaplasticity}
 
-% 9 amplitude values for choosing best mean final weight vs input rate curve.
-\begin{figure}[h]
-    \includegraphics[width=\textwidth]{figures/fig_3x3weightcurves}
-    \caption{Mean final weight curves for different values of maximum EPSP amplitude.}
-    \label{fig:3x3weightcurves}
-\end{figure}
 
-
-\begin{figure}
-    \centering
-    \begin{subfigure}[t]{0.5\textwidth}
-            \includegraphics[width=\textwidth]{figures/fig_iocurve_epsp3.eps}
-            \caption{Input-output curve.}
-            \label{fig:iocurve}
-    \end{subfigure}%
-    \begin{subfigure}[t]{0.5\textwidth}
-            \includegraphics[width=\textwidth]{figures/fig_weights_raster_30Hz}
-            \caption{Weight evolution in a 100-second experiment at 30Hz input.}
-            \label{fig:weightsraster}
-    \end{subfigure}%
-\end{figure}
-
-\begin{figure}[h]
-    \includegraphics[width=\textwidth]{figures/fig_weighthistogram_30Hz.eps}
-    \caption{Weights before and after a 100-second simulation at 30Hz input.}
-    \label{fig:weighthistogram}
-\end{figure}
-
-
-%TODO comment iocurve: shape and scale
-%TODO comment histogram: shape of final weights
-%TODO comment weight rasterplot: scaling down due to metaplasticity, sampled once a second
 
 
 \subsection{Selectivity to temporal correlation} % aka temporal code
 
-
+\begin{figure}[h]
+    \includegraphics[width=\textwidth]{figures/valid_selectivity_correlation.eps}
+    \caption{Caption lalala.}
+    \label{fig:selectivity_correlation}
+\end{figure}
 
 
 
@@ -487,6 +491,40 @@ B. Experiment 1 and Experiment 5: the neuron responds linearly to varying input 
 C. Experiment 4: the neuron becomes more selective to patterns coded in a particular number of synapses (or a small range).
 
 
+\subsection{Experiment 2 and Experiment 6}
+
+\begin{figure}[h]
+    \includegraphics[width=\textwidth]{figures/exp6_voltageoscillation.eps}
+    \caption{Caption lalala.}
+    \label{fig:exp6voltageoscillation}
+\end{figure}
+
+
+\subsection{Experiment 1 and Experiment 5}
+
+\begin{figure}[h]
+    \includegraphics[width=0.5\textwidth]{figures/exp1_filter.eps}
+    \caption{Caption lalala.}
+    \label{fig:exp1filter}
+\end{figure}
+
+\begin{figure}[h]
+    \includegraphics[width=0.5\textwidth]{figures/exp5_patterncompletion.eps}
+    \caption{Caption lalala.}
+    \label{fig:exp5patterncompletion}
+\end{figure}
+
+
+\subsection{Experiment 4}
+
+\begin{figure}[h]
+    \includegraphics[width=0.5\textwidth]{figures/exp4_synapsecount.eps}
+    \caption{Caption lalala.}
+    \label{fig:exp4synapsecount}
+\end{figure}
+
+
+
 \subsection{Partial patterns}
 
 
@@ -494,6 +532,23 @@ C. Experiment 4: the neuron becomes more selective to patterns coded in a partic
 
 \section{Probability of release}
 
+\begin{figure}[h]
+    \includegraphics[width=\textwidth]{figures/exp7_PRoutputvariance_grid.eps}
+    \caption{Caption lalala.}
+    \label{fig:exp7grid}
+\end{figure}
+
+\begin{figure}[h]
+    \includegraphics[width=\textwidth]{figures/exp8_gridoutputs_epsp05.eps}
+    \caption{Caption lalala.}
+    \label{fig:exp8gridoutputs}
+\end{figure}
+
+\begin{figure}[h]
+    \includegraphics[width=\textwidth]{figures/exp8_gridweights_epsp05.eps}
+    \caption{Caption lalala.}
+    \label{fig:exp8gridweights}
+\end{figure}
 
 % % % %
 % Chapter: Discussion
