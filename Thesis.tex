@@ -428,6 +428,7 @@ TODO also mention mistake made in 2002 paper.
 % % % %
 % Chapter: Results
 % % % %
+% Useful link for figures: http://tex.stackexchange.com/questions/37581/latex-figures-side-by-side
 \chapter{Results}
 \section{Validation of the implementation}
 
@@ -446,16 +447,21 @@ TODO also mention mistake made in 2002 paper.
 
 \subsection{Spike timing-dependent plasticity}
 
-\begin{figure}[h]
-    \includegraphics[width=0.4\textwidth]{figures/valid_stdp_bpap42.eps}
-    \caption{Caption lalala.}
-    \label{fig:valid_stdp_bpap42}
-\end{figure}
 
-\begin{figure}[h]
-    \includegraphics[width=0.4\textwidth]{figures/valid_stdp_bpap100.eps}
-    \caption{Caption lalala.}
-    \label{fig:valid_stdp_bpap100}
+\begin{figure}
+\centering
+\begin{minipage}{.5\textwidth}
+  \centering
+  \includegraphics[width=1\linewidth]{figures/valid_stdp_bpap42.eps}
+  \captionof{figure}{A figure}
+  \label{fig:test1}
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
+  \centering
+  \includegraphics[width=1\linewidth]{figures/valid_stdp_bpap100.eps}
+  \captionof{figure}{Another figure}
+  \label{fig:test2}
+\end{minipage}
 \end{figure}
 
 
@@ -502,16 +508,20 @@ C. Experiment 4: the neuron becomes more selective to patterns coded in a partic
 
 \subsection{Experiment 1 and Experiment 5}
 
-\begin{figure}[h]
-    \includegraphics[width=0.5\textwidth]{figures/exp1_filter.eps}
-    \caption{Caption lalala.}
-    \label{fig:exp1filter}
-\end{figure}
-
-\begin{figure}[h]
-    \includegraphics[width=0.5\textwidth]{figures/exp5_patterncompletion.eps}
-    \caption{Caption lalala.}
-    \label{fig:exp5patterncompletion}
+\begin{figure}
+\centering
+\begin{minipage}{.5\textwidth}
+  \centering
+  \includegraphics[width=1\linewidth]{figures/exp1_filter.eps}
+  \captionof{figure}{A figure}
+  \label{fig:test1}
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
+  \centering
+  \includegraphics[width=1\linewidth]{figures/exp5_patterncompletion.eps}
+  \captionof{figure}{Another figure}
+  \label{fig:test2}
+\end{minipage}
 \end{figure}
 
 
