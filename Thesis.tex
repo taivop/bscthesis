@@ -330,7 +330,7 @@ FIGURE: desired input rates for 100 synapses; actual input rates.
 
 \section{Neuron model used in simulations}
 
-The neuron model used in this work follows the model of a single neuron published in \cite{yeung2004synaptic}. An integrate-and-fire model of information integration is used with a calcium-dependent model of synaptic plasticity \cite{shouval2002unified}. Due to the way information is represented in computers, time is discretised into time-steps of length $dt$ regardless of the continuous nature of the biophysical processes. No dendritic distance is simulated, i.e. the possibility that some synapses are situated further from the soma is not taken into account. In this section, an overview of the most important aspects of the model will be given. Exact values of the parameters used are given in Appendix A.
+The neuron model used in this work follows the model of a single neuron published in \cite{yeung2004synaptic}. An integrate-and-fire model of information integration is used with a calcium-dependent model of synaptic plasticity \cite{shouval2002unified}. Due to the way information is represented in computers, time is discretised into time-steps of length $dt$ regardless of the continuous nature of the biophysical processes. No dendritic distance is simulated, i.e. the possibility that some synapses are situated further from the soma is not taken into account. In this section, an overview of the most important aspects of the model will be given. Exact values of the parameters used are given in Appendix~\ref{appendix:parameters}.
 % TODO Appendix letter may change.
 % TODO do we use metaplasticity? prolly not because don't want to simulate that long.
 
@@ -505,19 +505,32 @@ C. Experiment 4: the neuron becomes more selective to patterns coded in a partic
 Mention this: http://www.cell.com/neuron/abstract/S0896-6273%2815%2900210-X
 
 
+
+
+
+
+
+
+
 % % % %
 % Appendices
 % % % %
 \chapter*{Appendix A: Description of model parameters}
 \addcontentsline{toc}{chapter}{Appendix A: Description of model parameters}
-\label{appendixparameters}
+\label{appendix:parameters}
 
 possibly add a table of parameters with their values and descriptions here
 
 \chapter*{Appendix B: MATLAB code}
 \addcontentsline{toc}{chapter}{Appendix B: MATLAB code}
+\label{appendix:code}
 
-link to github, also say that will be attached as supplementary material (see Julius's thesis)
+The MATLAB scripts for simulations and data analysis performed in this thesis are included with this thesis as an online supplementary material. The material will be withheld from publication until 26.06.2016.
+
+
+
+
+
 
 
 % % % %
