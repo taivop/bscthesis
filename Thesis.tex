@@ -372,18 +372,22 @@ In addition to components mentioned in the previous section, the extent to which
 %TODO use Shouval Scholarpedia article for explaining basis of learning (http://www.scholarpedia.org/article/Models_of_synaptic_plasticity#Calcium_dependent_models_of_bidirectional_synaptic_plasticity)
 The mechanism for modifying synaptic weights follows the Ca\textsuperscript{2+}-dependent model from \cite{shouval2002unified}, where the aim was "to construct a model based on a minimal number of assumptions". The model detects coincidences of presynaptic and postsynaptic spikes: the weight of synapse $i$ will be increased if the presynaptic spike occurs right before the postsynaptic spike (i.e. there is reason to believe the postsynaptic spike was \emph{caused} by the input), and decreased otherwise. The process of spike-timing-dependent plasticity (STDP) captures this idea that learning should depend on the exact timing on postsynaptic and presynaptic spikes. It was shown in \cite{shouval2002unified} that the plasticity model used in this work implements STDP in a way similar to what has been observed in experiments in neuroscience.
 
-The mechanism for detecting coincidences relies on N-methyl-D-aspartic acid (NMDA) receptors. NMDA receptors control gates that can allow calcium ions to flow into the neuron, which in turn causes an increase of the synaptic weight. The extent to which the calcium channels open depend on two factors: concentration of glutamate (the neurotransmitter that also causes voltage increases upon spikes at excitatory synapses) and dendritic voltage caused by a back-propagating action potential (BPAP). The former relays information about presynaptic spikes: if a spike has occurred recently, the level of glutamate at the synapse is at a high level. The latter signifies a postsynaptic spike: when the postsynaptic neuron fires, an increase in voltage is propagated to the dendrites. The influx of calcium is dependent on the exact timing of spikes because both glutamate concentration and BPAP decay in time. The synaptic weights' update depends on the level of intracellular calcium as shown in Equation~\ref{eq:weightupdate}.
+The mechanism for detecting coincidences relies on N-methyl-D-aspartic acid (NMDA) receptors. NMDA receptors control gates that can allow calcium ions to flow into the neuron, which in turn causes an increase of the synaptic weight. The extent to which the calcium channels open depend on two factors: concentration of glutamate (the neurotransmitter that also causes voltage increases upon spikes at excitatory synapses) and dendritic voltage caused by a back-propagating action potential (BPAP). The former relays information about presynaptic spikes: if a spike has occurred recently, the level of glutamate at the synapse is at a high level. The latter signifies a postsynaptic spike: when the postsynaptic neuron fires, an increase in voltage is propagated to the dendrites. The influx of calcium is dependent on the exact timing of spikes because both glutamate concentration and BPAP voltage decay in time. The synaptic weights' update depends on the level of intracellular calcium as shown in Equation~\ref{eq:weightupdate}, with shapes of $\Omega$ and $\eta$ shown in Figure~\ref{fig:methods_eta_omega}.
 
 \begin{equation}
-\frac{dW_i}{dt} = \eta ([Ca]_i) (\Omega([Ca]_i) - W_i)
+\frac{dW_i}{dt} = \eta ([Ca]_i) (\Omega([Ca]_i) - \lambda W_i)
 \label{eq:weightupdate}
 \end{equation}
 
-This mechanism allows the synaptic weights to increase when there was a suitably timed pair of presynaptic and postsynaptic spikes. However, \cite{shouval2002unified} show that the same mechanism also accounts for decreasing and stable synaptic weights: at medium levels of Ca\textsuperscript{2+}, weights are decreased, and at low levels of Ca\textsuperscript{2+}, synaptic weights remain unchanged; this is coded in the function $\Omega$. The learning rate $\eta$ also depends on calcium: higher levels of Ca\textsuperscript{2+} elicit larger changes in synaptic weights.
+This mechanism allows the synaptic weights to increase when there has been a suitably timed pair of presynaptic and postsynaptic spikes. However, \cite{shouval2002unified} show that the same mechanism also accounts for decreasing and stable synaptic weights through the effect of $\Omega$: at medium levels of Ca\textsuperscript{2+}, weights are decreased ($\Omega<0.5$), and at low levels of Ca\textsuperscript{2+}, synaptic weights remain unchanged ($\Omega$ is constant at 0.5). The learning rate $\eta$ also depends on calcium: higher levels of Ca\textsuperscript{2+} elicit larger changes in synaptic weights.
 
-The phenomenon of synaptic weights increasing due to learning is named long-term potentiation (LTP), and similar decreasing is named long-term depression (LTD). LTD and LTP are the methods the neuron uses to assign different synaptic weights based on the input to that synapse. The exact shape of $\Omega$ and $\Eta$ are given in \cite{shouval2002unified}.
+The phenomenon of synaptic weights increasing due to learning is named long-term potentiation (LTP), and similar decreasing is named long-term depression (LTD). LTD and LTP are the methods the neuron uses to assign different synaptic weights based on the input to that synapse.
 
-TODO figure of omega and eta side-by-side
+\begin{figure}[h]
+    \includegraphics[width=\textwidth]{figures/methods_eta_omega.eps}
+    \caption{This is a caption.}
+    \label{fig:methods_eta_omega}
+\end{figure}
 
 
 
@@ -407,13 +411,9 @@ TODO figure of omega and eta side-by-side
 
 \section{Implementation details}
 
-The model was implemented in MATLAB; source code is available on Github\footnote{https://github.com/taivop/neuron}.
+For updating values according to the differential equations, the Euler method is used with a $0.1ms$ time-step length (chosen as the highest value allowing numerical stability). At the start of each simulation, some parameters are initialised to previously found equilibrium values to avoid unstable behaviour. Input is generated in 1-second blocks for ease of implementation, and the release of neurotransmitters caused by each presynaptic spike is assumed to last 1 ms. The complexity of simulation is linear with respect to the total simulation time; the computation time required for $x$ seconds of simulated neuron time varies between $2x$ and $15x$ seconds depending on the amount of input to the neuron on the machines used for simulation.
 
-viita, et osa simulatsioonidest tegin HPC klastris
-
-For updating values according to the differential equations, the Euler method was used with a $0.1ms$ time-step length (chosen as the highest value allowing numerical stability). Voltage of the postsynaptic neuron and other (TODO which?) parameters were initialised to previously found equilibrium values at the start of each simulation to avoid unstable behaviour at the start of each simulation. The release of neurotransmitters caused by each presynaptic spike is assumed to last 1 ms. Input was generated in 1-second blocks for ease of implementation. The complexity of simulation is linear with respect to the total simulation time. The computation time required for $x$ seconds of simulated neuron time varied between $2x$ and $10x$ seconds depending on the amount of input to the neuron (on the machine used for simulation).
-
-TODO also mention mistake made in 2002 paper.
+The model was implemented in MATLAB; source code is attached as an online supplementary to the thesis. The simulations were carried out in part in the High Performance Computing Center of University of Tartu.
 
 
 
