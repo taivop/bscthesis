@@ -334,14 +334,21 @@ The neuron model used in this work follows the model of a single neuron publishe
 % TODO Appendix letter may change.
 % TODO do we use metaplasticity? prolly not because don't want to simulate that long.
 
-Add that our integration model is more detailed - gating stuff from Raul's e-mail.
+\cite{ermentrout1998fine}. Difference: I set I0 to 0 to reduce complexity of output.
+The model is Hodgkin–Huxley-like model;  it is Traub-Miles cell.
 
 
 \subsubsection{Integrate-and-fire model}
 
+The postsynaptic neuron is modelled as a Traub-Miles cell, which is a Hodgkin-Huxley-like model. For estimating postsynaptic voltage, the equation and parameters from \cite{ermentrout1998fine} are used, with one significant difference: the basal current $I_0$, which causes spontaneous voltage increase, is set to $0$. Compared to Hodgkin-Huxley, the Traub-Miles model includes a more detailed simulation of Na\textsuperscript{+} and K\textsuperscript{+} flows by modelling gating of the respective ion channels as dependent on postsynaptic voltage.
+
 The voltage of the postsynaptic neuron can be increased by excitatory postsynaptic potentials (EPSPs) caused by presynaptic spikes at excitatory synapses, or decreased due to inhibitory postsynaptic potentials (IPSPs) caused by presynaptic spikes at inhibitory synapses. In addition, a leak current is simulated, which tends to return voltage to the resting potential $V_{rest}$. When postsynaptic voltage $V_{post}$ reaches the threshold $V_{thres}$, a postsynaptic spike is recorded, and $V_{post}$ is instantaneously set to the spiking voltage $V_{spike}$. In the next time-step, $V_{post}$ is returned to the reset potential $V_{reset}$, from where it returns to the baseline voltage.
 
+\subsubsection{Plasticity model}
+
 Excitatory and inhibitory synapses are modelled by ion gates controlled by the respective neurotransmitters, glutamate and gamma-aminobutyric acid (GABA). Upon each spike at an excitatory synapse, the opening of glutamate-controlled ion channels is simulated, with the degree of open-ness (TODO) simulated as a sum of two decaying exponentials peaking at the time of spike. The resulting ion flow tends to drive $V_{post}$ towards the excitatory reversal potential $V_{EPSP}$. Similarly, upon each spike at an inhibitory synapse, the opening of GABA-controlled ion channels is simulated, and the resulting ion flow tends to drive $V_{post}$ towards the inhibitory reversal potential $V_{IPSP}$. Spikes at excitatory synapses have a larger relative influence on $V_{post}$) due to the higher simulated conductivity (maximum throughput of ions) of glutamate-controlled ion channels. The three currents - one from excitatory synapses, another from inhibitory synapses, and the leak current - together determine the sign and extent of change in postsynaptic voltage.
+
+The effect of presynaptic spikes on the gating of glutamate-controlled and GABA-controlled channels at excitatory and inhibitory synapses, respectively, is simulated according to the model from \cite{borgers2008gamma}.
 
 %FIGURE: spatial and temporal summation of EPSP-s, causing a spike (action potential) vs not causing a spike. Also on same timeline, an IPSP. Below, show excitatory and inhibitory spikes as raster plots. I think Julius had a good figure for this.
 
