@@ -319,42 +319,44 @@ Several single neuron models have been shown to be capable of unsupervised learn
 \chapter{Methods}
 
 \section{Input generation}
-Inputs to the model are simulated as $N$ spike trains, one for each synapse, with a given mean firing rate $r$ specified independently for each synapse. Each spike train is a sequence of binary numbers: 1 if a spike occurred in that timestep and 0 otherwise. The spike trains are produced in a homogeneous Poissonian process, i.e. the occurrence of a spike is independent of the time since the last spike, and the average rate of spikes remains constant over time.
-Correlation between inputs is achieved by specifying the correlation parameter $0 \leq c \leq 1$, and using code from \cite{macke2009} to generate correlated homogeneous Poissonian spike trains. For $c=1$, all synapses will receive identical input; for $c=0$, all synapses will receive independently generated spike trains.
+Rather than simulating presynaptic neurons, inputs to the model are simulated as $N$ spike trains, one for each synapse, with a given mean firing rate $r$ specified independently for each synapse. Due to the way information is represented in computers, time is discretised into time-steps of length $dt$ regardless of the continuous nature of the biophysical processes. Each spike train one binary number per time-step: 1 if a spike occurred and 0 otherwise. The spike trains are produced in a homogeneous Poissonian process, i.e. the occurrence of a spike is independent of the time since the last spike, and the average rate of spikes remains constant over time.
+Correlation between inputs is achieved by specifying the correlation parameter $0 \leq c \leq 1$, and using code from \cite{macke2009} to generate correlated homogeneous Poissonian spike trains. For $c=1$, all synapses receive identical input; for $c=0$, all synapses receive independently generated spike trains.
 
 \begin{figure}[h]
     \includegraphics[width=\textwidth]{figures/methods_sample_input.eps}
-    \caption{Caption lalala.}
+    \caption{Sample input to 30 synapses, generated for a 1000ms period with a 0.1ms time-step. In this figure, black bars indicate timesteps at which spiketrains (running horizontally) contain spikes. Synapses 1-10 receive 5Hz uncorrelated input, synapses 11-20 receive 40Hz correlated input with $c=0.8$, synapses 21-30 receive 40Hz uncorrelated input.}
     \label{fig:methods_sample_input}
 \end{figure}
 
-FIGURE: seletan, misasi on spike (et räägin presünaptilistest spike'idest, aga reaalselt ei simuleeri presyn neuroneid)
-    näitan 50 sünapsi ja ütlen, et ok, tahan et esimesed oleks kõvasti korreleeritud, järgmised oleks korreleerimata, aga suurema rate'ga, viimased oleks korreleerimata ja madala rate'iga
-    genereerin vastavad input spiked ja näitan samas rasterploti (kus vasakul on märgitud ka, mis rate'i igaüks pidi saama)
-    seletan, mida rasterplot tähendab ja et iga presünaptiline spike mõjutab postsünaptilist mingil viisil
-FIGURE: desired input rates for 100 synapses; actual input rates.
-
 \section{Neuron model used in simulations}
 
-The neuron model used in this work follows the model of a single neuron published in \cite{yeung2004synaptic}. An integrate-and-fire model of information integration is used with a calcium-dependent model of synaptic plasticity \cite{shouval2002unified}. Due to the way information is represented in computers, time is discretised into time-steps of length $dt$ regardless of the continuous nature of the biophysical processes. No dendritic distance is simulated, i.e. the possibility that some synapses are situated further from the soma is not taken into account. In this section, an overview of the most important aspects of the model will be given. Exact values of the parameters used are given in Appendix~\ref{appendix:parameters}.
+The neuron model used in this work follows the model of a single neuron published in \cite{yeung2004synaptic}. An integrate-and-fire model of information integration is used with a calcium-dependent model of synaptic plasticity \cite{shouval2002unified}. No dendritic distance is simulated, i.e. the possibility that some synapses are situated further from the soma is not taken into account. In this section, an overview of the most important aspects of the model will be given. Exact values of the parameters used are given in Appendix~\ref{appendix:parameters}.
 % TODO Appendix letter may change.
 % TODO do we use metaplasticity? prolly not because don't want to simulate that long.
 
-\cite{ermentrout1998fine}. Difference: I set I0 to 0 to reduce complexity of output.
-The model is Hodgkin–Huxley-like model;  it is Traub-Miles cell.
 
 
-\subsubsection{Integrate-and-fire model}
 
-The postsynaptic neuron is modelled as a Traub-Miles cell, which is a Hodgkin-Huxley-like model for estimating postsynaptic voltage. The equations and parameters from \cite{ermentrout1998fine} are used, with one significant difference in parameters: the basal current $I_0$, which causes spontaneous voltage increase, is set to $0$. Compared to Hodgkin-Huxley, the Traub-Miles model includes a more detailed simulation of Na\textsuperscript{+} and K\textsuperscript{+} currents by modelling gating of the respective ion channels as dependent on postsynaptic voltage.
+
+
+
+
+
+
+\subsection{Integrate-and-fire model}
+
+The postsynaptic neuron is modelled as a Traub-Miles cell, which is a Hodgkin-Huxley-like model for estimating postsynaptic voltage. The equations and parameters from \cite{ermentrout1998fine} are used, with one significant difference in parameters: the basal current $I_0$, which causes spontaneous voltage increase, is set to $0$. Compared to Hodgkin-Huxley, the Traub-Miles model includes a more detailed simulation of Na\textsuperscript{+} and K\textsuperscript{+} currents by modelling the dependence of the gating of abovementioned channels on postsynaptic voltage.
 
 The core of the integrate-and-fire model used in this thesis are five currents affecting postsynaptic voltage: a voltage-increasing current caused by presynaptic spikes at excitatory synapses, a voltage-decreasing current caused by presynaptic spikes at inhibitory synapses, Na\textsuperscript{+} and K\textsuperscript{+} currents not directly affected by presynaptic spiking, and a leak current, which tends to return voltage to the resting potential $V_{rest}=-65\mathrm{mV}$. When postsynaptic voltage $V_{post}$ reaches the threshold $V_{thres}=-55\mathrm{mV}$, a postsynaptic spike is recorded, and $V_{post}$ is set to the spiking voltage $V_{spike}=40\mathrm{mV}$. In the next time-step, $V_{post}$ is returned to the reset potential $V_{reset}=-65\mathrm{mV}$, from where it returns to the baseline voltage.
 
 As an addition to the Traub-Miles model, spike-frequency adaptation is implemented following \cite{yeung2004synaptic}: the resting voltage is decreased by 2mV upon each postsynaptic spike, and decays back to the baseline with a time constant of $100\mathrm{ms}$. This temporarily increases the gap between resting and threshold voltages, requiring more presynaptic input to reach the threshold and thus decreasing firing rate.
 
-\subsubsection{Plasticity model}
 
-Excitatory and inhibitory synapses are modelled by ion gates controlled by the respective neurotransmitters, glutamate and gamma-aminobutyric acid (GABA). Upon each spike at an excitatory synapse, the opening of glutamate-controlled ion channels is simulated, with the degree of open-ness (TODO) simulated as a sum of two decaying exponentials peaking at the time of spike. The resulting ion flow tends to drive $V_{post}$ towards the excitatory reversal potential $V_{EPSP}$. Similarly, upon each spike at an inhibitory synapse, the opening of GABA-controlled ion channels is simulated, and the resulting ion flow tends to drive $V_{post}$ towards the inhibitory reversal potential $V_{IPSP}$. Spikes at excitatory synapses have a larger relative influence on $V_{post}$) due to the higher simulated conductivity (maximum throughput of ions) of glutamate-controlled ion channels. The three currents - one from excitatory synapses, another from inhibitory synapses, and the leak current - together determine the sign and extent of change in postsynaptic voltage.
+
+
+\subsection{Model of synapses}
+
+Excitatory and inhibitory synapses are modelled by ion gates controlled by the respective neurotransmitters, glutamate and gamma-aminobutyric acid (GABA). Upon each spike at an excitatory synapse, the opening of glutamate-controlled ion channels at dendrites is simulated, with the degree of opening simulated as a sum of two decaying exponentials peaking at the time of spike. The resulting ion flow tends to drive $V_{post}$ towards the excitatory reversal potential $V_{rev,exc}=0\mathrm{mV}$. Similarly, upon each spike at an inhibitory synapse, the opening of GABA-controlled ion channels is simulated, and the resulting ion flow tends to drive $V_{post}$ towards the inhibitory reversal potential $V_{rev,inh}=-65\mathrm{mV}$. Spikes at excitatory synapses have a larger relative influence on $V_{post}$) due to the higher simulated conductivity (maximum throughput of ions) of glutamate-controlled ion channels.
 
 The effect of presynaptic spikes on the gating of glutamate-controlled and GABA-controlled channels at excitatory and inhibitory synapses, respectively, is simulated according to the model from \cite{borgers2008gamma}.
 
@@ -363,21 +365,7 @@ The effect of presynaptic spikes on the gating of glutamate-controlled and GABA-
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-\subsubsection{Plasticity}
+\subsection{Plasticity}
 
 In addition to the non-changing components mentioned in the previous section, the extent to which presynaptic spikes influence postsynaptic voltage is modelled by the synaptic weights $\boldsymbol{W}=(W_i)$, with $i$ denoting the number of the synapse. The modification of these weights is the basis of learning in this model: increasing $W_i$ will increase the effect spikes at the $i$-th synapse have on postsynaptic voltage, and vice versa. In this model, only excitatory synapses are plastic, i.e. inhibitory synapses remain unchanged.
 
@@ -659,7 +647,7 @@ The two measures I'm looking at are, as mentioned, the mean output rate and the 
 The (faulty) results I got earlier today were interesting in that sense: there was a peak in both mean and variance of output rate at p=0.3 to p=0.5 The correct results are attached; the filename gives away the input rate used. The correct results are pretty linear compared to the faulty ones; this difference is explained by the fact that right now I am operating in the linear range, whereas for the faulty results I operated in a highly non-linear regime of the neuron.
 
 The conclusion that I would draw from the correct results is a less interesting (but still presentable) one: PR does break correlation (as one would expect). The most interesting, I think, is that for p=0.8, the output rate is the same as for p=1.
-I think this effect is caused by the exact values of {rate, weights} -- the minimum amount (e.g. 8) of coincident spikes required for immediately producing a postsynaptic spike is achieved already at p=0.8 so any additional spikes at the same timestep are wasted. It might be that, with spike-frequency adaptation enabled, the graph would be more perfectly linear.
+I think this effect is caused by the exact values of {rate, weights} -- the minimum amount (e.g. 8) of coincident spikes required for immediately producing a postsynaptic spike is achieved already at p=0.8 so any additional spikes at the same time-step are wasted. It might be that, with spike-frequency adaptation enabled, the graph would be more perfectly linear.
 
 In any case, this result will be an addition to my growing body of evidence of the near-linearity of the model :).
 
