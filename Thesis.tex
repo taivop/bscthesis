@@ -319,8 +319,14 @@ Several single neuron models have been shown to be capable of unsupervised learn
 \chapter{Methods}
 
 \section{Input generation}
-Inputs to the model are simulated as $N$ spike trains, one for each synapse, with a given mean firing rate $r$ specified independently for each synapse. The spike trains are produced in a homogeneous Poissonian process, i.e. the occurrence of a spike is independent of the time since the last spike, and the average rate of spikes remains constant. Uncorrelated inputs are generated using TODO CITE (HomoPoisSpikeGen function)?
-Correlation between inputs is achieved by specifying the correlation parameter $0 \leq c \leq 1$, and using code from \cite{macke2009} to generate correlated homogeneous Poissonian spike trains.
+Inputs to the model are simulated as $N$ spike trains, one for each synapse, with a given mean firing rate $r$ specified independently for each synapse. Each spike train is a sequence of binary numbers: 1 if a spike occurred in that timestep and 0 otherwise. The spike trains are produced in a homogeneous Poissonian process, i.e. the occurrence of a spike is independent of the time since the last spike, and the average rate of spikes remains constant over time.
+Correlation between inputs is achieved by specifying the correlation parameter $0 \leq c \leq 1$, and using code from \cite{macke2009} to generate correlated homogeneous Poissonian spike trains. For $c=1$, all synapses will receive identical input; for $c=0$, all synapses will receive independently generated spike trains.
+
+\begin{figure}[h]
+    \includegraphics[width=\textwidth]{figures/methods_sample_input.eps}
+    \caption{Caption lalala.}
+    \label{fig:methods_sample_input}
+\end{figure}
 
 FIGURE: seletan, misasi on spike (et räägin presünaptilistest spike'idest, aga reaalselt ei simuleeri presyn neuroneid)
     näitan 50 sünapsi ja ütlen, et ok, tahan et esimesed oleks kõvasti korreleeritud, järgmised oleks korreleerimata, aga suurema rate'ga, viimased oleks korreleerimata ja madala rate'iga
@@ -340,9 +346,11 @@ The model is Hodgkin–Huxley-like model;  it is Traub-Miles cell.
 
 \subsubsection{Integrate-and-fire model}
 
-The postsynaptic neuron is modelled as a Traub-Miles cell, which is a Hodgkin-Huxley-like model. For estimating postsynaptic voltage, the equation and parameters from \cite{ermentrout1998fine} are used, with one significant difference: the basal current $I_0$, which causes spontaneous voltage increase, is set to $0$. Compared to Hodgkin-Huxley, the Traub-Miles model includes a more detailed simulation of Na\textsuperscript{+} and K\textsuperscript{+} flows by modelling gating of the respective ion channels as dependent on postsynaptic voltage.
+The postsynaptic neuron is modelled as a Traub-Miles cell, which is a Hodgkin-Huxley-like model for estimating postsynaptic voltage. The equations and parameters from \cite{ermentrout1998fine} are used, with one significant difference in parameters: the basal current $I_0$, which causes spontaneous voltage increase, is set to $0$. Compared to Hodgkin-Huxley, the Traub-Miles model includes a more detailed simulation of Na\textsuperscript{+} and K\textsuperscript{+} currents by modelling gating of the respective ion channels as dependent on postsynaptic voltage.
 
-The voltage of the postsynaptic neuron can be increased by excitatory postsynaptic potentials (EPSPs) caused by presynaptic spikes at excitatory synapses, or decreased due to inhibitory postsynaptic potentials (IPSPs) caused by presynaptic spikes at inhibitory synapses. In addition, a leak current is simulated, which tends to return voltage to the resting potential $V_{rest}$. When postsynaptic voltage $V_{post}$ reaches the threshold $V_{thres}$, a postsynaptic spike is recorded, and $V_{post}$ is instantaneously set to the spiking voltage $V_{spike}$. In the next time-step, $V_{post}$ is returned to the reset potential $V_{reset}$, from where it returns to the baseline voltage.
+The core of the integrate-and-fire model used in this thesis are five currents affecting postsynaptic voltage: a voltage-increasing current caused by presynaptic spikes at excitatory synapses, a voltage-decreasing current caused by presynaptic spikes at inhibitory synapses, Na\textsuperscript{+} and K\textsuperscript{+} currents not directly affected by presynaptic spiking, and a leak current, which tends to return voltage to the resting potential $V_{rest}=-65\mathrm{mV}$. When postsynaptic voltage $V_{post}$ reaches the threshold $V_{thres}=-55\mathrm{mV}$, a postsynaptic spike is recorded, and $V_{post}$ is set to the spiking voltage $V_{spike}=40\mathrm{mV}$. In the next time-step, $V_{post}$ is returned to the reset potential $V_{reset}=-65\mathrm{mV}$, from where it returns to the baseline voltage.
+
+As an addition to the Traub-Miles model, spike-frequency adaptation is implemented following \cite{yeung2004synaptic}: the resting voltage is decreased by 2mV upon each postsynaptic spike, and decays back to the baseline with a time constant of $100\mathrm{ms}$. This temporarily increases the gap between resting and threshold voltages, requiring more presynaptic input to reach the threshold and thus decreasing firing rate.
 
 \subsubsection{Plasticity model}
 
@@ -369,8 +377,6 @@ The effect of presynaptic spikes on the gating of glutamate-controlled and GABA-
 
 
 
-
-% was: "Learning"
 \subsubsection{Plasticity}
 
 In addition to the non-changing components mentioned in the previous section, the extent to which presynaptic spikes influence postsynaptic voltage is modelled by the synaptic weights $\boldsymbol{W}=(W_i)$, with $i$ denoting the number of the synapse. The modification of these weights is the basis of learning in this model: increasing $W_i$ will increase the effect spikes at the $i$-th synapse have on postsynaptic voltage, and vice versa. In this model, only excitatory synapses are plastic, i.e. inhibitory synapses remain unchanged.
