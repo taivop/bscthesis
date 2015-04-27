@@ -334,6 +334,8 @@ The neuron model used in this work follows the model of a single neuron publishe
 % TODO Appendix letter may change.
 % TODO do we use metaplasticity? prolly not because don't want to simulate that long.
 
+Add that our integration model is more detailed - gating stuff from Raul's e-mail.
+
 
 \subsubsection{Integrate-and-fire model}
 
@@ -430,7 +432,7 @@ TODO also mention mistake made in 2002 paper.
 % % % %
 % Useful link for figures: http://tex.stackexchange.com/questions/37581/latex-figures-side-by-side
 \chapter{Results}
-\section{Validation of the implementation}
+\section{Validation of the model behaviour}
 
 
 
@@ -468,6 +470,12 @@ TODO also mention mistake made in 2002 paper.
 
 
 \subsection{Metaplasticity}
+\begin{figure}[h]
+    \includegraphics[width=\textwidth]{figures/valid_metaplasticity_evolution.eps}
+    \caption{Caption lalala.}
+    \label{fig:valid_metaplasticity_evolution}
+\end{figure}
+
 
 
 
@@ -496,8 +504,35 @@ A. Experiment 2 and Experiment 6: the neuron learns to fire more for a learned i
 B. Experiment 1 and Experiment 5: the neuron responds linearly to varying input intensity (Exp 1) and proportion of pattern present (Exp 5).
 C. Experiment 4: the neuron becomes more selective to patterns coded in a particular number of synapses (or a small range).
 
+\clearpage % TODO remove
+\subsection{Response to learned inputs}
+% Experiment 2 and Experiment 6
 
-\subsection{Experiment 2 and Experiment 6}
+% Experiment 2
+
+Training: I train the neuron on a high-rate 'bump': 40Hz to synapses 1...25 and 10Hz to all others.
+Test: two cases.
+Case 1: input is exactly the same as training input: 40Hz bump at synapses 1:25.
+Case 2: input is changed only by changing the location of the bump by moving it to synapses 76:100.
+
+I anticipated that in Case 2 the neuron fires less (because it gets less input to the synapses that were potentiated due to learning the 40Hz input), and the experiment confirmed this: Case 1 produced 64Hz output, Case 2 produced 44Hz output (the difference remains at ~20Hz in all runs).
+This result may seem trivial but I did this to show that the neuron does not fire a lot any time it sees a bump anywhere, but responds most only if the bump was the pattern that it was shown during training.
+
+% Experiment 6
+
+Training: 40Hz input to 25 synapses, 10Hz to others.
+Testing: pattern changes every 1000ms. For 1000ms, the pattern is the same as training pattern; for the next 1000ms the neuron gets flat input (same total rate); then training pattern etc.
+
+To find the instantaneous firing rate, I count spikes using a sliding time window of varying size.
+On the bottom plot, the red dashed lines show the mean output rate for time periods with patterned input (top line => higher rate) and with flat input (bottom line => lower rate).
+
+The result is as expected: the neuron fires more when it sees the learned pattern, and switches to a lower rate when it gets noise.
+I would probably place this near Experiment 2 since the points are pretty similar; what Experiment 6 adds is time-dynamics and a nice graph showing that the neuron indeed switches between two modes of firing if it sees two modes of input.
+
+Instantaneous rate at time t is the count of postsynaptic spikes in the time window [t-500ms, t+500ms].
+
+COMMENT on high firing rates: this is something I did contemplate myself. I think the main culprits are the exact values of two parameters: EPSP voltage and the stable point of weights. Drawing a plot that shows an input-output curve for a bunch of different EPSP values should take no more than 10 minutes (I have all the code), so I'll put this figure along with a description of other likely causes somewhere into Results > Validation. A weak justification is also that Shouval 2004 have high rates too (at least for an untrained neuron - 30Hz uncorrelated input results in 60Hz output).
+
 
 \begin{figure}[h]
     \includegraphics[width=\textwidth]{figures/exp6_voltageoscillation.eps}
@@ -506,7 +541,41 @@ C. Experiment 4: the neuron becomes more selective to patterns coded in a partic
 \end{figure}
 
 
-\subsection{Experiment 1 and Experiment 5}
+
+
+
+
+
+\clearpage % TODO remove
+\subsection{Response to partial presentation of learned inputs}
+% Experiment 1 and Experiment 5
+
+% Experiment 1
+Train: I train the neuron on uncorrelated input, with synapses 1...25 getting 40Hz and all others getting 10Hz.
+
+Test: I test the neuron by giving synapses 1...25 inputs ranging from 0Hz to 70Hz (each one a different run) and all other synapses getting such inputs that the total input received by the neuron remains constant in each run. Plotted is the output rate from each run (blue line).
+
+Control (orange line): I trained another neuron (another instance) on uncorrelated input with all synapses getting the same input (but the total input received by the neuron still constant). Results are shown below.
+
+Note that the black dashed line shows the point where all inputs get the same input (17.5Hz). Left of that line, synapses 1...25 get lower input than the others, and vice versa.
+
+Basically, I vary the intensity of a learned input pattern and see what output the neuron produces. I think the result is interesting in that  shows what filter the neuron implements - a linear one. This can be compared with what is done in ANNs where they have rectified linear or sigmoidal filters. It seems to me that the analogy holds very well, and that this result is very useful in the context of building a network of these neurons (as well as general understanding of how the neuron behaves).
+
+It's also interesting that the neuron is linear in the region left of the dashed line as well, i.e. the neuron also linearly determines the absence of input.
+
+% Experiment 5
+Training: train a neuron by showing channel 1 (40 synapses) a high input rate of 40Hz, and all others such a rate that total input to neuron is 1750Hz.
+Testing: take a subset of the original 40 synapses trained on high input, and show them the same input as before. All others get a lower rate so the total input to neuron is 1750Hz.
+Comparison: train a neuron on flat input (with total input rate staying the same at 1750Hz), and test in the same way.
+
+So I train the neuron on some pattern coded in X synapses, and then show the same pattern only partially (less than X synapses).
+
+I think the most interesting result here is that
+1. the neuron doesn't do pattern completion (which I anticipated since with learning disabled, the neuron fires more when there is more input) and
+2. the neuron responds to removing synapses pretty linearly, similar to its linearity when decreasing the input rate (experiment 1).
+
+Thinking of the result of experiment 1, there is actually also an implication for probabilistic release. Due to the linearity of the neuron, if there is a 50\% probability of release (effective input rate is 50\% of actual rate R), the output rate of the neuron will also be 50\% of the way between baseline and what one would expect for a rate R.
+(I think ^this^ is good to mention in the Discussion section of the thesis.)
 
 \begin{figure}
 \centering
@@ -525,9 +594,28 @@ C. Experiment 4: the neuron becomes more selective to patterns coded in a partic
 \end{figure}
 
 
-\subsection{Experiment 4}
+
+
+
+
+
+\clearpage % TODO remove
+\subsection{Response to patterns with different channel widths}
+% Experiment 4
+
+Training: give a total of 1000Hz input to channel 1 (synapses 1...w), and 750Hz to channel 2 (all other synapses), varying w (the width of channel 1) from 10 to  50.
+Testing: give exactly the same input as in training.
+Comparison: train the neuron on flat input with the same total rate.
+
+So I vary the width of a pattern channel to find out, what would be the 'optimal' width of a pattern, i.e. the optimal amount of synapses to use to encode a pattern. The resulting line is shown in blue (with +- 1 standard deviation lines), with the comparison in orange.
+
+It turns out that even though the neuron fires most for 20...25-synapse patterns, the neuron is more selective to patterns that are coded in fewer synapses (selectivity here is the difference between the blue and orange line, and the difference is largest for low numbers of synapses).
+
+Using this graph, I would argue that it does make a difference exactly how you create the pattern you're going to use with this model -- and coding a pattern in 10-20 synapses elicits selectivity well, whereas a 40-50 synapse pattern doesn't. This makes sense, since a few very strongly firing inputs seem to convey better information than a large amount of inputs that have only slightly higher rates than background.
+The value of this knowledge: it helps inform further experiments by showing what kind of parameters to use.
 
 \begin{figure}[h]
+    \centering
     \includegraphics[width=0.5\textwidth]{figures/exp4_synapsecount.eps}
     \caption{Caption lalala.}
     \label{fig:exp4synapsecount}
@@ -535,12 +623,35 @@ C. Experiment 4: the neuron becomes more selective to patterns coded in a partic
 
 
 
-\subsection{Partial patterns}
 
 
 
-
+\clearpage % TODO remove
 \section{Probability of release}
+
+% Experiment 8
+Testing what the input-output curve looks like for different values of PR (the input will have correlation of c=0.8 because otherwise the effect of PR is to only change the rate of input).
+Disabled resting voltage dynamics and reduced the weights. Also changed EPSP? (Look at the figure file name to find out.)
+
+% Experiment 7
+* Fix syn. weights so that 5 weights are at 1.0 and all others at 0.05.
+* Select input rate r.
+* Select probability of release parameter p.
+* Generate input by starting with perfectly correlated input with a rate of r/p, and randomly remove each spike with probability 1-p (i.e. probability of keeping it is p. The rate r is divided by p so the effective input to the neuron is always the same.
+* Measure output rate of the neuron as a function of probability of release p; do this 10 times for each value of p and find the mean and stdev of output rates in these 10 experiments.
+
+The hypothesis is that there exists an optimal value of p, for which some measure of informational goodness is highest, and for any other p (higher or lower), this measure will decrease.
+The two measures I'm looking at are, as mentioned, the mean output rate and the variance in output rates. High variance in the output can be good because the range of outputs available to the neuron is wider.
+
+The (faulty) results I got earlier today were interesting in that sense: there was a peak in both mean and variance of output rate at p=0.3 to p=0.5 The correct results are attached; the filename gives away the input rate used. The correct results are pretty linear compared to the faulty ones; this difference is explained by the fact that right now I am operating in the linear range, whereas for the faulty results I operated in a highly non-linear regime of the neuron.
+
+The conclusion that I would draw from the correct results is a less interesting (but still presentable) one: PR does break correlation (as one would expect). The most interesting, I think, is that for p=0.8, the output rate is the same as for p=1.
+I think this effect is caused by the exact values of {rate, weights} -- the minimum amount (e.g. 8) of coincident spikes required for immediately producing a postsynaptic spike is achieved already at p=0.8 so any additional spikes at the same timestep are wasted. It might be that, with spike-frequency adaptation enabled, the graph would be more perfectly linear.
+
+In any case, this result will be an addition to my growing body of evidence of the near-linearity of the model :).
+
+I also plotted the histogram of voltage (as R recommended) to understand where the voltage is most of the time. These graphs do not contain the region of spiking voltage; voltage can vary from -65mV (rest) to -55mV (firing).
+
 
 \begin{figure}[h]
     \includegraphics[width=\textwidth]{figures/exp7_PRoutputvariance_grid.eps}
@@ -560,11 +671,23 @@ C. Experiment 4: the neuron becomes more selective to patterns coded in a partic
     \label{fig:exp8gridweights}
 \end{figure}
 
+
+\section{Testing for principal component analysis}
+Speak about what I tried, how it failed, why it failed and whether PCA is even feasible (and what should be done to make it so). Or maybe some of this goes in the Discussion section.
+
+See e-mails for experiments, comments and analysis. There are figures in Experiment 9 and Experiment 10.
+
+
 % % % %
 % Chapter: Discussion
 % % % %
 \chapter{Discussion}
 Mention this: http://www.cell.com/neuron/abstract/S0896-6273%2815%2900210-X
+
+mina vs 2004/2002
+näitan, mis neuroni reaalne output on (mitte ainult weightid) -- see on väga oluline, et saaks networke ehitada
+first implemented, then didnt touch any parameters but treated neuron as a black box, looking only at input structure and output rate
+miks mul korrelatsioon ei tööta -- kitsam STDP tekitab correlation specificityt, mul on suht lai STDP
 
 
 
@@ -632,22 +755,22 @@ Internet URLs were valid on May 14, 2015.
 % Non-exclusive license to reproduce thesis and make thesis public
 %
 \section*{Non-exclusive license to reproduce thesis and make thesis public}
-I, Ilya Kuzovkin (09.07.1988), 
+I, Taivo Pungas (21.02.1994), 
 \begin{enumerate}
-	\item herewith grant the University of Tartu a free permit (non-exclusive licence) to:
+	\item herewith grant the University of Tartu a free permit (non-exclusive license) to:
 	\begin{enumerate}[label*=\arabic*.]
 		\renewcommand{\theenumi}{\arabic{enumi}}
 		\item reproduce, for the purpose of preservation and making available to the public, including for addition to the DSpace digital archives until expiry of the term of validity of the copyright, and
-		\item make available to the public via the web environment of the University of Tartu, including via the DSpace digital archives until expiry of the term of validity of the copyright,
+		\item make available to the public via the web environment of the University of Tartu, including via the DSpace digital archives, as of 26.06.2016 until expiry of the term of validity of the copyright,
 	\end{enumerate}
-	``A New Approach to Training Brain-Computer Interface Systems", supervised by Konstantin Tretyakov,
+	``TODO thesis title goes here", supervised by Raul Vicente and Jaan Aru,
 	
 	\item I am aware of the fact that the author retains these rights.
 
-	\item I certify that granting the non-exclusive licence does not infringe the intellectual property rights or rights arising from the Personal Data Protection Act. 
+	\item I certify that granting the non-exclusive license does not infringe the intellectual property rights or rights arising from the Personal Data Protection Act. 
 \end{enumerate}
 
-Tartu, 20.05.2013
+Tartu, 14.05.2015
 
 \thispagestyle{empty}
 \newpage
