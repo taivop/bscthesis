@@ -239,9 +239,9 @@ However, gaining understanding of the brain's information processing mechanisms 
 
 Artificial systems with significant capacity for learning have recently been created using deep convolutional neural networks in tasks ranging from playing video games \cite{mnih2015human} to describing scenes in natural language \cite{karpathy2014deep}. The neuron models used in these systems are very simple, often composing of a scalar product of the inputs and weights, and a thresholding function. However, evidence from brains has shown that each neuron is a much more complex and powerful information processing unit. There is a clear gap between the computational properties of networks of neurons and the biophysical mechanisms of synaptic plasticity at the cellular level. The primary goal of this thesis is to help narrow this gap.
 
-One way to bridge the gap is to show by numerical simulations that from basic principles of neuronal biophysics, more complex learning capabilities follow. Unsupervised learning is a mode of learning in which a system needs to learn the structure of input only based on the input itself, without being told explicitly what the input is. As an example of unsupervised learning in human subjects, one could show several pictures of zebras and tigers to a person previously unfamiliar with these animals, and the person would be able to distinguish that the animals shown fall into two major classes. While it has been shown that networks of neurons can perform this kind of tasks, it has been largely unstudied whether much smaller units of computation are capable of unsupervised learning.
+One way to bridge the gap is to show by numerical simulations what behaviour results from basic principles of neuronal biophysics.
 
-This work explores the behaviour of one particular previously published (with a Nobel-winning physicist among the authors) biophysically realistic neuron model, which has been shown to produce a range of neural plasticity phenomena. The thesis attempts to demonstrate that starting from very basic biophysical principles, the neuron model exhibits behaviour equivalent to principal component analysis (PCA), a well known unsupervised learning procedure.
+This work explores the behaviour of one particular previously published (with a Nobel-winning physicist among the authors) biophysically realistic neuron model, which has been shown to produce a range of neural plasticity phenomena. In the thesis, behaviour of the implemented model is first validated against previously published work. Then, its input-output relation is characterised for various kinds of input. As an addition to the model, the effect of probabilistic neurotransmitter release is studied. Finally, two simple tasks are simulated to study the neuron's ability to implement principal component analysis, a well-known unsupervised learning algorithm.
 
 The main goals of the work could be formulated as:
 1. implement the neuron model and validate its behaviour (against original papers and what is realistic)
@@ -327,8 +327,10 @@ Several single neuron models have been shown to be capable of unsupervised learn
 \chapter{Methods}
 
 \section{Input generation}
-Rather than simulating presynaptic neurons, inputs to the model are simulated as $N$ spike trains, one for each synapse, with a given mean firing rate $r$ specified independently for each synapse. Due to the way information is represented in computers, time is discretised into time-steps of length $dt$ regardless of the continuous nature of the biophysical processes. Each spike train one binary number per time-step: 1 if a spike occurred and 0 otherwise. The spike trains are produced in a homogeneous Poissonian process, i.e. the occurrence of a spike is independent of the time since the last spike, and the average rate of spikes remains constant over time.
+Rather than simulating presynaptic neurons, inputs to the model are simulated as $N$ spike trains, one for each excitatory synapse, with a given mean firing rate $r$ specified independently for each synapse. Due to the way information is represented in computers, time is discretised into time-steps of length $dt$ regardless of the continuous nature of the biophysical processes. Each spike train one binary number per time-step: 1 if a spike occurred and 0 otherwise. The spike trains are produced in a homogeneous Poissonian process, i.e. the occurrence of a spike is independent of the time since the last spike, and the average rate of spikes remains constant over time.
 Correlation between inputs is achieved by specifying the correlation parameter $0 \leq c \leq 1$, and using code from \cite{macke2009} to generate correlated homogeneous Poissonian spike trains. For $c=1$, all synapses receive identical input; for $c=0$, all synapses receive independently generated spike trains.
+
+In all simulations, inputs to inhibitory synapses are generated as uncorrelated Poissonian spike trains with a mean firing rate of 10Hz.
 
 \begin{figure}[h]
     \includegraphics[width=\textwidth]{figures/methods_sample_input.eps}
@@ -338,7 +340,7 @@ Correlation between inputs is achieved by specifying the correlation parameter $
 
 \section{Neuron model used in simulations}
 
-The neuron model used in this work follows the model of a single neuron published in \cite{yeung2004synaptic}. An integrate-and-fire model of information integration is used with a calcium-dependent model of synaptic plasticity \cite{shouval2002unified}. No dendritic distance is simulated, i.e. the possibility that some synapses are situated further from the soma is not taken into account. In this section, an overview of the most important aspects of the model will be given.
+The neuron model used in this work follows the model of a single neuron published in \cite{yeung2004synaptic}. An integrate-and-fire model of information integration is used with a calcium-dependent model of synaptic plasticity \cite{shouval2002unified}. No dendritic distance is simulated, i.e. the possibility that some synapses are situated further from the soma is not taken into account. In this section, an overview of the most important aspects of the model will be given. The total number of synapses is 120, with 100 excitatory synapses and 20 inhibitory synapses.
 % TODO Appendix letter may change.
 % TODO do we use metaplasticity? prolly not because don't want to simulate that long.
 
@@ -402,6 +404,8 @@ The phenomenon of synaptic weights increasing due to learning is named long-term
 \emph{Metaplasticity} refers to plasticity of synaptic plasticity - the dependence of plasticity on the history of the previous activity of the neuron. In the scope of this thesis, it refers to the changing of NMDA receptor (NMDAR) conductance as a function of output voltage, which leads to changes in the calcium influx and therefore changes in the sign and magnitude of changes in synaptic weights. The model of metaplasticity follows that of \cite{yeung2004synaptic}, where the NMDAR conductance $g$ is the same for all synapses and is updated according to the following equation: $$ \frac{dg}{dt}=-(k_- (V-V_{rest})^2 + k_+)g + k_+ g_t $$
 Here, $g_t$ shows the total supply of NMDARs available in the internal pool of the neuron. $k_+$ and $k_-$ are kinetic constants describing the speed of insertion and removal of NMDARs into synapses.
 
+Metaplasticity can be disabled in any simulation, resulting in a constant value of $g$.
+
 
 
 
@@ -412,7 +416,7 @@ The model was implemented in MATLAB; source code is attached as an online supple
 
 For updating values according to the differential equations, the Euler method is used with a 0.1ms time-step length, chosen as the highest value allowing numerical stability. At the start of each simulation, some parameters are initialised to previously found equilibrium values to avoid unstable behaviour. Input is generated in 1-second blocks for ease of implementation, and the release of neurotransmitters caused by each presynaptic spike is assumed to last 1 ms. The computational complexity is linear with respect to the total simulation time; the computation time required for $x$ seconds of simulated neuron time varies between $2x$ and $15x$ seconds on the machines used for simulation and depends on the amount of input to the neuron.
 
-In some simulations (TODO which?), learning speed was increased by a factor of 100 by multiplying the values of learning rate $\eta$ and NMDA receptor kinetic constants $k_+$ and $k_-$ by 100. According to \cite{yeung2004synaptic}, it was demonstrated that the fixed points of the system do not change upon speeding up the simulations by this factor.
+Unless mentioned otherwise, learning speed was increased by a factor of 100 by multiplying the values of learning rate $\eta$ and NMDA receptor kinetic constants $k_+$ and $k_-$ by 100. According to \cite{yeung2004synaptic}, the fixed points of the system do not change upon speeding up the simulations by this factor.
 
 
 
@@ -429,15 +433,22 @@ In some simulations (TODO which?), learning speed was increased by a factor of 1
 % % % %
 % Useful link for figures: http://tex.stackexchange.com/questions/37581/latex-figures-side-by-side
 \chapter{Results}
+
 \section{Validation of the model behaviour}
 
-
-
+As a prerequisite to analysing more complex behaviour of the model, it is necessary to make sure the model is implemented correctly. Syntax and other obvious errors aside, the simplest way to do this is to observe the behaviour of the model under some conditions and compare the result with previously published results on the same model in the same conditions. As \cite{shouval2002unified} and \cite{yeung2004synaptic} form the basis of the model, the behaviour of the model implemented in this thesis will be compared to these two sources. Attention will also be paid to keeping parameters and outputs in biophysically realistic ranges.
 
 \subsection{Input-output relationship}
+
+The input-output curve of a neuron is one of the most important characteristics, showing the output of the neuron to a specified amount of input. The exact scale of the curve is highly dependent on the specific parameters used. In particular, EPSP amplitude has a major effect on this relationship. 
+Figure~\ref{fig:valid_iocurve_vs_epsp_grid} shows the curve for 6 different neurons, each with a different EPSP amplitude. It is evident that the relationship is linear for a range of EPSP amplitudes, which is consistent with the findings of \cite{yeung2004synaptic} for simulations with metaplasticity enabled. For low values of EPSP amplitude and input rate, there is no output, indicating subthreshold activity: postsynaptic voltage never reaches the threshold required for producing a spike.
+
+Increasing EPSP amplitude by a factor, the curve remains linear, but output rates are scaled up by a similar factor. This means the plausible EPSP voltage range is not much constrained by considering the shape of the input-output curve, and EPSP voltage can be tuned to scale the output of the neuron according to other considerations. The EPSP amplitude producing the closest curve to that of \cite{yeung2004synaptic} lies between 1.0mV and 2.0mV. However, another crucial consideration here is biophysical reality: for completely unstructured input (noise) at 30Hz, a firing rate of even 40Hz is excessive. For this reason, in further simulations EPSP voltage was set to 3.0mV, a value found to produce good results in other informal parameter sweeps.
+
+
 \begin{figure}[h]
     \includegraphics[width=\textwidth]{figures/valid_iocurve_vs_epsp_grid.eps}
-    \caption{Caption lalala.}
+    \caption{Input-output relationship of the neuron for different values of EPSP amplitude parameter (shown above each plot). Each data point in a plot is one experiment, in which input to the neuron consists of uncorrelated spike trains with mean input rate per synapse shown on the x-axis. Due to plasticity and metaplasticity, output rate varies until a fixed point is reached; for this reason, output rate is measured over the last 500 seconds in a 10000-second experiment.}
     \label{fig:valid_iocurve_vs_epsp_grid}
 \end{figure}
 
@@ -446,30 +457,39 @@ In some simulations (TODO which?), learning speed was increased by a factor of 1
 
 \subsection{Spike timing-dependent plasticity}
 
+A spike-timing-dependent plasticity curve is important aspect of neuron models: it shows how the neuron determines the sign and magnitude of  synaptic weight updates in response to the relative timing of pre- and postsynaptic spikes. In the model used here, two parameters significantly affect STDP curve shape: BPAP amplitude and the amount of glutamate released on the presynaptic side upon each spike. The shape of STDP curve using parameters from \cite{yeung2004synaptic} is given in Figure~\ref{fig:valid_stdp}B. For comparison, Figure~\ref{fig:valid_stdp}B shows the same figure for a higher BPAP amplitude 100mV, which is the value used in \cite{shouval2002unified}.
+
+Both curves are qualitatively similar to \cite{shouval2002unified} with two regions of LTD induction -- one at negative values of $\Delta t$ and another in the region of $\Delta t > 100\mathrm{ms}$ -- and a single region of potentiation in between. However, for BPAP amplitude 100mV, the curve is smoother and weight differences larger, indicating that BPAP amplitude can be used for tuning STDP curve as necessary. In all following simulations, BPAP amplitude is fixed to 42mV to adhere to parameters published in \cite{yeung2004synaptic}.
+
+
+
 
 \begin{figure}
 \centering
 \begin{minipage}{.5\textwidth}
   \centering
   \includegraphics[width=1\linewidth]{figures/valid_stdp_bpap42.eps}
-  \captionof{figure}{A figure}
-  \label{fig:valid_stdp_bpap42}
 \end{minipage}%
 \begin{minipage}{.5\textwidth}
   \centering
   \includegraphics[width=1\linewidth]{figures/valid_stdp_bpap100.eps}
-  \captionof{figure}{Another figure}
-  \label{fig:valid_stdp_bpap100}
 \end{minipage}
+\caption{Note different scale on right one. Comment what dashed line is. What delta-T is.}
+\label{fig:valid_stdp}
 \end{figure}
 
 
 
 
 \subsection{Metaplasticity}
+
+The simplest effect of metaplasticity studied by \cite{yeung2004synaptic} was a slow scaling down of weights after an fast potentiation, or scaling up of weights after a fast depression. In both cases, the fast change is induced by regular synaptic plasticity, and the subsequent scaling my metaplasticity. In Figure~\ref{fig:valid_metaplasticity_evolution}, these dynamics are visible: after an initial quick potentiation, weights are slowly scaled down to a value where they remain stable.
+
+As seen in the figure, metaplasticity also reproduces the effect of increasing the width of the weight distribution, breaking the symmetry of almost-equal weights. After the initial quick increase in weights, the standard deviation of weights increases significantly.
+
 \begin{figure}[h]
     \includegraphics[width=\textwidth]{figures/valid_metaplasticity_evolution.eps}
-    \caption{Caption lalala.}
+    \caption{Caption lalala. Initialised at 1.0. Also what was the input rate? How was figure data obtained - mean of all exc weights; standard deviation.}
     \label{fig:valid_metaplasticity_evolution}
 \end{figure}
 
@@ -496,7 +516,6 @@ In some simulations (TODO which?), learning speed was increased by a factor of 1
 \section{Learning patterns of input rate}
 
 Creating a coherent story of experiments
-I think the order of presentation of these results would best be:
 A. Experiment 2 and Experiment 6: the neuron learns to fire more for a learned input than for a non-learned input.
 B. Experiment 1 and Experiment 5: the neuron responds linearly to varying input intensity (Exp 1) and proportion of pattern present (Exp 5).
 C. Experiment 4: the neuron becomes more selective to patterns coded in a particular number of synapses (or a small range).
