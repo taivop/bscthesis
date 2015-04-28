@@ -412,7 +412,7 @@ Metaplasticity can be disabled in any simulation, resulting in a constant value 
 
 \section{Implementation details}
 
-The model was implemented in MATLAB; source code is attached as an online supplementary to the thesis. The simulations were carried out in part in the High Performance Computing Center of University of Tartu.
+The model was implemented and data analysis conducted in MATLAB; source code is attached as an online supplementary to the thesis. The simulations were carried out in part in the High Performance Computing Center of University of Tartu.
 
 For updating values according to the differential equations, the Euler method is used with a 0.1ms time-step length, chosen as the highest value allowing numerical stability. At the start of each simulation, some parameters are initialised to previously found equilibrium values to avoid unstable behaviour. Input is generated in 1-second blocks for ease of implementation, and the release of neurotransmitters caused by each presynaptic spike is assumed to last 1 ms. The computational complexity is linear with respect to the total simulation time; the computation time required for $x$ seconds of simulated neuron time varies between $2x$ and $15x$ seconds on the machines used for simulation and depends on the amount of input to the neuron.
 
@@ -434,7 +434,7 @@ Unless mentioned otherwise, learning speed was increased by a factor of 100 by m
 % Useful link for figures: http://tex.stackexchange.com/questions/37581/latex-figures-side-by-side
 \chapter{Results}
 
-\section{Validation of the model behaviour}
+\section{Validation of model behaviour}
 
 As a prerequisite to analysing more complex behaviour of the model, it is necessary to make sure the model is implemented correctly. Syntax and other obvious errors aside, the simplest way to do this is to observe the behaviour of the model under some conditions and compare the result with previously published results on the same model in the same conditions. As \cite{shouval2002unified} and \cite{yeung2004synaptic} form the basis of the model, the behaviour of the model implemented in this thesis will be compared to these two sources. Attention will also be paid to keeping parameters and outputs in biophysically realistic ranges.
 
@@ -485,23 +485,24 @@ Both curves are qualitatively similar to \cite{shouval2002unified} with two regi
 
 The simplest effect of metaplasticity studied by \cite{yeung2004synaptic} was a slow scaling down of weights after an fast potentiation, or scaling up of weights after a fast depression. In both cases, the fast change is induced by regular synaptic plasticity, and the subsequent scaling my metaplasticity. In Figure~\ref{fig:valid_metaplasticity_evolution}, these dynamics are visible: after an initial quick potentiation, weights are slowly scaled down to a value where they remain stable.
 
-As seen in the figure, metaplasticity also reproduces the effect of increasing the width of the weight distribution, breaking the symmetry of almost-equal weights. After the initial quick increase in weights, the standard deviation of weights increases significantly.
+The model produces another effect of metaplasticity observerd in \cite{yeung2004synaptic}: increasing the width of the weight distribution and breaking the symmetry of almost-equal weights. After the initial quick increase in weights, the standard deviation of weights increases significantly.
 
 \begin{figure}[h]
     \includegraphics[width=\textwidth]{figures/valid_metaplasticity_evolution.eps}
-    \caption{Caption lalala. Initialised at 1.0. Also what was the input rate? How was figure data obtained - mean of all exc weights; standard deviation.}
+    \caption{Caption lalala. Initialised at 1.0. Input rate 20Hz? How was figure data obtained - mean of all exc weights; standard deviation.}
     \label{fig:valid_metaplasticity_evolution}
 \end{figure}
 
 
 
 
-
 \subsection{Selectivity to temporal correlation} % aka temporal code
+
+Temporal correlation between spike trains, i.e. increased probability of coincidence of spikes, indicates underlying structure in the input. Thus, if the neuron is to learn this structure, in the presence of two groups of inputs with only one group correlated, the synapses of correlated inputs should be selectively potentiated. A strong effect of this sort is observed in \cite{yeung2004synaptic}, with weights of the uncorrelated channel going to zero. However, it can be seen in Figure~\ref{fig:selectivity_correlation} that in the model used in this thesis, the selectivity to correlation is weak: the difference in weights of the two channels is existent but small, the group mean weights differing by approximately 20\%. An informal parameter sweep was conducted, but selectivity to correlation did not increase.
 
 \begin{figure}[h]
     \includegraphics[width=\textwidth]{figures/valid_selectivity_correlation.eps}
-    \caption{Caption lalala.}
+    \caption{Evolution of synaptic weights over time in a selectivity experiment. Synapses 1-25 receive correlated input ($c=0.8$) at 30Hz, synapses 26-100 receive uncorrelated input at 30Hz. The values of synaptic weights were sampled every 100ms.}
     \label{fig:selectivity_correlation}
 \end{figure}
 
