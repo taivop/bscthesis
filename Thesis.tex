@@ -1,8 +1,10 @@
 \documentclass[a4paper,12pt]{report}
 
+
 %
 % Bunch of useful packages
 %
+\usepackage{etex}
 \usepackage[utf8]{inputenc}
 \usepackage{algorithmic}
 \usepackage{algorithm}
@@ -241,6 +243,12 @@ One way to bridge the gap is to show by numerical simulations that from basic pr
 
 This work explores the behaviour of one particular previously published (with a Nobel-winning physicist among the authors) biophysically realistic neuron model, which has been shown to produce a range of neural plasticity phenomena. The thesis attempts to demonstrate that starting from very basic biophysical principles, the neuron model exhibits behaviour equivalent to principal component analysis (PCA), a well known unsupervised learning procedure.
 
+The main goals of the work could be formulated as:
+1. implement the neuron model and validate its behaviour (against original papers and what is realistic)
+2. explore the behaviour of this model
+3. find what effects PR has on behaviour
+4. find out whether the neuron can perform a simple PCA task
+
 % % % %
 % Chapter: Background
 % % % %
@@ -330,7 +338,7 @@ Correlation between inputs is achieved by specifying the correlation parameter $
 
 \section{Neuron model used in simulations}
 
-The neuron model used in this work follows the model of a single neuron published in \cite{yeung2004synaptic}. An integrate-and-fire model of information integration is used with a calcium-dependent model of synaptic plasticity \cite{shouval2002unified}. No dendritic distance is simulated, i.e. the possibility that some synapses are situated further from the soma is not taken into account. In this section, an overview of the most important aspects of the model will be given. Exact values of the parameters used are given in Appendix~\ref{appendix:parameters}.
+The neuron model used in this work follows the model of a single neuron published in \cite{yeung2004synaptic}. An integrate-and-fire model of information integration is used with a calcium-dependent model of synaptic plasticity \cite{shouval2002unified}. No dendritic distance is simulated, i.e. the possibility that some synapses are situated further from the soma is not taken into account. In this section, an overview of the most important aspects of the model will be given.
 % TODO Appendix letter may change.
 % TODO do we use metaplasticity? prolly not because don't want to simulate that long.
 
@@ -356,7 +364,7 @@ As an addition to the Traub-Miles model, spike-frequency adaptation is implement
 
 \subsection{Model of synapses}
 
-Excitatory and inhibitory synapses are modelled by ion gates controlled by the respective neurotransmitters, glutamate and gamma-aminobutyric acid (GABA). Upon each spike at an excitatory synapse, the opening of glutamate-controlled ion channels at dendrites is simulated, with the degree of opening simulated as a sum of two decaying exponentials peaking at the time of spike. The resulting ion flow tends to drive $V_{post}$ towards the excitatory reversal potential $V_{rev,exc}=0\mathrm{mV}$. Similarly, upon each spike at an inhibitory synapse, the opening of GABA-controlled ion channels is simulated, and the resulting ion flow tends to drive $V_{post}$ towards the inhibitory reversal potential $V_{rev,inh}=-65\mathrm{mV}$. Spikes at excitatory synapses have a larger relative influence on $V_{post}$) due to the higher simulated conductivity (maximum throughput of ions) of glutamate-controlled ion channels.
+Excitatory and inhibitory synapses are modelled by ion gates controlled by the respective neurotransmitters: glutamate and gamma-aminobutyric acid (GABA). Upon each spike at an excitatory synapse, the opening of glutamate-controlled ion channels at dendrites is simulated, with the degree of opening simulated as a sum of two decaying exponentials peaking at the time of spike. The resulting ion flow tends to drive $V_{post}$ towards the excitatory reversal potential $V_{rev,exc}=0\mathrm{mV}$. Similarly, upon each spike at an inhibitory synapse, the opening of GABA-controlled ion channels is simulated, and the resulting ion flow tends to drive $V_{post}$ towards the inhibitory reversal potential $V_{rev,inh}=-65\mathrm{mV}$. Spikes at excitatory synapses have a larger relative influence on $V_{post}$) due to the higher simulated conductivity (maximum throughput of ions) of glutamate-controlled ion channels.
 
 The effect of presynaptic spikes on the gating of glutamate-controlled and GABA-controlled channels is simulated according to the model from \cite{borgers2008gamma}.
 
@@ -379,7 +387,7 @@ The mechanism for detecting coincidences relies on N-methyl-D-aspartic acid (NMD
 \label{eq:weightupdate}
 \end{equation}
 
-This mechanism allows the synaptic weights to increase when there has been a suitably timed pair of presynaptic and postsynaptic spikes. However, \cite{shouval2002unified} show that the same mechanism also accounts for decreasing and stable synaptic weights through the effect of $\Omega$: at medium levels of Ca\textsuperscript{2+}, weights are decreased ($\Omega<0.5$), and at low levels of Ca\textsuperscript{2+}, synaptic weights remain unchanged ($\Omega$ is constant at 0.5). The learning rate $\eta$ also depends on calcium: higher levels of Ca\textsuperscript{2+} elicit larger changes in synaptic weights.
+This mechanism allows the synaptic weights to increase when there has been a suitably timed pair of presynaptic and postsynaptic spikes. However, \cite{shouval2002unified} show that the same mechanism also accounts for decreasing and stable synaptic weights through the effect of $\Omega$: at medium levels of Ca\textsuperscript{2+}, weights are decreased ($\Omega<0.5$), and at low levels of Ca\textsuperscript{2+}, synaptic weights remain unchanged ($\Omega$ is constant at 0.5). The learning rate $\eta$ also depends on calcium: higher levels of Ca\textsuperscript{2+} elicit larger changes in synaptic weights. $\lambda$, together with the value of $\Omega$ in the range of low calcium, determine the stable point of synaptic weights.
 
 The phenomenon of synaptic weights increasing due to learning is named long-term potentiation (LTP), and similar decreasing is named long-term depression (LTD). LTD and LTP are the methods the neuron uses to assign different synaptic weights based on the input to that synapse.
 
@@ -390,20 +398,9 @@ The phenomenon of synaptic weights increasing due to learning is named long-term
 \end{figure}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+\subsubsection{Metaplasticity}
+\emph{Metaplasticity} refers to plasticity of synaptic plasticity - the dependence of plasticity on the history of the previous activity of the neuron. In the scope of this thesis, it refers to the changing of NMDA receptor (NMDAR) conductance as a function of output voltage, which leads to changes in the calcium influx and therefore changes in the sign and magnitude of changes in synaptic weights. The model of metaplasticity follows that of \cite{yeung2004synaptic}, where the NMDAR conductance $g$ is the same for all synapses and is updated according to the following equation: $$ \frac{dg}{dt}=-(k_- (V-V_{rest})^2 + k_+)g + k_+ g_t $$
+Here, $g_t$ shows the total supply of NMDARs available in the internal pool of the neuron. $k_+$ and $k_-$ are kinetic constants describing the speed of insertion and removal of NMDARs into synapses.
 
 
 
@@ -411,9 +408,11 @@ The phenomenon of synaptic weights increasing due to learning is named long-term
 
 \section{Implementation details}
 
-For updating values according to the differential equations, the Euler method is used with a $0.1ms$ time-step length (chosen as the highest value allowing numerical stability). At the start of each simulation, some parameters are initialised to previously found equilibrium values to avoid unstable behaviour. Input is generated in 1-second blocks for ease of implementation, and the release of neurotransmitters caused by each presynaptic spike is assumed to last 1 ms. The complexity of simulation is linear with respect to the total simulation time; the computation time required for $x$ seconds of simulated neuron time varies between $2x$ and $15x$ seconds depending on the amount of input to the neuron on the machines used for simulation.
-
 The model was implemented in MATLAB; source code is attached as an online supplementary to the thesis. The simulations were carried out in part in the High Performance Computing Center of University of Tartu.
+
+For updating values according to the differential equations, the Euler method is used with a 0.1ms time-step length, chosen as the highest value allowing numerical stability. At the start of each simulation, some parameters are initialised to previously found equilibrium values to avoid unstable behaviour. Input is generated in 1-second blocks for ease of implementation, and the release of neurotransmitters caused by each presynaptic spike is assumed to last 1 ms. The computational complexity is linear with respect to the total simulation time; the computation time required for $x$ seconds of simulated neuron time varies between $2x$ and $15x$ seconds on the machines used for simulation and depends on the amount of input to the neuron.
+
+In some simulations (TODO which?), learning speed was increased by a factor of 100 by multiplying the values of learning rate $\eta$ and NMDA receptor kinetic constants $k_+$ and $k_-$ by 100. According to \cite{yeung2004synaptic}, it was demonstrated that the fixed points of the system do not change upon speeding up the simulations by this factor.
 
 
 
@@ -454,13 +453,13 @@ The model was implemented in MATLAB; source code is attached as an online supple
   \centering
   \includegraphics[width=1\linewidth]{figures/valid_stdp_bpap42.eps}
   \captionof{figure}{A figure}
-  \label{fig:test1}
+  \label{fig:valid_stdp_bpap42}
 \end{minipage}%
 \begin{minipage}{.5\textwidth}
   \centering
   \includegraphics[width=1\linewidth]{figures/valid_stdp_bpap100.eps}
   \captionof{figure}{Another figure}
-  \label{fig:test2}
+  \label{fig:valid_stdp_bpap100}
 \end{minipage}
 \end{figure}
 
@@ -573,7 +572,7 @@ I think the most interesting result here is that
 2. the neuron responds to removing synapses pretty linearly, similar to its linearity when decreasing the input rate (experiment 1).
 
 Thinking of the result of experiment 1, there is actually also an implication for probabilistic release. Due to the linearity of the neuron, if there is a 50\% probability of release (effective input rate is 50\% of actual rate R), the output rate of the neuron will also be 50\% of the way between baseline and what one would expect for a rate R.
-(I think ^this^ is good to mention in the Discussion section of the thesis.)
+(I think the above is good to mention in the Discussion section of the thesis.)
 
 \begin{figure}
 \centering
@@ -687,9 +686,37 @@ näitan, mis neuroni reaalne output on (mitte ainult weightid) -- see on väga o
 first implemented, then didnt touch any parameters but treated neuron as a black box, looking only at input structure and output rate
 miks mul korrelatsioon ei tööta -- kitsam STDP tekitab correlation specificityt, mul on suht lai STDP
 
+I think the main goals of the work could be formulated as:
+1. implement the neuron model and validate its behaviour (against original papers and what is realistic)
+2. explore the behaviour of this model
+3. find what effects PR has on behaviour
+4. find out whether the neuron can perform a simple PCA task
+
+The fourth goal (PCA) of course means that I would also make a short summary of what I tried with PCA, which I think is a good idea (showing that I tried it, but it didn't work).
+
+So in Discussion, these are my initial thoughts on what I will talk about (arranged by goal).
+
+1. The input-output curves, STDP curve and metaplasticity evolution (the graph showing that metaplasticity pulls weights down after an initial potentiation) look qualitatively similar to Shouval's, or at least they can be made similar upon changing the parameters a bit (for STDP curve). A significant difference in my model is that selectivity to correlation is much weaker, however I hypothesize that by playing with the STDP curve (which can be done by changing parameters affecting NMDA currents) will produce a stronger correlation selection effect, and this is a hypothesis that can be easily tested in further research. The output rates are high compared to biological neurons, but again this (I show) is affected a lot by the EPSP amplitude used.
+
+2. The neuron definitely learns. Furthermore, the learning can be clearly seen from the output rate of the neuron, which is good since this means there definitely is some meaningful information processing going on. It responds near-linearly when shown partial input (in two different ways), so it can be said that the neuron implements a linear filter (context: ANNs' sigmoid or rectified linear filters). This is good to know for building networks of neurons.
+I also find that there is some range of pattern width (number of synapses carrying signal) that is better than other widths - this directly informs further simulations for choosing patterns.
+
+3. Probability of release 0.8 is, in some cases, equivalent to PR 1. This means it is indeed useful in that case, saving energy by eliminating unnecessary spikes (at least ones from a correlated source). It is possible that the results I have are not generalisable - that they are specific to the values of  {rate, weights} I used - but this is again something to look into in further research. The model could also be used to see if there is an information-theoretic metric whose maximum is at a medium PR value (e.g. 0.6), implying that PR is better than no PR.
+
+4. The two PCA experiments I tried didn't work. However, a PCA task can be formulated in many ways, and my experiments with purely rate-based patterns definitely don't disprove the neuron's ability to do PCA. Rather, changing the STDP curve and increasing selectivity to correlation might have an effect and could be studied, and a more fundamental/theoretic approach to why and in what conditions the neuron could do PCA would be in order (similar to analysis of Oja rule -- but with simulations). In hindsight, trying to do PCA at first seems to have been a too large leap, too disconnected from what I already knew about the neuron (since PCA is a nontrivial algorithm for such a system to implement).
 
 
 
+
+% % % %
+% Bibliography
+% % % %
+
+\bibliographystyle{alpha}
+\addcontentsline{toc}{chapter}{Bibliography}
+\bibliography{Thesis}
+Internet URLs were valid on May 14, 2015.
+\newpage
 
 
 
@@ -698,14 +725,9 @@ miks mul korrelatsioon ei tööta -- kitsam STDP tekitab correlation specificity
 % % % %
 % Appendices
 % % % %
-\chapter*{Appendix A: Description of model parameters}
-\addcontentsline{toc}{chapter}{Appendix A: Description of model parameters}
-\label{appendix:parameters}
 
-possibly add a table of parameters with their values and descriptions here
-
-\chapter*{Appendix B: MATLAB code}
-\addcontentsline{toc}{chapter}{Appendix B: MATLAB code}
+\chapter*{Appendix A: MATLAB code}
+\addcontentsline{toc}{chapter}{Appendix A: MATLAB code}
 \label{appendix:code}
 
 The MATLAB scripts for simulations and data analysis performed in this thesis are included with this thesis as an online supplementary material. The material will be withheld from publication until 26.06.2016.
@@ -719,27 +741,24 @@ The MATLAB scripts for simulations and data analysis performed in this thesis ar
 % % % %
 % Glossary
 % % % %
-\chapter*{Glossary}
-\addcontentsline{toc}{chapter}{Glossary}
-ANN - artificial neural network
-EPSP
-IPSP
-BPAP
-STDP
-PCA
-ICA
-NMDA
+\chapter*{Appendix B: Glossary}
+\addcontentsline{toc}{chapter}{Appendix B: Glossary}
+\label{appendix:glossary}
+
+\begin{description}
+  \item[ANN] artificial neural network
+  \item[BPAP] back-propagating action potential
+  \item[EPSP] excitatory postsynaptic potential
+  \item[GABA] gamma-aminobutyric acid
+  \item[IPSP] inhibitory postsynaptic potential
+  \item[NMDA] N-Methyl-D-aspartic acid
+  \item[NMDAR] NMDA receptor
+  \item[PCA] principal component analysis
+  \item[PR] probability of [neurotransmitter] release
+  \item[STDP] spike-timing-dependent plasticity
+\end{description}
 
 
-% % % %
-% Bibliography
-% % % %
-
-\bibliographystyle{alpha}
-\addcontentsline{toc}{chapter}{Bibliography}
-\bibliography{Thesis}
-Internet URLs were valid on May 14, 2015.
-\newpage
 
 
 % % % %
