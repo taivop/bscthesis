@@ -542,22 +542,16 @@ After training, plasticity and metaplasticity were disabled by fixing the weight
 It is also important to understand the neuron's response when input varies between trained and untrained input. To this end, the input was alternated so pattern \ref{fig:exp2_inputpatterns}A was shown in time periods $t \in [1\mathrm{s}, 2\mathrm{s}) \cup [3\mathrm{s}, 4\mathrm{s}) \cup \ldots $. In between presentations of the trained pattern, all synapses received input at a rate of 17.5Hz ("flat" input), keeping the total input received by the neuron constant.
 
 
-
-To find the instantaneous firing rate, I count spikes using a sliding time window of varying size.
-On the bottom plot, the red dashed lines show the mean output rate for time periods with patterned input (top line => higher rate) and with flat input (bottom line => lower rate).
-
 The result is as expected: the neuron fires more when it sees the learned pattern, and switches to a lower rate when it gets noise.
 I would probably place this near Experiment 2 since the points are pretty similar; what Experiment 6 adds is time-dynamics and a nice graph showing that the neuron indeed switches between two modes of firing if it sees two modes of input.
 
-Instantaneous rate at time t is the count of postsynaptic spikes in the time window [t-500ms, t+500ms].
 
-COMMENT on high firing rates: this is something I did contemplate myself. I think the main culprits are the exact values of two parameters: EPSP voltage and the stable point of weights. Drawing a plot that shows an input-output curve for a bunch of different EPSP values should take no more than 10 minutes (I have all the code), so I'll put this figure along with a description of other likely causes somewhere into Results > Validation. A weak justification is also that Shouval 2004 have high rates too (at least for an untrained neuron - 30Hz uncorrelated input results in 60Hz output).
 
 
 \begin{figure}[h]
     \includegraphics[width=\textwidth]{figures/exp6_voltageoscillation.eps}
     \caption{The evolution of firing rate over time. To find instantaneous firing rates, a sliding time window of length $L$ was chosen, and for each timestep $t$, instantaneous firing rate was calculated as the firing rate in time window $[t-\frac{L}{2}, t+\frac{L}{2})$.
-    In \ref{fig:exp6voltageoscillation}B, the top dashed line shows mean output rate over all time periods when the neuron was shown trained input; the bottom dashed line shows the mean over all time periods when the neuron was shown flat input.}
+    In Fig. \ref{fig:exp6voltageoscillation}B, the top dashed line shows mean output rate over all time periods when the neuron was shown trained input; the bottom dashed line shows the mean over all time periods when the neuron was shown flat input.}
     \label{fig:exp6voltageoscillation}
 \end{figure}
 
@@ -711,6 +705,8 @@ mina vs 2004/2002
 näitan, mis neuroni reaalne output on (mitte ainult weightid) -- see on väga oluline, et saaks networke ehitada
 first implemented, then didnt touch any parameters but treated neuron as a black box, looking only at input structure and output rate
 miks mul korrelatsioon ei tööta -- kitsam STDP tekitab correlation specificityt, mul on suht lai STDP
+
+COMMENT on high firing rates: this is something I did contemplate myself. I think the main culprits are the exact values of two parameters: EPSP voltage and the stable point of weights. Drawing a plot that shows an input-output curve for a bunch of different EPSP values should take no more than 10 minutes (I have all the code), so I'll put this figure along with a description of other likely causes somewhere into Results > Validation. A weak justification is also that Shouval 2004 have high rates too (at least for an untrained neuron - 30Hz uncorrelated input results in 60Hz output).
 
 I think the main goals of the work could be formulated as:
 1. implement the neuron model and validate its behaviour (against original papers and what is realistic)
