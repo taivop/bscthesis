@@ -439,6 +439,7 @@ Unless mentioned otherwise, learning speed was increased by a factor of 100 by m
 As a prerequisite to analysing more complex behaviour of the model, it is necessary to make sure the model is implemented correctly. Syntax and other obvious errors aside, the simplest way to do this is to observe the behaviour of the model under some conditions and compare the result with previously published results on the same model in the same conditions. As \cite{shouval2002unified} and \cite{yeung2004synaptic} form the basis of the model, the behaviour of the model implemented in this thesis will be compared to these two sources. Attention will also be paid to keeping parameters and outputs in biophysically realistic ranges.
 
 \subsection{Input-output relationship}
+\label{subsec:iocurve}
 
 The input-output curve of a neuron is one of the most important characteristics, showing the output of the neuron to a specified amount of input. The exact scale of the curve is highly dependent on the specific parameters used. In particular, EPSP amplitude has a major effect on this relationship. 
 Figure~\ref{fig:valid_iocurve_vs_epsp_grid} shows the curve for 6 different neurons, each with a different EPSP amplitude. It is evident that the relationship is linear for a range of EPSP amplitudes, which is consistent with the findings of \cite{yeung2004synaptic} for simulations with metaplasticity enabled. For low values of EPSP amplitude and input rate, there is no output, indicating subthreshold activity: postsynaptic voltage never reaches the threshold required for producing a spike.
@@ -457,9 +458,9 @@ Increasing EPSP amplitude by a factor, the curve remains linear, but output rate
 
 \subsection{Spike timing-dependent plasticity}
 
-A spike-timing-dependent plasticity curve is important aspect of neuron models: it shows how the neuron determines the sign and magnitude of  synaptic weight updates in response to the relative timing of pre- and postsynaptic spikes. In the model used here, two parameters significantly affect STDP curve shape: BPAP amplitude and the amount of glutamate released on the presynaptic side upon each spike. The shape of STDP curve using parameters from \cite{yeung2004synaptic} is given in Figure~\ref{fig:valid_stdp}B. For comparison, Figure~\ref{fig:valid_stdp}B shows the same figure for a higher BPAP amplitude 100mV, which is the value used in \cite{shouval2002unified}.
+A spike-timing-dependent plasticity curve is important aspect of neuron models: it shows how the neuron determines the sign and magnitude of  synaptic weight updates in response to the relative timing of pre- and postsynaptic spikes. In the model used here, two parameters significantly affect STDP curve shape: BPAP amplitude and the amount of glutamate released on the presynaptic side upon each spike. The shape of STDP curve using parameters from \cite{yeung2004synaptic} is given in Figure~\ref{fig:valid_stdp}A. For comparison, Figure~\ref{fig:valid_stdp}B shows the same figure for a higher BPAP amplitude 100mV, which is the value used in \cite{shouval2002unified}.
 
-Both curves are qualitatively similar to \cite{shouval2002unified} with two regions of LTD induction -- one at negative values of $\Delta t$ and another in the region of $\Delta t > 100\mathrm{ms}$ -- and a single region of potentiation in between. However, for BPAP amplitude 100mV, the curve is smoother and weight differences larger, indicating that BPAP amplitude can be used for tuning STDP curve as necessary. In all following simulations, BPAP amplitude is fixed to 42mV to adhere to parameters published in \cite{yeung2004synaptic}.
+Both curves are qualitatively similar to \cite{shouval2002unified} with two regions of LTD induction--one at negative values of $\Delta t$ and another in the region of $\Delta t > 100\mathrm{ms}$--and a single region of potentiation in between. However, for BPAP amplitude 100mV, the curve is smoother and weight differences larger, indicating that BPAP amplitude can be used for tuning STDP curve as necessary. In all following simulations, BPAP amplitude is fixed to 42mV to adhere to parameters published in \cite{yeung2004synaptic}.
 
 
 
@@ -474,7 +475,8 @@ Both curves are qualitatively similar to \cite{shouval2002unified} with two regi
   \centering
   \includegraphics[width=1\linewidth]{figures/valid_stdp_bpap100.eps}
 \end{minipage}
-\caption{Note different scale on right one. Comment what dashed line is. What delta-T is.}
+\caption{\textbf{A.} STDP curve for BPAP amplitude at 42mV. The relative timing of pre- and postsynaptic spikes $\Delta t = t_{post} - t_{pre}$ is plotted on the x-axis, and the weight resulting from a 100-second 1Hz stimulation of pre-post spike-pairs with the respective $\Delta t$ is on the y-axis. The dashed line shows the value to which synaptic weights converge in the absence of postsynaptic spikes.
+\textbf{B.} STDP curve for BPAP amplitude at 100mV. Note the change in scale.}
 \label{fig:valid_stdp}
 \end{figure}
 
@@ -489,7 +491,7 @@ The model produces another effect of metaplasticity observerd in \cite{yeung2004
 
 \begin{figure}[h]
     \includegraphics[width=\textwidth]{figures/valid_metaplasticity_evolution.eps}
-    \caption{Caption lalala. Initialised at 1.0. Input rate 20Hz? How was figure data obtained - mean of all exc weights; standard deviation.}
+    \caption{Evolution of synaptic weights in a metaplasticity experiment. For weights of excitatory synapses, both the mean (blue line) and $\pm$1 standard deviation range (grey area) are shown. Input to all synapses was uncorrelated with a mean rate of 20Hz.}
     \label{fig:valid_metaplasticity_evolution}
 \end{figure}
 
@@ -516,16 +518,17 @@ Temporal correlation between spike trains, i.e. increased probability of coincid
 
 \section{Learning patterns of input rate}
 
-Creating a coherent story of experiments
-A. Experiment 2 and Experiment 6: the neuron learns to fire more for a learned input than for a non-learned input.
-B. Experiment 1 and Experiment 5: the neuron responds linearly to varying input intensity (Exp 1) and proportion of pattern present (Exp 5).
-C. Experiment 4: the neuron becomes more selective to patterns coded in a particular number of synapses (or a small range).
+As shown in Section~\ref{subsec:iocurve}, the neuron's output rate is dependent on its input rate. In this section, I will study the neuron's ability to learn and respond to patterns encoded in the mean firing rates of inputs. First, it will be shown that the neuron distinguishes between learned inputs and noise. Secondly, the neuron will be shown to be linear upon presenting learned input patterns partially. Finally, the effect of pattern width on learning will be studied.
 
-\clearpage % TODO remove
 \subsection{Response to learned inputs}
-% Experiment 2 and Experiment 6
+\label{subsec:learnedinputs}
+% Experiment 2 and Experiment 6: the neuron learns to fire more for a learned input than for a non-learned input.
 
 % Experiment 2
+
+Before investigating the neuron's ability to learn complex input patterns, it is necessary to ensure the neuron is capable of learning anything at all. In particular, it should be capable of distinguishing between a learned pattern and random noise. To study this, a neuron was trained on a pattern consisting of high-rate (40Hz) input to 25 synapses, and low-rate (10Hz) background input to all other synapses, both the pattern and background uncorrelated.
+
+After training, plasticity and metaplasticity were disabled by fixing the weights, and two tests were run. In Test 1, the neuron received exactly the same input as in training. As control, in Test 2, the 25-synapse high-rate pattern was shown to a different, non-overlapping set of synapses, with all other synapses receiving background input at 10Hz, so the total amount of spikes received by the neuron in both tests remained constant. The resulting output rate for Test 1 was 64Hz and for Test 2 44Hz, suggesting that the neuron fired more when it was presented with the learned input (compared to non-learned input).
 
 Training: I train the neuron on a high-rate 'bump': 40Hz to synapses 1...25 and 10Hz to all others.
 Test: two cases.
@@ -565,7 +568,8 @@ COMMENT on high firing rates: this is something I did contemplate myself. I thin
 
 \clearpage % TODO remove
 \subsection{Response to partial presentation of learned inputs}
-% Experiment 1 and Experiment 5
+\label{subsec:partialpatterns}
+% Experiment 1 and Experiment 5: the neuron responds linearly to varying input intensity (Exp 1) and proportion of pattern present (Exp 5).
 
 % Experiment 1
 Train: I train the neuron on uncorrelated input, with synapses 1...25 getting 40Hz and all others getting 10Hz.
@@ -618,7 +622,8 @@ Thinking of the result of experiment 1, there is actually also an implication fo
 
 \clearpage % TODO remove
 \subsection{Response to patterns with different channel widths}
-% Experiment 4
+\label{subsec:patternwidths}
+% Experiment 4: the neuron becomes more selective to patterns coded in a particular number of synapses (or a small range).
 
 Training: give a total of 1000Hz input to channel 1 (synapses 1...w), and 750Hz to channel 2 (all other synapses), varying w (the width of channel 1) from 10 to  50.
 Testing: give exactly the same input as in training.
@@ -644,7 +649,7 @@ The value of this knowledge: it helps inform further experiments by showing what
 
 
 \clearpage % TODO remove
-\section{Probability of release}
+\section{Probability of release} % or [Investigating] the effect of probability of release
 
 % Experiment 8
 Testing what the input-output curve looks like for different values of PR (the input will have correlation of c=0.8 because otherwise the effect of PR is to only change the rate of input).
@@ -689,7 +694,7 @@ I also plotted the histogram of voltage (as R recommended) to understand where t
 \end{figure}
 
 
-\section{Testing for principal component analysis}
+\section{Testing for principal component analysis} % or PCA tasks
 Speak about what I tried, how it failed, why it failed and whether PCA is even feasible (and what should be done to make it so). Or maybe some of this goes in the Discussion section.
 
 See e-mails for experiments, comments and analysis. There are figures in Experiment 9 and Experiment 10.
