@@ -526,29 +526,22 @@ As shown in Section~\ref{subsec:iocurve}, the neuron's output rate is dependent 
 
 % Experiment 2
 
-Before investigating the neuron's ability to learn complex input patterns, it is necessary to ensure the neuron is capable of learning anything at all. In particular, it should be capable of distinguishing between a learned pattern and random noise. To study this, a neuron was trained on Pattern 1 (shown in Figure~\ref{fig:exp2_inputpatterns}) consisting of high-rate (40Hz) input to 25 synapses, and low-rate (10Hz) background input to all other synapses, both the pattern and background uncorrelated.
+Before investigating the neuron's ability to learn complex input patterns, it is necessary to ensure the neuron is capable of learning anything at all. In particular, it should be capable of something very simple: distinguishing between a learned pattern and random noise. To study this, a neuron was trained on a pattern (shown in Figure~\ref{fig:exp2_inputpatterns}A) consisting of high-rate (40Hz) input to 25 synapses, and low-rate (10Hz) background input to all other synapses, both the pattern and background uncorrelated.
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{figures/exp2_inputpatterns.eps}
-    \caption{Caption lalala.}
+    \caption{Two input rate patterns. A. Synapses 1-25 receive a higher rate. B. Synapses 76-100 receive a higher rate.}
     \label{fig:exp2_inputpatterns}
 \end{figure}
 
-After training, plasticity and metaplasticity were disabled by fixing the weights, and two tests were run. In Test 1, the neuron received exactly the same input as in training. As control, in Test 2, the 25-synapse high-rate pattern was shown to a different, non-overlapping set of synapses, with all other synapses receiving background input at 10Hz, so the total amount of spikes received by the neuron in both tests remained constant. The resulting output rate for Test 1 was 64Hz and for Test 2 44Hz, suggesting that the neuron fired more when it was presented with the learned input (compared to non-learned input).
-
-Training: I train the neuron on a high-rate 'bump': 40Hz to synapses 1...25 and 10Hz to all others.
-Test: two cases.
-Case 1: input is exactly the same as training input: 40Hz bump at synapses 1:25.
-Case 2: input is changed only by changing the location of the bump by moving it to synapses 76:100.
-
-I anticipated that in Case 2 the neuron fires less (because it gets less input to the synapses that were potentiated due to learning the 40Hz input), and the experiment confirmed this: Case 1 produced 64Hz output, Case 2 produced 44Hz output (the difference remains at ~20Hz in all runs).
-This result may seem trivial but I did this to show that the neuron does not fire a lot any time it sees a bump anywhere, but responds most only if the bump was the pattern that it was shown during training.
+After training, plasticity and metaplasticity were disabled by fixing the weights, and two tests were run. In Test 1, the neuron received exactly the same input as in training. As control, in Test 2, the high-rate inputs were shown to a different, non-overlapping set of synapses, with all other synapses receiving background input at 10Hz (shown in Figure~\ref{fig:exp2_inputpatterns}B). The total amount of spikes received by the neuron in both tests remained constant. The resulting output rate in a 5-second simulation was 64Hz for Test 1 and 44Hz for Test 2, suggesting that the neuron fired more when it was presented with the learned input (compared to non-learned input).
 
 % Experiment 6
 
-Training: 40Hz input to 25 synapses, 10Hz to others.
-Testing: pattern changes every 1000ms. For 1000ms, the pattern is the same as training pattern; for the next 1000ms the neuron gets flat input (same total rate); then training pattern etc.
+It is also important to understand the neuron's response when input varies between trained and untrained input. To this end, the input was alternated so pattern \ref{fig:exp2_inputpatterns}A was shown in time periods $t \in [1\mathrm{s}, 2\mathrm{s}) \cup [3\mathrm{s}, 4\mathrm{s}) \cup \ldots $. In between presentations of the trained pattern, all synapses received input at a rate of 17.5Hz ("flat" input), keeping the total input received by the neuron constant.
+
+
 
 To find the instantaneous firing rate, I count spikes using a sliding time window of varying size.
 On the bottom plot, the red dashed lines show the mean output rate for time periods with patterned input (top line => higher rate) and with flat input (bottom line => lower rate).
@@ -563,7 +556,8 @@ COMMENT on high firing rates: this is something I did contemplate myself. I thin
 
 \begin{figure}[h]
     \includegraphics[width=\textwidth]{figures/exp6_voltageoscillation.eps}
-    \caption{Caption lalala.}
+    \caption{The evolution of firing rate over time. To find instantaneous firing rates, a sliding time window of length $L$ was chosen, and for each timestep $t$, instantaneous firing rate was calculated as the firing rate in time window $[t-\frac{L}{2}, t+\frac{L}{2})$.
+    In \ref{fig:exp6voltageoscillation}B, the top dashed line shows mean output rate over all time periods when the neuron was shown trained input; the bottom dashed line shows the mean over all time periods when the neuron was shown flat input.}
     \label{fig:exp6voltageoscillation}
 \end{figure}
 
