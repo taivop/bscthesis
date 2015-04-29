@@ -567,7 +567,7 @@ An important aspect of the behaviour of a neuron is its ability to recognise par
 
 % Experiment 5
 
-In addition to varying intensity of the learned pattern, one can show partial input by replacing some of the signal-carrying synapses with noise. In Figure~\ref{fig:exp5_patterncompletion}, this 
+In addition to varying intensity of the learned pattern, one can show partial input by replacing some of the signal-carrying synapses with noise. For this, a neuron was trained on input consisting of a 40-synapse high-rate (40Hz) channel, with the total input normalised to 1750Hz by choosing an appropriate input rate for the other synapses. As shown in Figure~\ref{fig:exp5_patterncompletion}, this neuron was tested by reducing the number of signal-carrying synapses. Again, the neuron exhibits linear behaviour: output rate increases linearly with the proportion of trained pattern present.
 
 Training: train a neuron by showing channel 1 (40 synapses) a high input rate of 40Hz, and all others such a rate that total input to neuron is 1750Hz.
 Testing: take a subset of the original 40 synapses trained on high input, and show them the same input as before. All others get a lower rate so the total input to neuron is 1750Hz.
@@ -575,9 +575,9 @@ Comparison: train a neuron on flat input (with total input rate staying the same
 
 So I train the neuron on some pattern coded in X synapses, and then show the same pattern only partially (less than X synapses).
 
-I think the most interesting result here is that
-1. the neuron doesn't do pattern completion (which I anticipated since with learning disabled, the neuron fires more when there is more input) and
-2. the neuron responds to removing synapses pretty linearly, similar to its linearity when decreasing the input rate (experiment 1).
+%I think the most interesting result here is that
+%1. the neuron doesn't do pattern completion (which I anticipated since with learning disabled, the neuron fires more when there is more input) and
+%2. the neuron responds to removing synapses pretty linearly, similar to its linearity when decreasing the input rate (experiment 1).
 
 Thinking of the result of experiment 1, there is actually also an implication for probabilistic release. Due to the linearity of the neuron, if there is a 50\% probability of release (effective input rate is 50\% of actual rate R), the output rate of the neuron will also be 50\% of the way between baseline and what one would expect for a rate R.
 (I think the above is good to mention in the Discussion section of the thesis.)
