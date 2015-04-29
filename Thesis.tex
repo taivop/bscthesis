@@ -587,13 +587,15 @@ Thinking of the result of experiment 1, there is actually also an implication fo
 \begin{minipage}[t]{.5\textwidth}
   \centering
   \includegraphics[width=1\linewidth]{figures/exp1_filter.eps}
+  \captionsetup{width=0.95\linewidth}
   \captionof{figure}{Response to varying intensity of learned input. Each datapoint shows output rate in a 5-second simulation. Intensity was varied by giving synapses 1-25 (those trained on a high rate) uncorrelated input $r$ varying from 0Hz to 70Hz, and giving all other synapses such a rate $r_b$ that the total input to the neuron remained constant at 1750Hz. The dotted line shows the value of $r=r_b=17.5\mathrm{Hz}$.}
   \label{fig:exp1_filter}
 \end{minipage}%
 \begin{minipage}[t]{.5\textwidth}
   \centering
   \includegraphics[width=1\linewidth]{figures/exp5_patterncompletion.eps}
-  \captionof{figure}{Another figure}
+  \captionsetup{width=0.95\linewidth}
+  \captionof{figure}{Response to varying proportion of trained pattern present. Each datapoint shows output rate in a 5-second simulation. On the x-axis, $p$ is defined as the proportion of the original 40 high-rate synapses receiving high-rate input in the test. Total input was normalised to 1750Hz by choosing appropriate values for all other synapses.}
   \label{fig:exp5_patterncompletion}
 \end{minipage}
 \end{figure}
