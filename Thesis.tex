@@ -526,7 +526,14 @@ As shown in Section~\ref{subsec:iocurve}, the neuron's output rate is dependent 
 
 % Experiment 2
 
-Before investigating the neuron's ability to learn complex input patterns, it is necessary to ensure the neuron is capable of learning anything at all. In particular, it should be capable of distinguishing between a learned pattern and random noise. To study this, a neuron was trained on a pattern consisting of high-rate (40Hz) input to 25 synapses, and low-rate (10Hz) background input to all other synapses, both the pattern and background uncorrelated.
+Before investigating the neuron's ability to learn complex input patterns, it is necessary to ensure the neuron is capable of learning anything at all. In particular, it should be capable of distinguishing between a learned pattern and random noise. To study this, a neuron was trained on Pattern 1 (shown in Figure~\ref{fig:exp2_inputpatterns}) consisting of high-rate (40Hz) input to 25 synapses, and low-rate (10Hz) background input to all other synapses, both the pattern and background uncorrelated.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{figures/exp2_inputpatterns.eps}
+    \caption{Caption lalala.}
+    \label{fig:exp2_inputpatterns}
+\end{figure}
 
 After training, plasticity and metaplasticity were disabled by fixing the weights, and two tests were run. In Test 1, the neuron received exactly the same input as in training. As control, in Test 2, the 25-synapse high-rate pattern was shown to a different, non-overlapping set of synapses, with all other synapses receiving background input at 10Hz, so the total amount of spikes received by the neuron in both tests remained constant. The resulting output rate for Test 1 was 64Hz and for Test 2 44Hz, suggesting that the neuron fired more when it was presented with the learned input (compared to non-learned input).
 
