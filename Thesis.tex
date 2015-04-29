@@ -539,19 +539,12 @@ After training, plasticity and metaplasticity were disabled by fixing the weight
 
 % Experiment 6
 
-It is also important to understand the neuron's response when input varies between trained and untrained input. To this end, the input was alternated so pattern \ref{fig:exp2_inputpatterns}A was shown in time periods $t \in [1\mathrm{s}, 2\mathrm{s}) \cup [3\mathrm{s}, 4\mathrm{s}) \cup \ldots $. In between presentations of the trained pattern, all synapses received input at a rate of 17.5Hz ("flat" input), keeping the total input received by the neuron constant.
-
-
-The result is as expected: the neuron fires more when it sees the learned pattern, and switches to a lower rate when it gets noise.
-I would probably place this near Experiment 2 since the points are pretty similar; what Experiment 6 adds is time-dynamics and a nice graph showing that the neuron indeed switches between two modes of firing if it sees two modes of input.
-
-
-
+It is also important to understand the neuron's response when input varies between trained and untrained input. To this end, the input was alternated so pattern \ref{fig:exp2_inputpatterns}A was shown in time periods $t \in [1\mathrm{s}, 2\mathrm{s}) \cup [3\mathrm{s}, 4\mathrm{s}) \cup \ldots $. In between presentations of the trained pattern, all synapses received input at a rate of 17.5Hz ("flat" input), keeping the total input received by the neuron constant. The resulting instantaneous output rate, shown in Figure~\ref{fig:exp6voltageoscillation}, clearly oscillates between a high rate and a low rate. In addition, the mean firing rate in periods of learned input is significantly higher.
 
 \begin{figure}[h]
     \includegraphics[width=\textwidth]{figures/exp6_voltageoscillation.eps}
     \caption{The evolution of firing rate over time. To find instantaneous firing rates, a sliding time window of length $L$ was chosen, and for each timestep $t$, instantaneous firing rate was calculated as the firing rate in time window $[t-\frac{L}{2}, t+\frac{L}{2})$.
-    In Fig. \ref{fig:exp6voltageoscillation}B, the top dashed line shows mean output rate over all time periods when the neuron was shown trained input; the bottom dashed line shows the mean over all time periods when the neuron was shown flat input.}
+    A. For $L=100\mathrm{ms}$, little to no oscillation is visible. B. For $L=1000\mathrm{ms}$, an clear oscillation is seen. Triangular shape of the oscillation is caused by the method of calculating instantaneous firing rate. The top dashed line shows mean output rate over all time periods when the neuron was shown trained input; the bottom dashed line shows the mean over all time periods when the neuron was shown flat input.}
     \label{fig:exp6voltageoscillation}
 \end{figure}
 
@@ -561,25 +554,21 @@ I would probably place this near Experiment 2 since the points are pretty simila
 
 
 
-\clearpage % TODO remove
+
 \subsection{Response to partial presentation of learned inputs}
 \label{subsec:partialpatterns}
 % Experiment 1 and Experiment 5: the neuron responds linearly to varying input intensity (Exp 1) and proportion of pattern present (Exp 5).
 
 % Experiment 1
-Train: I train the neuron on uncorrelated input, with synapses 1...25 getting 40Hz and all others getting 10Hz.
 
-Test: I test the neuron by giving synapses 1...25 inputs ranging from 0Hz to 70Hz (each one a different run) and all other synapses getting such inputs that the total input received by the neuron remains constant in each run. Plotted is the output rate from each run (blue line).
+An important aspect of the behaviour of a neuron is its ability to recognise partial or incomplete inputs. To study this, a neuron was trained on the pattern shown on Figure~\ref{fig:exp2_inputpatterns}A, and plasticity disabled. In the testing phase, intensity of the learned pattern was varied and output rate recorded. The results, given in Figure~\ref{fig:exp1_filter}, indicate that the neuron responds linearly to changing pattern intensity. What's more, the response is linear even when the pattern has negative intensity (the background rate is higher than pattern rate), i.e. the neuron linearly determines the absence of input. For control, a neuron trained on flat input of 17.5Hz was tested; this neuron does not exhibit a strong systematic response.
 
-Control (orange line): I trained another neuron (another instance) on uncorrelated input with all synapses getting the same input (but the total input received by the neuron still constant). Results are shown below.
-
-Note that the black dashed line shows the point where all inputs get the same input (17.5Hz). Left of that line, synapses 1...25 get lower input than the others, and vice versa.
-
-Basically, I vary the intensity of a learned input pattern and see what output the neuron produces. I think the result is interesting in that  shows what filter the neuron implements - a linear one. This can be compared with what is done in ANNs where they have rectified linear or sigmoidal filters. It seems to me that the analogy holds very well, and that this result is very useful in the context of building a network of these neurons (as well as general understanding of how the neuron behaves).
-
-It's also interesting that the neuron is linear in the region left of the dashed line as well, i.e. the neuron also linearly determines the absence of input.
+%Basically, I vary the intensity of a learned input pattern and see what output the neuron produces. I think the result is interesting in that  shows what filter the neuron implements - a linear one. This can be compared with what is done in ANNs where they have rectified linear or sigmoidal filters. It seems to me that the analogy holds very well, and that this result is very useful in the context of building a network of these neurons (as well as general understanding of how the neuron behaves).
 
 % Experiment 5
+
+In addition to varying intensity of the learned pattern, one can show partial input by replacing some of the signal-carrying synapses with noise. In Figure~\ref{fig:exp5_patterncompletion}, this 
+
 Training: train a neuron by showing channel 1 (40 synapses) a high input rate of 40Hz, and all others such a rate that total input to neuron is 1750Hz.
 Testing: take a subset of the original 40 synapses trained on high input, and show them the same input as before. All others get a lower rate so the total input to neuron is 1750Hz.
 Comparison: train a neuron on flat input (with total input rate staying the same at 1750Hz), and test in the same way.
@@ -595,17 +584,17 @@ Thinking of the result of experiment 1, there is actually also an implication fo
 
 \begin{figure}
 \centering
-\begin{minipage}{.5\textwidth}
+\begin{minipage}[t]{.5\textwidth}
   \centering
   \includegraphics[width=1\linewidth]{figures/exp1_filter.eps}
-  \captionof{figure}{A figure}
-  \label{fig:test1}
+  \captionof{figure}{Response to varying intensity of learned input. Each datapoint shows output rate in a 5-second simulation. Intensity was varied by giving synapses 1-25 (those trained on a high rate) uncorrelated input $r$ varying from 0Hz to 70Hz, and giving all other synapses such a rate $r_b$ that the total input to the neuron remained constant at 1750Hz. The dotted line shows the value of $r=r_b=17.5\mathrm{Hz}$.}
+  \label{fig:exp1_filter}
 \end{minipage}%
-\begin{minipage}{.5\textwidth}
+\begin{minipage}[t]{.5\textwidth}
   \centering
   \includegraphics[width=1\linewidth]{figures/exp5_patterncompletion.eps}
   \captionof{figure}{Another figure}
-  \label{fig:test2}
+  \label{fig:exp5_patterncompletion}
 \end{minipage}
 \end{figure}
 
