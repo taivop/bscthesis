@@ -606,12 +606,26 @@ Running any simulation of a neuron requires specifying the input, with several p
 
 Evidently, the neuron has a maximal response rate at $w\in[20,25]$. However, relative difference between the response of a trained neuron and that of an untrained neuron is a better measure for selectivity, as it shows the effect of learning on output rate. This difference is largest in the range $w \in [10,20]$, suggesting that a pattern of input should cover a small proportion of all available synapses to elicit maximal selectivity. It should be noted, though, that the effect of pattern width on output rate is low (less than 10Hz) compared to other parameters varied before.
 
+
+
 \begin{figure}[!htb]
-    \centering
-    \includegraphics[width=0.5\textwidth]{figures/exp4_synapsecount.eps}
-    \caption{Caption lalala.}
-    \label{fig:exp4synapsecount}
+\centering
+\begin{minipage}[t]{.5\textwidth}
+  \centering
+  \includegraphics[width=1\linewidth]{figures/exp4_synapsecount.eps}
+  \captionsetup{width=0.95\linewidth}
+  \captionof{figure}{Learning patterns of different width. Each datapoint shows mean output rate over 9 test runs lasting 5 seconds; the dashed lines show standard deviation of output rates in these 9 experiments.}
+  \label{fig:exp4synapsecount}
+\end{minipage}%
+\begin{minipage}[t]{.5\textwidth}
+  \centering
+  \includegraphics[width=1\linewidth]{figures/exp7_pr_destroying.eps}
+  \captionsetup{width=0.95\linewidth}
+  \captionof{figure}{The destructive effect of PR on effective input correlation. Each of the four coloured lines show the effective correlation $c_{eff}$ for the respective values of probability of release $p$ and correlation $c$. $c_{eff}$ is calculated by generating 100 correlated (with coefficient $c$) spike trains, randomly removing each spike with probability $p$ and calculating mean of the correlations of all pairs of spike trains.}
+  \label{fig:exp7_pr_destroying}
+\end{minipage}
 \end{figure}
+
 
 
 
@@ -622,12 +636,6 @@ The effect of probabilistic neurotransmitter release (PR) was studied by varying
 
 For uncorrelated Poissonian input of rate $r$, the only effect of PR is to decrease input rate, resulting in an effective input rate $r_{eff} = p \cdot r$. For correlated spiketrains, PR has an effect of destroying correlation in the input, as shown in Figure~\ref{fig:exp7_pr_destroying}. Thus, to study effects of PR not related to input rate, correlated inputs must be studied.
 
-\begin{figure}[!htb]
-    \centering
-    \includegraphics[width=0.5\textwidth]{figures/exp7_pr_destroying.eps}
-    \caption{The destructive effect of PR on effective input correlation. Each of the four coloured lines show the effective correlation $c_{eff}$ for the respective values of probability of release $p$ and correlation $c$. $c_{eff}$ is calculated by generating 100 correlated (with coefficient $c$) spike trains, randomly removing each spike with probability $p$ and calculating mean of the correlations of all pairs of spike trains.}
-    \label{fig:exp7_pr_destroying}
-\end{figure}
 
 % Experiment 8
 
@@ -660,9 +668,24 @@ The existence of PR ($p$ ranging from 0.5 to 0.95) in biological neurons implies
 
 
 \section{Testing for principal component analysis} % or PCA tasks
-Speak about what I tried, how it failed, why it failed and whether PCA is even feasible (and what should be done to make it so). Or maybe some of this goes in the Discussion section.
+%Speak about what I tried, how it failed, why it failed and whether PCA is even feasible (and what should be done to make it so). Or maybe some of this goes in the Discussion section.
 
-See e-mails for experiments, comments and analysis. There are figures in Experiment 9 and Experiment 10.
+
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=\textwidth]{figures/exp10_pca.eps}
+    \caption{Two independent 50-syn channels; both getting correlation 0.5. Mean output rate 29Hz in that experiment. Disabled spike-frequency adaptation. EPSP amp at 0.5mV.}
+    \label{fig:exp10_pca}
+\end{figure}
+
+
+
+
+
+
+
+
 
 
 % % % %
