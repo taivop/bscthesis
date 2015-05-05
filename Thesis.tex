@@ -148,8 +148,10 @@
 %
 % Title
 %
-% TODO title would better be a bit shorter. Other possibilities:
-% Biologically realistic single neuron model performs unsupervised learning
+\newcommand{\thesistitle}{Implementing and studying the behaviour of a biologically realistic neuron model}
+\newcommand{\thesistitleEST}{Bioloogiliselt realistliku neuroni mudeli ehitamine ja selle käitumise uurimine}
+
+
 
 \begin{document}
 \begin{center}
@@ -163,7 +165,7 @@
 	
 	{\LARGE Taivo Pungas}\\
 	\vspace{0.5cm}
-	\begin{spacing}{2}{\Huge\bf \ \ \ Unsupervised learning algorithms implemented by a biologically realistic neuron model}\end{spacing}
+	\begin{spacing}{2}{\Huge\bf \ \ \ \thesistitle}\end{spacing}
 	\vspace{0.5cm}
 	{\LARGE Bachelor's thesis (9 ECTS)}
 \end{center}
@@ -194,20 +196,20 @@ Professor: ............................................... "......." May 2015\\
 
 
 {\textbf
-{\Large Title of thesis in English}}
+{\Large \thesistitle}}
 
 \textbf{Abstract:}
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam a ultricies sem, vel gravida dolor. Vestibulum lacinia nulla nec massa mollis eleifend. Etiam scelerisque erat in ligula dapibus, et eleifend enim vulputate. Integer quis lobortis neque, eget efficitur felis. Vestibulum vel consequat quam. Praesent volutpat eget massa rutrum fringilla. Maecenas fringilla turpis ut dignissim luctus. Nunc lectus metus, dapibus eu enim ut, rhoncus blandit ligula. Praesent gravida ullamcorper est id pharetra. Mauris tempus ornare sollicitudin. Sed feugiat nec turpis mattis sollicitudin. Aliquam non orci sit amet lorem rutrum euismod et non orci. Aliquam egestas aliquam blandit. Cras quis convallis neque. Integer fringilla pharetra condimentum. Fusce erat eros, pulvinar sit amet orci in, consectetur accumsan eros.
 
-\textbf{Keywords:} taivo, raul, jaan, model, neuro, stuff
+\textbf{Keywords:} single neuron model, numerical simulation, synaptic plasticity, unsupervised learning, probabilistic neurotransmitter release
 
 \vspace{1.5cm}
 
 
 
 {\textbf
-{\Large Töö eestikeelne pealkiri}}
+{\Large \thesistitleEST}}
 
 \textbf{Lühikokkuvõte:}
 
@@ -239,15 +241,20 @@ However, gaining understanding of the brain's information processing mechanisms 
 
 Artificial systems with significant capacity for learning have recently been created using deep convolutional neural networks, performing well in tasks ranging from playing video games \cite{mnih2015human} to describing scenes in natural language \cite{karpathy2014deep}. The neuron models used in these systems are very simple, often composing of a scalar product of the inputs and weights, and a thresholding function. However, evidence from brains has shown that each neuron is a much more complex and powerful information processing unit. There is a clear gap between the computational capabilities of networks of neurons and biophysical mechanisms at the cellular level. The primary goal of this thesis is to help narrow this gap.
 
-The approach taken in this thesis is to show by numerical simulations neuron behaviour resulting from basic principles of neuronal biophysics. The work explores behaviour of one particular previously published biophysically realistic neuron model, which has been shown to produce a range of neural plasticity phenomena. 
+The approach taken in this thesis is to show by numerical simulations neuron behaviour resulting from basic principles of neuronal biophysics. The work explores behaviour of one particular previously published biophysically realistic neuron model, which has been shown to produce a range of neural plasticity phenomena.
 
-After a brief overview of the background and related work in Chapter 1 and describing the methods used in Chapter 2, Chapter 3 starts with validation of the behaviour of the implemented model against previously published work. Then, its input-output relation is characterised for various kinds of input. As an addition to the model, the effect of probabilistic neurotransmitter release is studied. Finally, a simple tasks is simulated to study the neuron's ability to implement principal component analysis, a well-known unsupervised learning algorithm.
+Three aspects of the model are of particular interest. Firstly, the changing of neural plasticity -- metaplasticity -- is important for producing well-known learning phenomena. Secondly, probabilistic neurotransmitter release which causes signal transmission failure might have an effect of increasing information transfer efficiency. Thirdly, the neuron's ability to perform principal component analysis (PCA), a well-known unsupervised learning algorithm, is tested. This is motivated by prior work showing that very simple neuron models are capable of PCA.
+
+After a brief overview of the background and related work in Chapter 1 and describing the methods used in Chapter 2, Chapter 3 starts with validation of the behaviour of the implemented model against previously published work. Then, its input-output relation is characterised for various kinds of input. As an addition to the model, the effect of probabilistic neurotransmitter release is studied. Finally, a simple task is simulated to study the neuron's ability to implement PCA.
 
 %The main goals of the work could be formulated as:
 %1. implement the neuron model and validate its behaviour (against original papers and what is realistic)
 %2. explore the behaviour of this model
 %3. find what effects PR has on behaviour
 %4. find out whether the neuron can perform a simple PCA task
+
+
+
 
 % % % %
 % Chapter: Background
@@ -317,6 +324,12 @@ Several single neuron models have been shown to be capable of unsupervised learn
 
 %Yeung 2004 showed selectivity. But seems that most work about unsupervised learning focuses on networks, not biophysical single neurons.
 
+The main goals of the work can be formulated as:
+(a) implementing the neuron model and validating its behaviour,
+(b) exploring the learning behaviour of this model,
+(c) finding effects of probabilistic neurotransmitter release on behaviour, and
+(d) testing whether the neuron can perform PCA.
+
 
 
 
@@ -324,12 +337,6 @@ Several single neuron models have been shown to be capable of unsupervised learn
 % Chapter: Methods
 % % % %
 \chapter{Methods}
-
-\begin{figure}[h]
-    \includegraphics[width=\textwidth]{figures/methods_sample_input.eps}
-    \caption{Sample input to 30 synapses, generated for a 1000ms period with a 0.1ms time-step. In this figure, black bars indicate timesteps at which spiketrains (running horizontally) contain spikes. Synapses 1-10 receive 5Hz uncorrelated input, synapses 11-20 receive 40Hz correlated input with $c=0.8$, synapses 21-30 receive 40Hz uncorrelated input.}
-    \label{fig:methods_sample_input}
-\end{figure}
 
 \section{Neuron model used in simulations}
 
@@ -342,6 +349,13 @@ Rather than simulating presynaptic neurons, inputs to the model are simulated as
 Correlation between inputs is achieved by specifying the correlation parameter $0 \leq c \leq 1$, and using code from \cite{macke2009} to generate correlated homogeneous Poissonian spike trains. For $c=1$, all synapses receive identical input; for $c=0$, all synapses receive independently generated spike trains.
 
 In all simulations, inputs to inhibitory synapses are generated as uncorrelated Poissonian spike trains with a mean firing rate of 10Hz.
+
+
+\begin{figure}[h]
+    \includegraphics[width=\textwidth]{figures/methods_sample_input.eps}
+    \caption{Sample input to 30 synapses, generated for a 1000ms period with a 0.1ms time-step. In this figure, black bars indicate timesteps at which spiketrains (running horizontally) contain spikes. Synapses 1-10 receive 5Hz uncorrelated input, synapses 11-20 receive 40Hz correlated input with $c=0.8$, synapses 21-30 receive 40Hz uncorrelated input.}
+    \label{fig:methods_sample_input}
+\end{figure}
 
 
 
@@ -660,7 +674,7 @@ The existence of PR ($p$ ranging from 0.5 to 0.95) in biological neurons implies
 
 
 
-\section{Testing for principal component analysis} % or PCA tasks
+\section{Principal component analysis task} % or PCA tasks
 %Speak about what I tried, how it failed, why it failed and whether PCA is even feasible (and what should be done to make it so). Or maybe some of this goes in the Discussion section.
 The neuron's ability to perform PCA, can be tested in various ways. The approach taken in this thesis is to define two channels of input, each of which can in principle be specified independently. Channel 1 consists of half of the 100 synapses; channel 2 contains the other half. Input to the two independent channels is generated by choosing input rates $(r_1, r_2)$ from a multivariate Gaussian distribution with means $(\mu_1, \mu_2)=(10,10)$ and covariance matrix
 $$
@@ -810,7 +824,7 @@ I, Taivo Pungas (21.02.1994),
 		\item reproduce, for the purpose of preservation and making available to the public, including for addition to the DSpace digital archives until expiry of the term of validity of the copyright, and
 		\item make available to the public via the web environment of the University of Tartu, including via the DSpace digital archives, as of 26.06.2016 until expiry of the term of validity of the copyright,
 	\end{enumerate}
-	``TODO thesis title goes here", supervised by Raul Vicente and Jaan Aru,
+	``\thesistitle", supervised by Raul Vicente and Jaan Aru,
 	
 	\item I am aware of the fact that the author retains these rights.
 
