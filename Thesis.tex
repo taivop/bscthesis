@@ -148,7 +148,7 @@
 %
 % Title
 %
-\newcommand{\thesistitle}{Implementing and studying the behaviour of a biologically realistic neuron model}
+\newcommand{\thesistitle}{Implementing and investigating a biologically realistic neuron model} % old: Implementing and studying the behaviour of a biologically realistic neuron model
 \newcommand{\thesistitleEST}{Bioloogiliselt realistliku neuroni mudeli ehitamine ja selle käitumise uurimine}
 
 
@@ -221,9 +221,22 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam a ultricies sem, 
 \
 \thispagestyle{empty}
 \pagebreak
+% % % %
+% Chapter: Acknowledgements
+% % % %
+
+\chapter*{Acknowledgements}
+\addcontentsline{toc}{chapter}{Acknowledgements}
+
+I would like to thank the comfy chairs I was able to sit in while writing my thesis.
+
+This work was supported by the IT Academy program.
+
+
 
 \tableofcontents
 \newpage
+
 
 
 % % % %
@@ -238,11 +251,11 @@ Your brain is a complex organ capable of very sophisticated thought. Even though
 
 However, gaining understanding of the brain's information processing mechanisms remains one of the major scientific challenges today. A key aspect of the brain is neural plasticity, its ability to change itself over time as new knowledge and experience are accumulated and processed. Thus, neuronal plasticity, and specifically synaptic plasticity (change in the strength of neuronal connections) is thought to underlie our ability for learning and memory. To understand the dynamics of these neuronal changes, computational models are built to assess how well they explain the brain's behaviour as observed in experiments in neuroscience and, more generally, how the models perform in a variety of tasks.
 
-Artificial systems with significant capacity for learning have recently been created using deep convolutional neural networks, performing well in tasks ranging from playing video games \cite{mnih2015human} to describing scenes in natural language \cite{karpathy2014deep}. The neuron models used in these systems are very simple, often composing of a scalar product of the inputs and weights, and a thresholding function. However, evidence from brains has shown that each neuron is a much more complex and powerful information processing unit. There is a clear gap between the learning rules used in networks of neurons, and biophysical mechanisms at the cellular level. The primary goal of this thesis is to help narrow this gap by studying the behaviour of a biologically realistic neuron model. To do so, a detailed implementation of such a model was built and some of its learning capabilities tested. 
+Artificial systems with significant capacity for learning have recently been created using deep convolutional neural networks, performing well in tasks ranging from playing video games \cite{mnih2015human} to describing scenes in natural language \cite{karpathy2014deep}. The neuron models used in these systems are very simple, often composing of a scalar product of the inputs and weights, and a thresholding function. However, evidence from brains has shown that each neuron is a much more complex and powerful information processing unit. There is a clear gap between the learning rules used in networks of neurons, and biophysical mechanisms of learning at the cellular level. The primary goal of this thesis is to help narrow this gap by studying the behaviour of a biologically realistic neuron model. To do so, a detailed implementation of such a model was built and some of its learning capabilities tested. 
 
 In particular, the approach taken in this thesis is to show by numerical simulations neuron behaviour resulting from basic principles of neuronal biophysics. This work builds on top of a plasticity model (described as a set of differential equations) previously published in \cite{yeung2004synaptic} and which has been shown to produce a range of neural plasticity phenomena. 
 
-The model allows us to inspect three aspects which are of particular interest. Firstly, the changing of neural plasticity--metaplasticity--is important for producing well-known learning phenomena. Secondly, probabilistic neurotransmitter release which causes signal transmission failure might have an effect of increasing information transfer efficiency. Thirdly, the neuron's ability to perform principal component analysis (PCA), a well-known unsupervised learning algorithm, is tested. This is motivated by prior work showing that very simple neuron models are capable of PCA \cite{oja2008oja}.
+The model allows inspection of three aspects which are of particular interest. Firstly, the changing of neural plasticity--metaplasticity--is important for producing well-known learning phenomena. Secondly, probabilistic neurotransmitter release which causes signal transmission failure might have an effect of increasing information transfer efficiency. Thirdly, the neuron's ability to perform principal component analysis (PCA), a well-known unsupervised learning algorithm, is tested. This is motivated by prior work showing that very simple neuron models are capable of PCA \cite{oja2008oja}.
 
 After a brief overview of the background and related work in Chapter 1 and describing the methods used in Chapter 2, Chapter 3 starts with validation of the behaviour of the implemented model against previously published work. Then, the neuron input-output relation is characterised for various kinds of input. As an addition to the model, the effect of probabilistic neurotransmitter release is studied. Finally, a simple task is simulated to study the neuron's ability to implement PCA.
 
@@ -275,48 +288,65 @@ Information flow through a neuron follows a path from the inputs to the output, 
 \subsubsection{Input}
 
 The region of connection between two neurons is called a \emph{synapse}, with information flowing from the axon of the \emph{presynaptic} neuron to a dendrite of the \emph{postsynaptic} neuron. When the presynaptic neuron produces significant output, neurotransmitters are released from the presynaptic neuron into the \emph{synaptic cleft}, a small gap between the presynaptic and postsynaptic neurons at the synapse.
-Neurotransmitters then bind to receptors on the dendrite of the postsynaptic neuron causing ion channels to open. This causes ion flow across the membrane which causes a voltage change at the dendrite of the postsynaptic neuron. However, the neurotransmitter release is unreliable: upon some presynaptic spikes no neurotransmitter is relased. This effect is called \emph{proabilistic neurotransmitter release} or \emph{synaptic failure}.
+Neurotransmitters then bind to receptors on the dendrite of the postsynaptic neuron causing ion channels to open. This causes ion flow across the membrane which causes a voltage change at the dendrite of the postsynaptic neuron. However, the neurotransmitter release is unreliable: upon some presynaptic spikes no neurotransmitter is relased. This effect is called \emph{proabilistic neurotransmitter release} (PR) or \emph{synaptic failure}.
 
 Synapses can be divided into two classes: input arriving at \emph{excitatory} synapses tends to increase the output of the postsynaptic neuron, input to \emph{inhibitory} synapses tends to make it fire less.
 
 \subsubsection{Computation}
 A single neuron can be viewed as an integrator of information over time, over different inputs, or both. At each synapse, a neuron has some intrinsic biological components that determine how much this synapse should affect the output of the postsynaptic neuron. \emph{Synaptic weights} are key parameters used in modelling such biological components, and the modification of synaptic weights is the basis of learning in neurons and thus, in the brain.
 
-After the contribution of input from each synapse is computed, this information must be integrated to produce the output of the neuron. An overview of some of the most common neural models of information integration will be given in Section~\ref{modelsofintegration}.
+After the contribution of input from each synapse is computed, this information must be integrated to produce the output of the neuron. An overview of some of the most common neural models of information integration will be given in Section~\ref{subsec:modelsofintegration}.
 
 \subsubsection{Output}
 
 Output of a neuron takes the form of \emph{action potentials} or \emph{spikes}, rapid increases in membrane voltage followed by a return to the equilibrium voltage. Information about action potentials is conducted from a neuron to the dendrites of other neurons using the axon. Axons are usually not part of single neuron models as the output of the modelled neuron is studied in and of itself.
 
 \section{Prior work}
-%TODO Suggestions from Elena: more detail (obv), examples of published models, what I do differently, why I chose this particular model. Add references.
 
 
 There are many computational models of neurons, with the level of detail ranging from compartmental to very simple models of a neuron such as those used in ANNs. Using these models, it is possible to simulate neurons in a computer and investigate the models' behaviour in a very controlled and detailed way. As opposed to real experiments that are hindered by many difficulties, using a simulation approach allows detailed investigation and control of input and all parameters.
 
-Two aspects of neurons can be modelled and used in different combinations: the mechanism for translating input signals into output (information integration) and the mechanism for updating synaptic weights (synaptic plasticity).
+Two aspects of neurons can be modelled and used in different combinations: the mechanism for translating input signals into output (information integration) and the mechanism for updating synaptic weights (synaptic plasticity); a summary of prior work in these will be given in the following two sections. Prior research into probabilistic neurotransmitter release will then be given followed by a short overview of the literature on learning in single neuron models.
 
 
 \subsection{Models of neural information integration}
-\label{modelsofintegration}
+\label{subsec:modelsofintegration}
 
 Some of the best known models, from least to most detailed, are the McCulloch-Pitts \cite{mcculloch1943logical}, integrate-and-fire (IF), and Hodgkin-Huxley \cite{hodgkin1952quantitative} models. In the MP model which is widely utilised in ANNs, a weighted sum of inputs is calculated, to which a sigmoid function is applied to produce the output of the neuron. In the IF and HH models the neuron is modelled as an electric circuit, and then corresponding differential equations are used to calculate the output of the neuron.
 
-%\subsection{Models of synaptic plasticity TODO}
 
-%Different kinds of possible learning rules. Simple ones such as Hebb's rule, Oja's rule, BCM theory. What properties these rules have been shown to have (what behaviours they produce -- PCA etc). Finding learning rules by minimising Fisher information, other information-theoretic measures, or some other objective function \cite{echeveste2014generating}.
+\subsection{Models of synaptic plasticity}
+\label{subsec:modelsofplasticity}
 
-%The perceptron \cite{rosenblatt1958perceptron} that works as a simple linear classifier was one of the earliest proposed computational models of the neuron. Since then, numerous models have been proposed. An important characteristic of a neuron model is its mechanism of learning, However, few models explicitly model the biochemistry and physiology leading to synaptic plasticity.
+Synaptic plasticity underpins learning in a neuron. It is possible to implement learning directly by calculating the error in the neuron's output: the difference between expected output (the correct label) and the neuron's prediction. Examples of these simple phenomenological rules include Hebbian rules (summarised as "Cells that fire together, wire together") \cite{hebb1952organisation}, Oja's rule (shown to produce PCA computation regardless of its simplicity) \cite{oja2008oja} and others, and are typically used in conjunction with MP neuron models. Learning rules can also be derived to minimise information-theoretic measures such as Fisher information \cite{echeveste2014generating}.
+
+Alternatively, learning can also arise from biophysical properties of more detailed biological models of synapses. A summary of biophysical mechanisms of synaptic plasticity is given in \cite{shouval2007models}; in Section~\ref{subsec:cabasedmodels}, calcium-based models will be looked at in more detail.
 
 
-\subsection{Single neuron models in unsupervised learning tasks}
+\subsection{Probabilistic neurotransmitter release}
 
-Several single neuron models have been shown to be capable of unsupervised learning: simple artificial neurons can do PCA when trained according to the Oja rule, the tempotron model \cite{gutig2006tempotron} is able to learn spike timing-based patterns, the SKAN model \cite{afshar2014racing} is capable of unsupervised classification of patterns. However, none of the aforementioned models are based on biophysical principles, and no other biophysical models have been shown to do unsupervised learning on the single neuron level.
+Recordings from hippocampal pyramidal neurons have shown synaptic transmission to be unreliable due to failure of release of neurotransmitter into the synaptic cleft upon a single presynaptic spike \cite{stevens1995facilitation}. Furthermore, the probability of successful release $p$ has been shown to have a wide distribution with predominant low values ($p < 0.4$) in the hippocampus \cite{murthy1997heterogeneous}.
 
-%Yeung 2004 showed selectivity. But seems that most work about unsupervised learning focuses on networks, not biophysical single neurons.
+PR with $p<1$ has been shown to have a beneficial effect of increasing the information-carrying efficiency of a single synapse, caused primarily by a decrease in noise \cite{goldman2004enhancement}. However, \cite{guo2012population} conclude that for a population of neurons, encoding performance is increased in the presence of weak noise and decreased in the presence of strong noise, adding that "several important synaptic parameters . . . have significant effects on the performance of the population rate coding".
 
-The main goals of the work can be formulated as:
-(a) implementing the neuron model and validating its behaviour,
+\subsection{Learning in single neuron models}
+
+\subsubsection{Plasticity in calcium-based models} % maybe rename this subsection
+\label{subsec:cabasedmodels}
+An overview of calcium-based biophysical models of synaptic plasticity is given in \cite{shouval2007models}. The model used in this work is notable for exhibiting several synaptic plasticity phenomena within one model, providing a unified model of synaptic plasticity \cite{shouval2002unified}. Other unifying models have been proposed with different underlying mechanisms and differing results.
+
+Building on top of the \cite{shouval2002unified} model, it was shown in \cite{yeung2004synaptic} that adding a stabilisation mechanism (metaplasticity) synapses become stable, avoiding positive feedback loops that would result in very high synaptic weights. In addition, synaptic competition is achieved, allowing synaptic weights to "reflect the statistical properties of the inputs" \cite{yeung2004synaptic}. This allows the neuron to learn complex input patterns while maintaining a relatively constant range of output.
+
+The model used in this thesis will be discussed in more detail in Section~\ref{methods-modelused}.
+
+\subsubsection{Unsupervised learning}
+
+Several single neuron models have been shown to be capable of unsupervised learning: simple artificial neurons can do PCA when trained according to the Oja rule \cite{oja2008oja}, the tempotron model \cite{gutig2006tempotron} is able to learn spike timing-based patterns, the SKAN model \cite{afshar2014racing} is capable of unsupervised classification of patterns. However, none of the aforementioned models are based on biophysical principles, and no other biophysical models have been shown to do unsupervised learning on the single neuron level.
+
+
+
+Having taken a look at the state of the art, the main goals of the work can be formulated as:
+(a) implementing the chosen neuron model and validating its behaviour,
 (b) exploring the learning behaviour of this model,
 (c) finding effects of probabilistic neurotransmitter release on behaviour, and
 (d) testing whether the neuron can perform PCA.
@@ -330,6 +360,7 @@ The main goals of the work can be formulated as:
 \chapter{Methods}
 
 \section{Neuron model used in simulations}
+\label{methods-modelused}
 
 The neuron model used in this work follows the model of a single neuron published in \cite{yeung2004synaptic}. An integrate-and-fire model of information integration is used with a calcium-dependent model of synaptic plasticity \cite{shouval2002unified}. No dendritic distance is simulated, i.e. the possibility that some synapses are situated further from the soma is not taken into account. In this section, an overview of the most important aspects of the model will be given. The total number of synapses is 120, with 100 excitatory synapses and 20 inhibitory synapses.
 
@@ -377,7 +408,6 @@ The effect of presynaptic spikes on the gating of glutamate-controlled and GABA-
 
 In addition to components mentioned in the previous section, the extent to which presynaptic spikes influence postsynaptic voltage is modelled by the synaptic weights $\boldsymbol{W}=(W_i)$, with $i$ denoting the number of the synapse. The modification of these weights is the basis of learning in this model: increasing $W_i$ will increase the effect spikes at the $i$-th synapse have on postsynaptic voltage, and vice versa. In this model, only excitatory synapses are plastic, i.e. the weights of inhibitory synapses remain unchanged.
 
-%TODO use Shouval Scholarpedia article for explaining basis of learning (http://www.scholarpedia.org/article/Models_of_synaptic_plasticity#Calcium_dependent_models_of_bidirectional_synaptic_plasticity)
 The mechanism for modifying synaptic weights follows the Ca\textsuperscript{2+}-dependent model from \cite{shouval2002unified}, where the aim was "to construct a model based on a minimal number of assumptions". The model detects coincidences of presynaptic and postsynaptic spikes: the weight of synapse $i$ will be increased if the presynaptic spike occurs right before the postsynaptic spike (i.e. there is reason to believe the postsynaptic spike was \emph{caused} by the input), and decreased otherwise. The process of spike-timing-dependent plasticity (STDP) captures this idea that learning should depend on the exact timing on postsynaptic and presynaptic spikes. It was shown in \cite{shouval2002unified} that the plasticity model used in this work implements STDP in a way similar to what has been observed in experiments in neuroscience.
 
 The mechanism for detecting coincidences relies on N-methyl-D-aspartic acid (NMDA) receptors. NMDA receptors control gates that can allow calcium ions to flow into the neuron, which in turn causes an increase of the synaptic weight. The extent to which the calcium channels open depend on two factors: concentration of glutamate (the neurotransmitter that also causes voltage increases upon spikes at excitatory synapses) and dendritic voltage caused by a back-propagating action potential (BPAP). The former relays information about presynaptic spikes: if a spike has occurred recently, the level of glutamate at the synapse is at a high level. The latter signifies a postsynaptic spike: when the postsynaptic neuron fires, an increase in voltage is propagated to the dendrites. The influx of calcium is dependent on the exact timing of spikes because both glutamate concentration and BPAP voltage decay in time. The synaptic weights' update depends on the level of intracellular calcium as shown in Equation~\ref{eq:weightupdate}, with shapes of $\Omega$ and $\eta$ shown in Figure~\ref{fig:methods_eta_omega}.
@@ -429,10 +459,12 @@ Unless mentioned otherwise, learning speed was increased by a factor of 100 by m
 % % % %
 % Chapter: Results
 % % % %
-% Useful link for figures: http://tex.stackexchange.com/questions/37581/latex-figures-side-by-side
+
 \chapter{Results}
+\label{chapter:results}
 
 \section{Validation of model behaviour}
+\label{sec:validation}
 
 As a prerequisite to analysing more complex behaviour of the model, it is necessary to make sure the model is implemented correctly. Syntax and other obvious errors aside, the simplest way to do this is to observe the behaviour of the model under some conditions and compare the result with previously published results on the same model in the same conditions. As \cite{shouval2002unified} and \cite{yeung2004synaptic} form the basis of the model, the behaviour of the model implemented in this thesis will be compared to these two sources. Attention will also be paid to keeping parameters and outputs in biophysically realistic ranges.
 
@@ -497,6 +529,7 @@ The model produces two more effects of metaplasticity observed in \cite{yeung200
 
 
 \subsection{Selectivity to temporal correlation} % aka temporal code
+\label{subsec:selectivitycorrelation}
 
 Temporal correlation between spike trains, i.e. increased probability of coincidence of spikes, indicates underlying structure in the input. Thus, if the neuron is to learn this structure, in the presence of two groups of inputs with only one group correlated, the synapses of correlated inputs should be selectively potentiated. A strong effect of this sort is observed in \cite{yeung2004synaptic}, with weights of the uncorrelated channel going to zero. However, it can be seen in Figure~\ref{fig:selectivity_correlation} that in the model used in this thesis, the selectivity to correlation is weak: the difference in weights of the two channels is existent but small, the group mean weights differing by approximately 20\%. An informal parameter sweep was conducted, but selectivity to correlation did not increase.
 
@@ -515,6 +548,7 @@ Temporal correlation between spike trains, i.e. increased probability of coincid
 
 
 \section{Learning patterns of input rate}
+\label{sec:learningpatterns}
 
 As shown in Section~\ref{subsec:iocurve}, the neuron's output rate is dependent on its input rate. In this section, I will study the neuron's ability to learn and respond to patterns encoded in the mean firing rates of inputs. First, it will be shown that the neuron distinguishes between learned inputs and noise. Secondly, the neuron will be shown to be linear upon presenting learned input patterns partially. Finally, the effect of pattern width on learning will be studied.
 
@@ -629,6 +663,7 @@ Evidently, the neuron has a maximal response rate at $w\in[20,25]$. However, rel
 
 
 \section{Probabilistic neurotransmitter release} % or [Investigating] the effect of probability of release
+\label{sec:probrelease}
 
 The effect of probabilistic neurotransmitter release (PR) was studied by varying the probability $p$ of neurotransmitter release upon a presynaptic spike. For all other simulations in this thesis, neurotransmitter is released from the presynaptic side upon every presynaptic spike, whereas for simulations in this section, the neurotransmitter is released with probability $p \in [0,1]$.
 
@@ -648,9 +683,7 @@ An input-output curve similar to those in Section~\ref{subsec:iocurve} was produ
 
 % Experiment 7
 
-%[TODO cite p range? http://www.d.umn.edu/~jfitzake/Lectures/DMED/NeuralCommunication/Neurotransmission/TransmitterRelease.html]
-
-The existence of PR ($p$ ranging from 0.5 to 0.95) in biological neurons implies that there exists a value of $p \neq 1$, for which some characteristic measure of information transfer is at its optimal value. Two such candidate measures are easy to test: output rate and variance in output rate. Figure~\ref{fig:exp7grid} shows the dependence of these two measures on $p$. At each input rate tested both the output rate and variance (shown as standard deviation) increase as $p$ approaches 1, suggesting no optimal value of $p$ for these two measures in the interval $p \in [0,1)$. However, at $p=0.8$, mean output rate is roughly equal to or slightly larger than output rate at $p=1$. This indicates that, for the values of parameters used, a value of $p$ lower than 1 is useful because a lower $p$ causes lower energy expenditure on spiking and thus a more efficient information transfer.
+The existence of PR in biological neurons implies that there exists a value of $p \neq 1$, for which some characteristic measure of information transfer is at its optimal value. Two such candidate measures are easy to test: output rate and variance in output rate. Figure~\ref{fig:exp7grid} shows the dependence of these two measures on $p$. At each input rate tested both the output rate and variance (shown as standard deviation) increase as $p$ approaches 1, suggesting no optimal value of $p$ for these two measures in the interval $p \in [0,1)$. However, at $p=0.8$, mean output rate is roughly equal to or slightly larger than output rate at $p=1$. This indicates that, for the values of parameters used, a value of $p$ lower than 1 is useful because a lower $p$ causes lower energy expenditure on spiking and thus a more efficient information transfer.
 
 \begin{figure}[!htb]
     \includegraphics[width=\textwidth]{figures/exp7_PRoutputvariance_grid.eps}
@@ -666,6 +699,7 @@ The existence of PR ($p$ ranging from 0.5 to 0.95) in biological neurons implies
 
 
 \section{Principal component analysis task} % or PCA tasks
+\label{sec:pca}
 %Speak about what I tried, how it failed, why it failed and whether PCA is even feasible (and what should be done to make it so). Or maybe some of this goes in the Discussion section.
 The neuron's ability to perform PCA, can be tested in various ways. The approach taken in this thesis is to define two channels of input, each of which can in principle be specified independently. Channel 1 consists of half of the 100 synapses; channel 2 contains the other half. Input to the two independent channels is generated by choosing input rates $(r_1, r_2)$ from a multivariate Gaussian distribution with means $(\mu_1, \mu_2)=(10,10)$ and covariance matrix
 $$
@@ -697,50 +731,65 @@ with all rates in Hz, and using intra-channel correlation $c=0.5$. In this setup
 % Chapter: Discussion
 % % % %
 \chapter{Discussion}
-Mention this: http://www.cell.com/neuron/abstract/S0896-6273%2815%2900210-X
-
-mina vs 2004/2002
-näitan, mis neuroni reaalne output on (mitte ainult weightid) -- see on väga oluline, et saaks networke ehitada
-first implemented, then didnt touch any parameters but treated neuron as a black box, looking only at input structure and output rate
-miks mul korrelatsioon ei tööta -- kitsam STDP tekitab correlation specificityt, mul on suht lai STDP
-
-COMMENT on high firing rates: this is something I did contemplate myself. I think the main culprits are the exact values of two parameters: EPSP voltage and the stable point of weights. Drawing a plot that shows an input-output curve for a bunch of different EPSP values should take no more than 10 minutes (I have all the code), so I'll put this figure along with a description of other likely causes somewhere into Results > Validation. A weak justification is also that Shouval 2004 have high rates too (at least for an untrained neuron - 30Hz uncorrelated input results in 60Hz output).
-
-Thinking of the result of experiment 1, there is actually also an implication for probabilistic release. Due to the linearity of the neuron, if there is a 50\% probability of release (effective input rate is 50\% of actual rate R), the output rate of the neuron will also be 50\% of the way between baseline and what one would expect for a rate R.
-
-Using the graph \ref{fig:exp4synapsecount} from Experiment 4, I would argue that it does make a difference exactly how you create the pattern you're going to use with this model -- and coding a pattern in 10-20 synapses elicits selectivity well, whereas a 40-50 synapse pattern doesn't. This makes sense, since a few very strongly firing inputs seem to convey better information than a large amount of inputs that have only slightly higher rates than background.
-The value of this knowledge: it helps inform further experiments by showing what kind of parameters to use.
-
-In Selectivity to correlation subsection, selectivity was not achieved with any of the parameter sets tried in an informal sweep.
-
-
-
-
-
-
-
 %Goals:
 %1. implement the neuron model and validate its behaviour (against original papers and what is realistic)
 %2. explore the behaviour of this model
 %3. find what effects PR has on behaviour
 %4. find out whether the neuron can perform a simple PCA task
 
+\section{Interpretation of results}
 
-\subsubsection{Implementation and validation}
-1. The input-output curves, STDP curve and metaplasticity evolution (the graph showing that metaplasticity pulls weights down after an initial potentiation) look qualitatively similar to Shouval's, or at least they can be made similar upon changing the parameters a bit (for STDP curve). A significant difference in my model is that selectivity to correlation is much weaker, however I hypothesize that by playing with the STDP curve (which can be done by changing parameters affecting NMDA currents) will produce a stronger correlation selection effect, and this is a hypothesis that can be easily tested in further research. The output rates are high compared to biological neurons, but again this (I show) is affected a lot by the EPSP amplitude used.
-
-\subsubsection{The neuron implements a linear filter}
-The neuron clearly learns. Furthermore, the learning can be verified from the output rate of the neuron, which means meaningful information processing takes place. It responds near-linearly when shown partial input (in two different ways), so it can be said that the neuron implements a linear filter (context: ANNs' sigmoid or rectified linear filters). This is good to know for building networks of neurons.
-I also find that there is some range of pattern width (number of synapses carrying signal) that is better than other widths - this directly informs further simulations for choosing patterns.
-
-\subsubsection{PR increases efficiency of information transfer}
-3. Probability of release 0.8 is, in some cases, equivalent to PR 1. This means it is indeed useful in that case, saving energy by eliminating unnecessary spikes (at least ones from a correlated source). It is possible that the results I have are not generalisable - that they are specific to the values of  {rate, weights} I used - but this is again something to look into in further research. The model could also be used to see if there is an information-theoretic metric whose maximum is at a medium PR value (e.g. 0.6), implying that PR is better than no PR.
-
-\subsubsection{The neuron fails rate-based PCA at these parameter values}
-4. The two PCA experiments I tried didn't work. However, a PCA task can be formulated in many ways, and my experiments with purely rate-based patterns definitely don't disprove the neuron's ability to do PCA. Rather, changing the STDP curve and increasing selectivity to correlation might have an effect and could be studied, and a more fundamental/theoretic approach to why and in what conditions the neuron could do PCA would be in order (similar to analysis of Oja rule -- but with simulations). In hindsight, trying to do PCA at first seems to have been a too large leap, too disconnected from what I already knew about the neuron (since PCA is a nontrivial algorithm for such a system to implement).
+Validation of the implemented neuron in Section~\ref{sec:validation} was largely successful with results mostly agreeing with prior work. The input-output curves, STDP curve and metaplasticity evolution look qualitatively similar to those of \cite{shouval2002unified} and \cite{yeung2004synaptic}. A significant divergence in this thesis was a much weaker selectivity to correlation. However, by changing the characteristics of the STDP curve (by changing parameters affecting NMDA currents) could produce a stronger correlation selection effect--a hypothesis that can be easily tested in further research. The output rates are high compared to biological neurons, but this (I show) is affected a lot by the EPSP amplitude parameter.
 
 
+The neuron clearly learns and exhibits mostly linear behaviour as shown in Section~\ref{sec:learningpatterns}. Furthermore, the learning can be verified from the output rate of the neuron, which suggests meaningful information processing takes place.
+In the context of networks of neurons, ANNs often use sigmoid or rectified linear filters; due to the neuron's linear response to partial input, it can be said to implement a linear filter. The results presented in \ref{subsec:patternwidths} also suggest an optimal pattern width for maximal learning capability.
 
+
+In Section~\ref{sec:probrelease}, the effect of probabilistic neurotransmitter release on the neuron's behaviour was found to be small but significant. In all but one tested value of $p$, the results were unsurprising given the correlation-breaking and rate-reducing effect of PR. However, it was found that PR 0.8 is, in some cases, equivalent to PR 1. For $p=0.8$, PR is indeed useful, eliminating unnecessary spikes but producing the same output rate. This is in agreement with the conclusion of \cite{goldman2004enhancement} about PR increasing information transfer efficiency.
+
+
+The neuron did not successfully perform a PCA task in the two experiments specified in Section~\ref{sec:pca}. However, a PCA task can be formulated in many ways, and experiments with purely rate-based patterns (those of Section\ref{sec:pca}) do not disprove the neuron's ability to do PCA. Rather, adjusting the STDP curve and increasing selectivity to correlation might have a positive effect.
+
+
+
+
+
+\section{Limitations}
+
+Several issues must be taken into account when interpreting the results.
+
+One of the most severe limitations of the methods of this thesis is a lack of a systematic basis for choosing parameters. Even though informal parameter sweeps were conducted, it is possible to do a more systematic search in parameter space and vary more parameters. Doing so would increase confidence that the results hold generally, not for the specific parameter sets used.
+
+A related issue concerns the speed of simulations. While the simulation code could certainly be optimised in various ways, a significant increase in speed would result from increasing the simulation time-step (0.1ms in this thesis). This would require numerically estimating differential equations with a method other than Euler's. A larger time-step would allow more simulations and thus more parameter sweeps to be conducted with the same amount of computation.
+
+The lack of strong selectivity to correlation shown in Section~\ref{subsec:selectivitycorrelation} is another significant limitation: without it, some types of learning modes are not exhibited and thus cannot be studied. To achieve selectivity to correlation, one should do a systematic search of parameters, especially varying the STDP curve shape and magnitude to get a narrower STDP curve.
+
+Finally, throughout the work, firing rates are exceptionally high for both inputs and output in comparison with biological neurons. The high input rates are explained by the small number of synapses used: a typical pyramidal neuron might receive input from tens of thousands of synapses, but the neuron simulated in this thesis has only 100 inputs. The output rate is greatly affected by EPSP voltage (as shown in Figure~\ref{fig:exp8gridoutputs}) and the stable point for synaptic weights. To alleviate the problem of high output rates, these parameters should be varied.
+
+\section{Future work}
+
+Studying probabilistic neurotransmitter release, an approach more grounded in information theory might be in order: using information measures to characterise input and output. More specifically, for some particular measure, there might exist an optimal value of probability of release $p < 1$, giving insight into the utility of the PR phenomenon.
+
+For unsupervised learning, a more fundamental approach to why and in what conditions the neuron could implement PCA has potential. In particular, the effect of selectivity to correlation might influence the neuron's ability to perform PCA. Similarities to Oja's rule could also be studied to inform further unsupervised learning tasks. In addition, there are several ways to put the neuron to a PCA task; more of these can be tested. 
+
+The plasticity of inhibitory neurons, a topic not in the scope of this thesis, could be studied as well. Building atop of results characterising STDP in inhibitory synapses of the mouse auditory cortex \cite{d2015inhibitory}, one could implement inhibitory plasticity in a biologically realistic way.
+
+Finally, the neuron's potential to implement Bayesian inference could be studied. This could be achieved using a theoretical framework for analyzing and modelling local plasticity mechanisms in the context of probabilistic inference \cite{kappel2015network}.
+
+% add?
+
+
+% % % %
+% Conclusion
+% % % %
+
+\chapter*{Conclusion}
+\addcontentsline{toc}{chapter}{Conclusion}
+
+In this thesis, a biophysically realistic single neuron model was implemented and investigated. In the first section of Chapter~\ref{chapter:results}, the behaviour of the neuron was found to be similar to prior work with the exception of selectivity to correlated input, which was not exhibited in our simulations. In the second section, the neuron was found to implement a linear filter. In the last two sections, probabilistic neurotransmitter release and a PCA task were studied, resulting in weak evidence towards the usefulness of PR and no evidence towards the neuron's potential capability to implement PCA.
+
+The author of this thesis was responsible for implementing and validating the model, running simulations and analysing the resulting data. The research questions as well as components of the neuron model used were partly provided by the supervisors.
 
 % % % %
 % Bibliography
@@ -749,7 +798,7 @@ I also find that there is some range of pattern width (number of synapses carryi
 \bibliographystyle{alpha}
 \addcontentsline{toc}{chapter}{Bibliography}
 \bibliography{Thesis}
-Internet URLs were valid on May 14, 2015.
+%Internet URLs were valid on May 14, 2015.
 \newpage
 
 
@@ -788,7 +837,7 @@ The MATLAB scripts for simulations and data analysis performed in this thesis ar
   \item[NMDA] N-Methyl-D-aspartic acid
   \item[NMDAR] NMDA receptor
   \item[PCA] principal component analysis
-  \item[PR] probability of [neurotransmitter] release / probabilistic [neurotransmitter] release
+  \item[PR] probabilistic [neurotransmitter] release
   \item[STDP] spike-timing-dependent plasticity
 \end{description}
 
@@ -796,20 +845,20 @@ The MATLAB scripts for simulations and data analysis performed in this thesis ar
 
 
 % % % %
-% License
+% Licence
 % % % %
 
-\chapter*{License}
-\addcontentsline{toc}{chapter}{License}
+\chapter*{Licence}
+\addcontentsline{toc}{chapter}{Licence}
 
 
 %
-% Non-exclusive license to reproduce thesis and make thesis public
+% Non-exclusive licence to reproduce thesis and make thesis public
 %
-\section*{Non-exclusive license to reproduce thesis and make thesis public}
+\section*{Non-exclusive licence to reproduce thesis and make thesis public}
 I, Taivo Pungas (21.02.1994), 
 \begin{enumerate}
-	\item herewith grant the University of Tartu a free permit (non-exclusive license) to:
+	\item herewith grant the University of Tartu a free permit (non-exclusive licence) to:
 	\begin{enumerate}[label*=\arabic*.]
 		\renewcommand{\theenumi}{\arabic{enumi}}
 		\item reproduce, for the purpose of preservation and making available to the public, including for addition to the DSpace digital archives until expiry of the term of validity of the copyright, and
@@ -819,7 +868,7 @@ I, Taivo Pungas (21.02.1994),
 	
 	\item I am aware of the fact that the author retains these rights.
 
-	\item I certify that granting the non-exclusive license does not infringe the intellectual property rights or rights arising from the Personal Data Protection Act. 
+	\item I certify that granting the non-exclusive licence does not infringe the intellectual property rights or rights arising from the Personal Data Protection Act. 
 \end{enumerate}
 
 Tartu, 14.05.2015
