@@ -149,7 +149,7 @@
 % Title
 %
 \newcommand{\thesistitle}{Implementing and investigating a biologically realistic neuron model} % old: Implementing and studying the behaviour of a biologically realistic neuron model
-\newcommand{\thesistitleEST}{Bioloogiliselt realistliku neuroni mudeli ehitamine ja selle käitumise uurimine}
+\newcommand{\thesistitleEST}{Bioloogiliselt realistliku neuroni mudeli ehitamine ja uurimine}
 
 
 
@@ -267,7 +267,7 @@ After a brief overview of the background and related work in Chapter 1 and descr
 \chapter{Background and related work}
 
 
-\section{Overview of related neuroscience} % TODO rename title
+\section{Overview of relevant neuroscience}
 
 \subsection{Neurobiology of the brain} % Biology of the human brain
 The brain is the central information processing organ in animals. The computational properties of the brain arise from the heavily interconnected networks and sub-networks of specialised cells called \emph{neurons}. It has been approximated that the human brain consists of $10^{11}$ neurons with $10^{15}$ inter-neuronal connections called \emph{synapses} \cite{herculano2009human}. This work focuses on modelling one of many different types of neurons - pyramidal neurons.
@@ -573,7 +573,7 @@ After training, plasticity and metaplasticity were disabled by fixing the weight
 
 % Experiment 6
 
-It is also important to understand the neuron's response when input varies between trained and untrained input. To this end, the input was alternated so pattern \ref{fig:exp2_inputpatterns}A was shown in time periods $t \in [1\mathrm{s}, 2\mathrm{s}) \cup [3\mathrm{s}, 4\mathrm{s}) \cup \ldots $. In between presentations of the trained pattern, all synapses received input at a rate of 17.5Hz ("flat" input), keeping the total input received by the neuron constant. The resulting instantaneous output rate, shown in Figure~\ref{fig:exp6voltageoscillation}, clearly oscillates between a high rate and a low rate. In addition, the mean firing rate in periods of learned input is significantly higher. Thus, this experiment demonstrates the neuron's ability to switch between two modes of firing depending on whether it is presented with the learned input.
+It is also important to understand the neuron's response when input varies between trained and untrained input. To this end, the input was alternated so pattern \ref{fig:exp2_inputpatterns}A was shown in time periods $t \in [1\mathrm{s}, 2\mathrm{s}) \cup [3\mathrm{s}, 4\mathrm{s}) \cup \ldots $. In between presentations of the trained pattern, all synapses received input at a rate of 17.5Hz ('flat' input), keeping the total input received by the neuron constant. The resulting instantaneous output rate, shown in Figure~\ref{fig:exp6voltageoscillation}, clearly oscillates between a high rate and a low rate. In addition, the mean firing rate in periods of learned input is significantly higher. Thus, this experiment demonstrates the neuron's ability to switch between two modes of firing depending on whether it is presented with the learned input.
 
 \begin{figure}[!htb]
     \includegraphics[width=\textwidth]{figures/exp6_voltageoscillation.eps}
@@ -595,7 +595,7 @@ It is also important to understand the neuron's response when input varies betwe
   \centering
   \includegraphics[width=1\linewidth]{figures/exp5_patterncompletion.eps}
   \captionsetup{width=0.95\linewidth}
-  \captionof{figure}{Response to varying proportions of trained pattern present. Each datapoint shows output rate in a 5-second simulation. $x$ is defined as the proportion of the original 40 high-rate synapses receiving high-rate input in the test. Total input was normalised to 1750Hz by choosing an appropriate rate for all other synapses.}
+  \captionof{figure}{Response to varying proportions of trained pattern. Each datapoint shows output rate in a 5-second simulation. $x$ is defined as the proportion of the original 40 high-rate synapses receiving high-rate input in the test. For all other synapses a suitable input rate was chosen to normalise total input to 1750Hz.}
   \label{fig:exp5_patterncompletion}
 \end{minipage}
 \end{figure}
@@ -612,7 +612,7 @@ It is also important to understand the neuron's response when input varies betwe
 
 % Experiment 1
 
-An important aspect of the behaviour of a neuron is its ability to recognise partial or incomplete inputs. To study this, a neuron was trained on the pattern shown on Figure~\ref{fig:exp2_inputpatterns}A and plasticity subsequently disabled. In the testing phase, intensity of the learned pattern was varied and output rate recorded. The results, given in Figure~\ref{fig:exp1_filter}, indicate that the neuron responds linearly to changing pattern intensity. What's more, the response is linear even when the pattern has negative intensity (the background rate is higher than pattern rate), i.e. the neuron linearly determines the absence of input. For control, a neuron trained on flat input of 17.5Hz was tested; the control neuron did not exhibit a strong systematic response.
+An important aspect of the behaviour of a neuron is its ability to recognise partial or incomplete inputs. To study this, a neuron was trained on the pattern shown on Figure~\ref{fig:exp2_inputpatterns}A and plasticity subsequently disabled. In the testing phase, intensity of the learned pattern was varied and output rate recorded. The results, given in Figure~\ref{fig:exp1_filter}, indicate that the neuron responds linearly to changing pattern intensity. The response is linear even when the pattern has negative intensity (the background rate is higher than pattern rate), i.e. the neuron linearly determines the absence of input. A control neuron trained on flat input of 17.5Hz was also tested; the control neuron did not exhibit a strong systematic response.
 
 %Basically, I vary the intensity of a learned input pattern and see what output the neuron produces. I think the result is interesting in that  shows what filter the neuron implements - a linear one. This can be compared with what is done in ANNs where they have rectified linear or sigmoidal filters. It seems to me that the analogy holds very well, and that this result is very useful in the context of building a network of these neurons (as well as general understanding of how the neuron behaves).
 
@@ -634,7 +634,7 @@ In addition to varying intensity of the learned pattern, one can show partial in
 
 % Experiment 4: the neuron becomes more selective to patterns coded in a particular number of synapses (or a small range).
 
-Running any simulation of a neuron requires specifying the input, with several parameters to vary: number of synapses, rate, correlation, number and size of distinct channels among others. Here, the effect of pattern width on output rate is studied. A neuron is trained by distributing a total of 1750Hz of input among two channels: 1000Hz evenly among synapses $1 \ldots w$ (high-rate channel), and 750Hz evenly among synapses $w \ldots 100$. For each value of $w$, a new neuron is trained, plasticity is disabled and the neuron tested on the training pattern. As control, for each value of $w$, a neuron trained on flat input of 17.5Hz ('untrained' neuron) is tested with the test pattern corresponding to $w$. The results are shown in Figure~\ref{fig:exp4synapsecount}.
+Running any simulation of a neuron requires specifying several parameters governing the structure of the input: number of synapses, rate of firing, inter-synapse correlation, number and size of distinct channels among others. Here the effect of pattern width on output rate is studied. A neuron is trained by distributing a total of 1750Hz of input among two channels: 1000Hz evenly among synapses $1 \ldots w$ (high-rate channel), and 750Hz evenly among synapses $w \ldots 100$. For each value of $w$, a new neuron is trained, plasticity is disabled and the neuron is tested on the training pattern. A control neuron trained on flat input of 17.5Hz ('untrained' neuron) is tested for each value of $w$ with the test pattern corresponding to $w$. The results for both the trained and the untrained neurons are shown in Figure~\ref{fig:exp4synapsecount}.
 
 Evidently, the neuron has a maximal response rate at $w\in[20,25]$. However, relative difference between the response of a trained neuron and that of an untrained neuron is a better measure for selectivity, as it shows the effect of learning on output rate. This difference is largest in the range $w \in [10,20]$, suggesting that a pattern of input should cover a small proportion of all available synapses to elicit maximal selectivity. It should be noted, though, that the effect of pattern width on output rate is low (less than 10Hz) compared to other parameters varied before.
 
@@ -646,14 +646,14 @@ Evidently, the neuron has a maximal response rate at $w\in[20,25]$. However, rel
   \centering
   \includegraphics[width=1\linewidth]{figures/exp4_synapsecount.eps}
   \captionsetup{width=0.95\linewidth}
-  \captionof{figure}{Learning patterns represented in varying numbers of synapses. Each datapoint shows mean output rate over 9 test runs lasting 5 seconds; the dashed lines show standard deviation of output rates in these 9 experiments.}
+  \captionof{figure}{Learning patterns represented in varying numbers of synapses. Each datapoint shows mean output rate over 9 test runs lasting for 5 seconds; dashed lines show standard deviation of output rates in these runs.}
   \label{fig:exp4synapsecount}
 \end{minipage}%
 \begin{minipage}[t]{.5\textwidth}
   \centering
   \includegraphics[width=1\linewidth]{figures/exp7_pr_destroying.eps}
   \captionsetup{width=0.95\linewidth}
-  \captionof{figure}{The destructive effect of PR on effective input correlation. Each of the four coloured lines show effective correlation $c_{eff}$ for the respective values of probability of release $p$ and correlation $c$. $c_{eff}$ is calculated by generating 100 correlated (with coefficient $c$) spike trains, randomly removing each spike with probability $p$ and calculating mean of the correlations of all pairs of spike trains.}
+  \captionof{figure}{The destructive effect of PR on effective input correlation. Each of the four coloured lines show effective correlation $c_{eff}$ for the respective values of probability of release $p$ and correlation $c$. $c_{eff}$ is calculated by generating 100 correlated spike trains, randomly removing each spike with probability $p$ and calculating mean of the correlations of all pairs of spike trains.}
   \label{fig:exp7_pr_destroying}
 \end{minipage}
 \end{figure}
@@ -665,14 +665,14 @@ Evidently, the neuron has a maximal response rate at $w\in[20,25]$. However, rel
 \section{Probabilistic neurotransmitter release} % or [Investigating] the effect of probability of release
 \label{sec:probrelease}
 
-The effect of probabilistic neurotransmitter release (PR) was studied by varying the probability $p$ of neurotransmitter release upon a presynaptic spike. For all other simulations in this thesis, neurotransmitter is released from the presynaptic side upon every presynaptic spike, whereas for simulations in this section, the neurotransmitter is released with probability $p \in [0,1]$.
+The effect of probabilistic neurotransmitter release (PR) was studied by varying the probability $p$ of neurotransmitter release upon a presynaptic spike. For all other simulations in this thesis, neurotransmitter is released from the presynaptic side upon every presynaptic spike (i.e. $p=1$). In contrast, neurotransmitter is released with probability $p \in [0,1]$ in all simulations of this section. Choosing a value of $p<1$ introduces synaptic failure into the model.
 
-For uncorrelated Poissonian input of rate $r$, the only effect of PR is to decrease input rate, resulting in an effective input rate $r_{eff} = p \cdot r$. For correlated spiketrains, PR has an effect of destroying correlation in the input, as shown in Figure~\ref{fig:exp7_pr_destroying}. Thus, to study effects of PR not related to input rate correlated inputs must be studied.
+For uncorrelated Poissonian input of rate $r$, the only effect of PR is to decrease input rate, resulting in an effective input rate $r_{eff} = p \cdot r$. For correlated spike trains PR has an effect of destroying correlation in the input, as shown in Figure~\ref{fig:exp7_pr_destroying}. Thus, to study effects of PR unrelated to input rate correlated inputs must be studied.
 
 
 % Experiment 8
 
-An input-output curve similar to those in Section~\ref{subsec:iocurve} was produced for different values of $p$ with results shown in Figure~\ref{fig:exp8gridoutputs}. The only effect of PR for $p \geq 0.4$ is, predictably, to decrease the rate. However, for $p=0.2$, the shape of the curve is slightly sigmoidal, which suggests that PR causes higher input rates to have a higher (relative) impact on the output rate, and suppresses lower input rates.
+To study the effect of PR on the neuron's input-output relation, an input-output curve similar to those in Section~\ref{subsec:iocurve} was produced for different values of $p$ with results shown in Figure~\ref{fig:exp8gridoutputs}. The only effect of PR for $p \geq 0.4$ is, predictably, to decrease the rate. However, for $p=0.2$, the shape of the curve is slightly sigmoidal, which suggests that PR causes higher input rates to have a higher (relative) impact on the output rate, and suppresses lower input rates.
 
 \begin{figure}[!htb]
     \includegraphics[width=\textwidth]{figures/exp8_gridoutputs_epsp05.eps}
@@ -683,11 +683,11 @@ An input-output curve similar to those in Section~\ref{subsec:iocurve} was produ
 
 % Experiment 7
 
-The existence of PR in biological neurons implies that there exists a value of $p \neq 1$, for which some characteristic measure of information transfer is at its optimal value. Two such candidate measures are easy to test: output rate and variance in output rate. Figure~\ref{fig:exp7grid} shows the dependence of these two measures on $p$. At each input rate tested both the output rate and variance (shown as standard deviation) increase as $p$ approaches 1, suggesting no optimal value of $p$ for these two measures in the interval $p \in [0,1)$. However, at $p=0.8$, mean output rate is roughly equal to or slightly larger than output rate at $p=1$. This indicates that, for the values of parameters used, a value of $p$ lower than 1 is useful because a lower $p$ causes lower energy expenditure on spiking and thus a more efficient information transfer.
+The existence of PR in biological neurons implies that there exists a value of $p \neq 1$, for which some measure of information transfer is at its optimal value. Two such candidate measures are easy to test: output rate and variance in output rate. Figure~\ref{fig:exp7grid} shows the dependence of these two measures on $p$. At each input rate tested both the output rate and variance (shown as standard deviation) increase as $p$ approaches 1, suggesting no optimal value of $p$ for these two measures in the interval $p \in [0,1)$. However, at $p=0.8$, mean output rate is roughly equal to or slightly larger than output rate at $p=1$. This indicates that, for the values of parameters used, a value of $p$ lower than 1 is useful because a lower $p$ causes lower energy expenditure on spiking and thus a more efficient information transfer.
 
 \begin{figure}[!htb]
     \includegraphics[width=\textwidth]{figures/exp7_PRoutputvariance_grid.eps}
-    \caption{The dependence of output rate on PR parameter $p$. For each combination of rate and $p$, 10 5-second experiments were run, resulting output rates measured and mean and standard deviation over the 10 results calculated. In all simulations, plasticity was disabled, with 5 synaptic weights fixed at 1.0 and all others at 0.05. Spike-frequency adaptation was also disabled.}
+    \caption{The dependence of output rate on PR parameter $p$. For each combination of rate and $p$, 10 5-second experiments were run, resulting output rates measured and mean and standard deviation over the 10 results calculated. In all simulations plasticity was disabled with 5 synaptic weights fixed at 1.0 and all others at 0.05. Spike-frequency adaptation was also disabled.}
     \label{fig:exp7grid}
 \end{figure}
 
@@ -701,7 +701,7 @@ The existence of PR in biological neurons implies that there exists a value of $
 \section{Principal component analysis task} % or PCA tasks
 \label{sec:pca}
 %Speak about what I tried, how it failed, why it failed and whether PCA is even feasible (and what should be done to make it so). Or maybe some of this goes in the Discussion section.
-The neuron's ability to perform PCA, can be tested in various ways. The approach taken in this thesis is to define two channels of input, each of which can in principle be specified independently. Channel 1 consists of half of the 100 synapses; channel 2 contains the other half. Input to the two independent channels is generated by choosing input rates $(r_1, r_2)$ from a multivariate Gaussian distribution with means $(\mu_1, \mu_2)=(10,10)$ and covariance matrix
+The neuron's ability to perform PCA, can be tested in various ways. The approach taken in this thesis is to define two channels of input, each of which can be specified independently. Channel 1 consists of half of the 100 synapses; channel 2 contains the other half. Input to two independent channels is generated by choosing input rates $(r_1, r_2)$ from a multivariate Gaussian distribution with means $(\mu_1, \mu_2)=(10,10)$ and covariance matrix
 $$
 C =
 \begin{pmatrix}
